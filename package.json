@@ -1,0 +1,44 @@
+{
+  "name": "backend-starter",
+  "version": "1.0.0",
+  "description": "Backend starter template",
+  "main": "dist/app.js",
+  "repository": "https://github.com/backmeupplz/backend-starter",
+  "author": "backmeupplz <backmeupplz@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "distribute": "yarn build-ts && node dist/app.js",
+    "develop": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"yarn watch-ts\" \"yarn watch-js\"",
+    "build-ts": "tsc --skipLibCheck",
+    "watch-ts": "tsc -w --skipLibCheck",
+    "watch-js": "nodemon dist/app.js"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.11"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.0.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/koa": "^2.0.48",
+    "@types/lodash": "^4.14.136",
+    "@types/mongoose": "^5.3.26",
+    "@types/node": "^11.13.4",
+    "axios": "^0.18.0",
+    "dotenv": "^7.0.0",
+    "facebook-node-sdk": "^0.2.0",
+    "joi": "^14.3.1",
+    "js-yaml": "^3.13.1",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.7.0",
+    "koa-bodyparser-ts": "^0.3.1",
+    "koa-router-ts": "^2.0.0",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.5.2",
+    "node-telegram-login": "^1.0.0",
+    "typegoose": "^5.6.0",
+    "typescript": "^3.4.3"
+  }
+}
