@@ -13,7 +13,7 @@ export function sign(payload: object) {
 
 export function verify(token: string) {
   return new Promise((res, rej) => {
-    jwt.verify(token, process.env.JWT, undefined, (err, payload) => {
+    jwt.verify(token, secret, undefined, (err, payload) => {
       return err ? rej(err) : res(payload)
     })
   })
