@@ -36,7 +36,7 @@
     "koa-bodyparser-ts": "^0.3.1",
     "koa-router-ts": "^2.0.0",
     "lodash": "^4.17.15",
-    "mongoose": "^5.5.2",
+    "mongoose": "^5.7.5",
     "node-telegram-login": "^1.0.0",
     "typegoose": "^5.6.0",
     "typescript": "^3.4.3"
