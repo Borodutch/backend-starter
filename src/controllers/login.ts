@@ -1,4 +1,3 @@
-// Dependencies
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '../models'
@@ -40,9 +39,11 @@ export default class {
   async google(ctx: Context) {
     const accessToken = ctx.request.body.accessToken
 
-    const userData: any = (await axios(
-      `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
-    )).data
+    const userData: any = (
+      await axios(
+        `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
+      )
+    ).data
 
     const user = await getOrCreateUser({
       name: userData.name,

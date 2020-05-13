@@ -1,14 +1,8 @@
-// Dependencies
 import { sign } from '../helpers/jwt'
-import {
-  prop,
-  Typegoose,
-  InstanceType,
-  instanceMethod,
-} from 'typegoose'
+import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
 import { omit } from 'lodash'
 
-export class User extends Typegoose {
+export class User {
   @prop({ index: true, lowercase: true })
   email?: string
   @prop({ index: true, lowercase: true })
@@ -21,13 +15,8 @@ export class User extends Typegoose {
   @prop({ required: true, index: true, unique: true })
   token: string
 
-  @instanceMethod
   strippedAndFilled(withExtra = false, withToken = true) {
-    const stripFields = [
-      'createdAt',
-      'updatedAt',
-      '__v',
-    ]
+    const stripFields = ['createdAt', 'updatedAt', '__v']
     if (!withExtra) {
       stripFields.push('token')
       stripFields.push('email')
@@ -44,7 +33,7 @@ export class User extends Typegoose {
   _doc: any
 }
 
-export const UserModel = new User().getModelForClass(User, {
+export const UserModel = getModelForClass(User, {
   schemaOptions: { timestamps: true },
 })
 
@@ -60,7 +49,7 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
   if (!loginOptions.name) {
     throw new Error()
   }
-  let user: InstanceType<User> | undefined
+  let user: DocumentType<User> | undefined
   // Try email
   if (loginOptions.email) {
     user = await UserModel.findOne({ email: loginOptions.email })

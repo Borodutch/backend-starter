@@ -9,36 +9,36 @@
   "private": false,
   "scripts": {
     "distribute": "yarn build-ts && node dist/app.js",
-    "develop": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"yarn watch-ts\" \"yarn watch-js\"",
+    "develop": "concurrently -i -k -p \"[{name}]\" -n \"Node,TypeScript\" -c \"yellow.bold,cyan.bold\" \"yarn watch-js\" \"yarn watch-ts\"",
     "build-ts": "tsc --skipLibCheck",
     "watch-ts": "tsc -w --skipLibCheck",
     "watch-js": "nodemon dist/app.js"
   },
   "devDependencies": {
-    "concurrently": "^4.1.0",
-    "nodemon": "^1.18.11"
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.3"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
-    "@types/dotenv": "^6.1.1",
-    "@types/jsonwebtoken": "^8.3.2",
-    "@types/koa": "^2.0.48",
-    "@types/lodash": "^4.14.136",
-    "@types/mongoose": "^5.3.26",
-    "@types/node": "^11.13.4",
-    "axios": "^0.18.0",
-    "dotenv": "^7.0.0",
+    "@typegoose/typegoose": "^7.0.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/jsonwebtoken": "^8.3.9",
+    "@types/koa": "^2.11.3",
+    "@types/lodash": "^4.14.150",
+    "@types/mongoose": "^5.7.18",
+    "@types/node": "^14.0.1",
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
     "facebook-node-sdk": "^0.2.0",
     "joi": "^14.3.1",
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.7.0",
+    "koa": "^2.11.0",
     "koa-bodyparser-ts": "^0.3.1",
-    "koa-router-ts": "^2.0.0",
+    "koa-router-ts": "^3.0.0",
     "lodash": "^4.17.15",
-    "mongoose": "^5.7.5",
+    "mongoose": "^5.9.13",
     "node-telegram-login": "^1.0.0",
-    "typegoose": "^5.6.0",
-    "typescript": "^3.4.3"
+    "typescript": "^3.9.2"
   }
 }
