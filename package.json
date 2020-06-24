@@ -12,7 +12,8 @@
     "develop": "concurrently -i -k -p \"[{name}]\" -n \"Node,TypeScript\" -c \"yellow.bold,cyan.bold\" \"yarn watch-js\" \"yarn watch-ts\"",
     "build-ts": "tsc --skipLibCheck",
     "watch-ts": "tsc -w --skipLibCheck",
-    "watch-js": "nodemon dist/app.js"
+    "watch-js": "nodemon dist/app.js",
+    "test": "mocha"
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
@@ -37,6 +38,7 @@
     "koa-bodyparser-ts": "^0.3.1",
     "koa-router-ts": "^3.0.0",
     "lodash": "^4.17.15",
+    "mocha": "^8.0.1",
     "mongoose": "^5.9.13",
     "node-telegram-login": "^1.0.0",
     "typescript": "^3.9.2"
