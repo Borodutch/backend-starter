@@ -11,14 +11,3 @@ mongoose.set('useFindAndModify', false)
 
 // Export models
 export * from './user'
-
-const logConnection = () => {
-  mongoose.connection
-    .once('open', () => {
-      console.log('successfully connected to messagesDB')
-    })
-    .on('error', err => {
-      console.log('Error occured: ', err)
-    })
-}
-logConnection()
