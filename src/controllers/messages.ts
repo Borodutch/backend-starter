@@ -1,7 +1,7 @@
 import { Context } from 'koa'
 import {
   createMessage,
-  findMessageByUsername,
+  findMessageByUserId,
   deleteMessage,
   updateMessage,
   findUpdatedMessage,
@@ -12,12 +12,12 @@ import { Controller, Post, Get, Put, Delete } from 'koa-router-ts'
 export default class {
   @Get('/get/:user')
   async getMessage(ctx: Context) {
-    ctx.body = await findMessageByUsername(ctx.params.user)
+    ctx.body = await findMessageByUserId(ctx.params.user)
   }
 
-  @Post('/add')
+  @Post('/add/:userId')
   async addMessage(ctx: Context) {
-    ctx.body = await createMessage(ctx.query)
+    ctx.body = await createMessage(ctx.params.userId, ctx.query.content)
   }
 
   @Put('/update/:id')
@@ -31,6 +31,6 @@ export default class {
     const entry = await deleteMessage({
       _id: ctx.params.id,
     })
-    ctx.body = `Just deleted an entry: ${entry}`
+    ctx.body = `Just deleted the message: ${entry}`
   }
 }

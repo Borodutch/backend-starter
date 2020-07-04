@@ -1,28 +1,35 @@
-import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref, getName } from '@typegoose/typegoose'
+import { User, UserModel } from './user'
 
 export class Message {
-  @prop({ required: true })
-  user: string
+  @prop({ ref: 'User' })
+  user: Ref<User>
   @prop()
   content: string
 }
 export const MessageModel = getModelForClass(Message)
 
-export async function findMessageByUsername(username) {
+export async function findMessageByUserId(username) {
   let entry = await MessageModel.findOne({ user: username })
   if (!entry) throw new Error(`Failed to find the message`)
   return entry
 }
 
-export async function createMessage(options) {
-  if (!options.user) throw new Error('User not stated')
-  let message = await new MessageModel(options).save()
+export async function createMessage(userId, content) {
+  //if (!options.user) throw new Error('User not stated')
+  let foundUser = await UserModel.findById(userId)
+  if (!foundUser)
+    throw new Error(`Failed to find the user who created a message`)
+  let message = await new MessageModel({
+    content: content,
+    user: foundUser,
+  }).save()
   return message
 }
 
 export async function updateMessage(id, values) {
   let message = await MessageModel.findOneAndUpdate(id, values)
-  if (!message) throw new Error(`Failed to find and update entry`)
+  if (!message) throw new Error(`Failed to find and update message`)
   return message
 }
 export async function findUpdatedMessage(id) {
