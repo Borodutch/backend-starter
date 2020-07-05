@@ -2,6 +2,9 @@ import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
 
 export class Message {
     @prop({ required: true, index: true })
+    user: string
+
+    @prop({ required: true, index: true })
     text: string
 }
 

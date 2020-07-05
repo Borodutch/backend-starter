@@ -15,6 +15,11 @@ export default class {
         ctx.body = await MessageModel.find()
     }
 
+    @Get('/:user')
+    async getMessagesFromUser(ctx: Context) {
+        ctx.body = await MessageModel.find({user: ctx.params.user})
+    }
+
     @Put('/:id')
     async putMessage(ctx: Context) {
         await MessageModel.findByIdAndUpdate({_id: ctx.params.id}, ctx.request.body)
