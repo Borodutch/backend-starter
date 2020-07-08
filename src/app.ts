@@ -5,7 +5,8 @@ import * as Koa from 'koa'
 import * as json from 'koa-json'
 const mongoose = require('mongoose');
 import bodyParser from 'koa-bodyparser-ts'
-import { loadControllers } from 'koa-router-ts'
+import { Context } from 'koa'
+import { loadControllers, Controller, Post, Get } from 'koa-router-ts'
 import * as cors from '@koa/cors'
 import { MessageChannel } from 'worker_threads';
 
@@ -48,26 +49,35 @@ router.patch('/updateMsg', async ctx => {
 })
 
 //delete message by ID
-router.delete('/deleteMsg', async ctx => {
-  try {
-    const result = await Message.deleteMsg({ ...ctx.request.body });
-    ctx.body = result;
-  } catch (err) {
-    ctx.status = 500;
-    ctx.body = 'Internal error'
-  }
-})
+// router.delete('/deleteMsg', async ctx => {
+//   try {
+//     const result = await Message.deleteMsg({ ...ctx.request.body });
+//     ctx.body = result;
+//   } catch (err) {
+//     ctx.status = 500;
+//     ctx.body = 'Internal error'
+//   }
+// })
 
 //get all messages
-router.get('/', async ctx => {
-  try {
-    const result = await Message.getAllMsg({ id: ctx.params.id });
-    ctx.body = result;
-  } catch (err) {
-    ctx.status = 500;
-    ctx.body = 'Internal error'
-  }
-});
+// router.get('/', async ctx => {
+//   try {
+//     const result = await Message.getAllMsg({ id: ctx.params.id });
+//     ctx.body = result;
+//   } catch (err) {
+//     ctx.status = 500;
+//     ctx.body = 'Internal error'
+//   }
+// });
+
+// @Controller('/')
+// export default class {
+  // @Get('/')
+  // async getAll(ctx: Context) {
+    // const result = Message.getAllMsg({ id: ctx.params.id })
+    // ctx.body = result;
+//   }
+// }
 
 // Run app
 app.use(json());
