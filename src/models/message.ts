@@ -1,16 +1,18 @@
-import { prop, getModelForClass } from "@typegoose/typegoose";
-
-const mongoose = require('mongoose');
+import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
+import { User } from "./user";
 
 export class MessageSchema {
   @prop({ required: false, default: new Date() })
-  public date: Date;
+  date: Date;
 
   @prop({ required: true })
-  public title: String
+  title: String
 
   @prop({ required: true, default: '' })
-  public text: String
+  text: String
+
+  @prop({ ref: 'User' })
+  user: Ref<User>
 }
 
 export const MessageModel = getModelForClass(MessageSchema, {
