@@ -7,7 +7,7 @@ const TelegramLogin = require('node-telegram-login')
 const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN)
 
 
-@Controller('')
+@Controller('/login')
 export default class {
   @Post('/facebook')
   async facebook(ctx: Context) {

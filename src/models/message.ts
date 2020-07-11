@@ -36,7 +36,7 @@ export async function updateMessage({id, text}) {
   return message
 }
 
-export async function createMessage({title, text}) {
-  const message = MessageModel.create({title, text})
+export async function createMessage({title, text, user}) {
+  const message = MessageModel.create({title, text, user})
   return message
 }

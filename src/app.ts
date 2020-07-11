@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv'
 dotenv.config({ path: `${__dirname}/../.env` })
 import 'reflect-metadata'
 import * as Koa from 'koa'
-const mongoose = require('mongoose');
 import bodyParser from 'koa-bodyparser-ts'
 import { loadControllers } from 'koa-router-ts'
 import * as cors from '@koa/cors'
