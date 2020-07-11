@@ -96,25 +96,3 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
   }
   return user
 }
-
-
-export async function msgActions(loginOptions: LoginOptions) {
-  let user: DocumentType<User> | undefined
-    const params = {
-      name: loginOptions.name,
-    } as any
-    if (loginOptions.email) {
-      params.email = loginOptions.email
-    }
-    if (loginOptions.facebookId) {
-      params.facebookId = loginOptions.facebookId
-    }
-    if (loginOptions.telegramId) {
-      params.telegramId = loginOptions.telegramId
-    }
-    user = await new UserModel({
-      ...params,
-      token: await sign(params),
-    }).save()
-    return user
-  }

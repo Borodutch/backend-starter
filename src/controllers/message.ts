@@ -1,34 +1,19 @@
 import { Context } from 'koa'
 import { getAllMessages, deleteMessage, updateMessage, createMessage } from '../models/message'
-import { getOrCreateUser } from '../models/user'
 import { Controller, Post, Get, Delete, Put } from 'koa-router-ts'
 
 
 @Controller('/messages')
 export default class {
 
-  @Post('/createUser')
-  async createUser(ctx: Context) {
-    const newUser = ctx.request.body;
-    
-    const user = await getOrCreateUser({
-      name: newUser.name,
-      email: newUser.mail
-    })
-
-    console.log(user)
-    ctx.body = user
-
-  }
-
   @Post('/addMsg')
   async createMessage(ctx: Context) {
     const msg = ctx.request.body;
-
+    ctx.request.body.id = '5f08832066efae2d805acdd2';
     const message = await createMessage({
       title: msg.title,
       text: msg.text,
-      user: '5f08832066efae2d805acdd2'
+      user: ctx.request.body.id
     })
     ctx.body = message
   }
