@@ -11,7 +11,6 @@ export class User {
   telegramId?: string
   @prop({ required: true, index: true })
   name: string
-
   @prop({ required: true, index: true, unique: true })
   token: string
 
