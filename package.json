@@ -15,30 +15,30 @@
     "watch-js": "nodemon dist/app.js"
   },
   "devDependencies": {
-    "concurrently": "^5.2.0",
-    "nodemon": "^2.0.3"
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.4"
   },
   "dependencies": {
-    "@koa/cors": "^3.0.0",
-    "@typegoose/typegoose": "^7.0.0",
+    "@koa/cors": "^3.1.0",
+    "@typegoose/typegoose": "^7.3.2",
     "@types/dotenv": "^8.2.0",
-    "@types/jsonwebtoken": "^8.3.9",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/koa": "^2.11.3",
-    "@types/lodash": "^4.14.150",
-    "@types/mongoose": "^5.7.18",
-    "@types/node": "^14.0.1",
+    "@types/lodash": "^4.14.159",
+    "@types/mongoose": "^5.7.36",
+    "@types/node": "^14.6.0",
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "facebook-node-sdk": "^0.2.0",
-    "joi": "^14.3.1",
-    "js-yaml": "^3.13.1",
+    "joi": "^17.2.0",
+    "js-yaml": "^3.14.0",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.11.0",
+    "koa": "^2.13.0",
     "koa-bodyparser-ts": "^0.3.1",
     "koa-router-ts": "^3.0.0",
-    "lodash": "^4.17.19",
-    "mongoose": "^5.9.13",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.0",
     "node-telegram-login": "^1.0.0",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.7"
   }
 }
