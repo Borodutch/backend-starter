@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '../models'
-import { Controller, Post } from 'koa-router-ts'
+import { Controller, Post, Get } from 'koa-router-ts'
+import { UserModel } from '../models/user'
 import Facebook = require('facebook-node-sdk')
 const TelegramLogin = require('node-telegram-login')
 const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN)
@@ -18,6 +19,28 @@ export default class {
       facebookId: fbProfile.id,
     })
     ctx.body = user.strippedAndFilled(true)
+  }
+
+  @Post('/user')
+  async userId(ctx: Context) {
+    const data = ctx.request.body
+    const user = await getOrCreateUser({
+      email: data.email,
+      name: data.name,
+    })
+    ctx.body = user.strippedAndFilled(true)
+  }
+
+  @Get('/user')
+  async get(ctx: Context) {
+    const user = await UserModel.find().sort({ createdAt: -1 })
+    ctx.body = user
+  }
+
+  @Get('/user/:id')
+  async getUser(ctx: Context) {
+    const user = await UserModel.findById({ _id: ctx.params.id })
+    ctx.body = user
   }
 
   @Post('/telegram')

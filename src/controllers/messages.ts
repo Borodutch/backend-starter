@@ -10,20 +10,26 @@ export default class {
     ctx.body = messages
   }
 
-  @Get('/messagee')
-  async getOne(ctx: Context) {
-    ctx.body = 'YES it is WORK!!!!!!'
-  }
-
-  @Post('/post')
+  @Post('/message')
   async post(ctx: Context) {
-    const message = new MessageModel()
-    message.message = ctx.request.body.message
+    const data = ctx.request.body
+    const message = new MessageModel({
+      message: data.message,
+      user: data.user,
+    })
     await message.save()
-    ctx.body = { status: 'Message Posted!' }
+    ctx.body = data
   }
 
-  @Delete('/delete/:id')
+  @Get('/message/:id')
+  async getMessage(ctx: Context) {
+    const message = await MessageModel.find({ user: ctx.params.id }).sort({
+      createdAt: -1,
+    })
+    ctx.body = message
+  }
+
+  @Delete('/message/:id')
   async delete(ctx: Context) {
     await MessageModel.deleteOne({ _id: ctx.params.id })
     ctx.body = { status: 'Message Deleted!' }
