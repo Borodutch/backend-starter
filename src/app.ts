@@ -6,6 +6,7 @@ import * as Koa from 'koa'
 import * as bodyParser from 'koa-bodyparser'
 import { loadControllers } from 'koa-router-ts'
 import * as cors from '@koa/cors'
+import '@models/index'
 
 const app = new Koa()
 const router = loadControllers(`${__dirname}/controllers`, { recurse: true })
