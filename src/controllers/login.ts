@@ -1,10 +1,9 @@
 import axios from 'axios'
 import { Context } from 'koa'
-import { getOrCreateUser } from '../models'
+import { getOrCreateUser } from '@models/user'
 import { Controller, Post } from 'koa-router-ts'
 import Facebook = require('facebook-node-sdk')
-const TelegramLogin = require('node-telegram-login')
-const Login = new TelegramLogin(process.env.TELEGRAM_LOGIN_TOKEN)
+import { verifyTelegramPayload } from '@helpers/verifyTelegramPayload'
 
 @Controller('/login')
 export default class {
@@ -24,7 +23,7 @@ export default class {
   async telegram(ctx: Context) {
     const data = ctx.request.body
     // verify the data
-    if (!Login.checkLoginData(data)) {
+    if (!verifyTelegramPayload(data)) {
       return ctx.throw(403)
     }
 

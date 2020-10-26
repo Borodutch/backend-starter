@@ -1,8 +1,9 @@
+import 'module-alias/register'
 import * as dotenv from 'dotenv'
 dotenv.config({ path: `${__dirname}/../.env` })
 import 'reflect-metadata'
 import * as Koa from 'koa'
-import bodyParser from 'koa-bodyparser-ts'
+import * as bodyParser from 'koa-bodyparser'
 import { loadControllers } from 'koa-router-ts'
 import * as cors from '@koa/cors'
 
