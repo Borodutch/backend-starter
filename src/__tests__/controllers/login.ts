@@ -12,7 +12,7 @@ beforeEach(async () => {
 test('google login route test', async () => {
   const response = await request(app.callback())
     .post('/login/google')
-    .send({ mail: 'test@me.com', accessToken: 'Johaa Goga' })
+    .send({ accessToken: 'test' })
   expect(response.body.name).toBe('Alexander Brennenburg')
   expect(response.body.email).toBe('alexanderrennenburg@gmail.com')
 })
