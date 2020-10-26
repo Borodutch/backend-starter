@@ -5,5 +5,8 @@ mongoose.connect(process.env.MONGO, {
   useUnifiedTopology: true,
 })
 
+mongoose.set('debug', true)
 mongoose.set('useCreateIndex', true)
 mongoose.set('useFindAndModify', false)
+
+export { mongoose }

@@ -1,6 +1,7 @@
 import { sign } from '@helpers/jwt'
-import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
+import { prop, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
 import { omit } from 'lodash'
+import { Message } from './message'
 
 export class User {
   @prop({ index: true, lowercase: true })
@@ -11,6 +12,8 @@ export class User {
   telegramId?: string
   @prop({ required: true, index: true })
   name: string
+  @prop({ ref: 'Message' })
+  messages?: Ref<Message>[]
 
   @prop({ required: true, index: true, unique: true })
   token: string
