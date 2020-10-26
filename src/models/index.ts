@@ -1,9 +1,11 @@
 import * as mongoose from 'mongoose'
 
-mongoose.connect(process.env.MONGO, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+export default function runMongo(mongoUrl: string = process.env.MONGO) {
+  mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
 
-mongoose.set('useCreateIndex', true)
-mongoose.set('useFindAndModify', false)
+  mongoose.set('useCreateIndex', true)
+  mongoose.set('useFindAndModify', false)
+}
