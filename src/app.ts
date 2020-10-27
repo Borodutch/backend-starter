@@ -4,18 +4,35 @@ dotenv.config({ path: `${__dirname}/../.env` })
 import 'reflect-metadata'
 import * as Koa from 'koa'
 import * as bodyParser from 'koa-bodyparser'
-import { loadControllers } from 'koa-router-ts'
+import { bootstrapControllers } from 'koa-ts-controllers'
 import * as cors from '@koa/cors'
-import '@models/index'
+import { runMongo } from '@models/index'
+import * as Router from 'koa-router'
+
+if (process.env.TESTING !== 'true') {
+  runMongo()
+}
 
 const app = new Koa()
-const router = loadControllers(`${__dirname}/controllers`, { recurse: true })
 
-// Run app
-app.use(cors({ origin: '*' }))
-app.use(bodyParser())
-app.use(router.routes())
-app.use(router.allowedMethods())
-app.listen(1337)
+export async function main() {
+  const router = new Router()
 
-console.log('Koa application is up and running on port 1337')
+  await bootstrapControllers(app, {
+    router,
+    basePath: '/',
+    controllers: [__dirname + '/controllers/*'],
+    disableVersioning: true,
+  })
+
+  // Run app
+  app.use(cors({ origin: '*' }))
+  app.use(bodyParser())
+  app.use(router.routes())
+  app.use(router.allowedMethods())
+  app.listen(1337)
+  console.log('Koa application is up and running on port 1337')
+}
+main()
+
+export default app
