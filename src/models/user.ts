@@ -1,4 +1,4 @@
-import { sign } from '@helpers/jwt'
+import { sign } from '@/helpers/jwt'
 import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
 import { omit } from 'lodash'
 

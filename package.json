@@ -13,7 +13,7 @@
     "build-ts": "tsc --skipLibCheck",
     "watch-ts": "tsc -w --skipLibCheck",
     "watch-js": "nodemon dist/app.js",
-    "test": "yarn jest"
+    "test": "yarn jest --forceExit"
   },
   "devDependencies": {
     "@koa/cors": "^3.1.0",
@@ -51,8 +51,6 @@
     "typescript": "^4.0.5"
   },
   "_moduleAliases": {
-    "@controllers": "dist/controllers",
-    "@helpers": "dist/helpers",
-    "@models": "dist/models"
+    "@": "dist"
   }
 }
