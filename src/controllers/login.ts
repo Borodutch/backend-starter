@@ -2,8 +2,8 @@ import { Controller, Ctx, Get, Post } from 'koa-ts-controllers'
 import { Context } from 'koa'
 import axios from 'axios'
 import Facebook = require('facebook-node-sdk')
-import { verifyTelegramPayload } from '../helpers/verifyTelegramPayload'
-import { getOrCreateUser } from '../models/user'
+import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import { getOrCreateUser } from '@/models/user'
 
 @Controller('/login')
 export default class {

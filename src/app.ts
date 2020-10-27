@@ -7,7 +7,9 @@ import * as Router from 'koa-router'
 import * as bodyParser from 'koa-bodyparser'
 import { bootstrapControllers } from 'koa-ts-controllers'
 import * as cors from '@koa/cors'
-import runMongo from './models/index'
+import runMongo from '@/models/index'
+
+require('module-alias/register')
 
 const app = new Koa()
 

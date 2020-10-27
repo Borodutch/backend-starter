@@ -1,7 +1,7 @@
 const request = require('supertest')
-import app from '../../app'
+import app from '@/app'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import runMongo from '../../models/index'
+import runMongo from '@/models/index'
 
 const mongoServer = new MongoMemoryServer()
 
