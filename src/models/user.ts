@@ -37,7 +37,7 @@ export const UserModel = getModelForClass(User, {
   schemaOptions: { timestamps: true },
 })
 
-interface LoginOptions {
+export interface LoginOptions {
   email?: string
   facebookId?: string
   telegramId?: string
