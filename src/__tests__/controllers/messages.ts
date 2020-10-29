@@ -24,13 +24,15 @@ describe("Messages CRUD endpoints", () => {
     }
   })
 
+  afterAll(async () => app.close());
+
   describe("Create", () => {
     it("should create a message successfully!", async () => {
       const mockMessage = {
         body: "ORARARAOROAOROAROAOROORAOR",
       };
 
-      const { status, body } = await request(app.callback())
+      const { status, body } = await request(app)
         .post("/messages")
         .set(authHeader)
         .send(mockMessage);
@@ -46,12 +48,12 @@ describe("Messages CRUD endpoints", () => {
         body: "MUDAMUDAMUDAMUDAMUDAMUDAMUDA",
       };
 
-      const postReponse = await request(app.callback())
+      const postReponse = await request(app)
         .post("/messages")
         .set(authHeader)
         .send(mockMessage);
 
-      const getResponse = await request(app.callback())
+      const getResponse = await request(app)
         .get("/messages")
         .set(authHeader)
         .send();
@@ -73,7 +75,7 @@ describe("Messages CRUD endpoints", () => {
         body: "OH MY GOD!"
       }
 
-      const postReponse = await request(app.callback())
+      const postReponse = await request(app)
         .post("/messages")
         .set(authHeader)
         .send(mockMessage);
@@ -83,14 +85,14 @@ describe("Messages CRUD endpoints", () => {
 
       const createdMessageId = postReponse.body._id
 
-      const updateResponse = await request(app.callback())
+      const updateResponse = await request(app)
         .patch(`/messages/${createdMessageId}`)
         .set(authHeader)
         .send(updatedMockMessage);
 
       expect(updateResponse.status).toBe(204);
 
-      const getResponse = await request(app.callback())
+      const getResponse = await request(app)
         .get("/messages")
         .set(authHeader)
         .send();
@@ -108,7 +110,7 @@ describe("Messages CRUD endpoints", () => {
         body: "ZA WARUDO!",
       };
 
-      const postReponse = await request(app.callback())
+      const postReponse = await request(app)
         .post("/messages")
         .set(authHeader)
         .send(mockMessage);
@@ -118,14 +120,14 @@ describe("Messages CRUD endpoints", () => {
 
       const createdMessageId = postReponse.body._id
 
-      const deleteResponse = await request(app.callback())
+      const deleteResponse = await request(app)
         .delete(`/messages/${createdMessageId}`)
         .set(authHeader)
         .send();
 
       expect(deleteResponse.status).toBe(204);
 
-      const getResponse = await request(app.callback())
+      const getResponse = await request(app)
         .get("/messages")
         .set(authHeader)
         .send();

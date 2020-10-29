@@ -13,26 +13,31 @@ if (process.env.TESTING !== 'true') {
   runMongo()
 }
 
-const app = new Koa()
+const app = new Koa();
 
-export async function main() {
+(async () => {
   const router = new Router()
 
-  await bootstrapControllers(app, {
-    router,
-    basePath: '/',
-    controllers: [__dirname + '/controllers/*'],
-    disableVersioning: true,
-  })
+  try {
+    await bootstrapControllers(app, {
+      router,
+      basePath: '/',
+      controllers: [__dirname + '/controllers/*'],
+      disableVersioning: true,
+    })
+    
+    // Run app
+    app.use(cors({ origin: '*' }))
+    app.use(bodyParser())
+    app.use(router.routes())
+    app.use(router.allowedMethods())
+  } catch (error) {
+    console.log("Koa app starting error: ", error)
+  }
+})();
 
-  // Run app
-  app.use(cors({ origin: '*' }))
-  app.use(bodyParser())
-  app.use(router.routes())
-  app.use(router.allowedMethods())
-  app.listen(1337)
-  console.log('Koa application is up and running on port 1337')
-}
-main()
+const server = app.listen(1337)
 
-export default app
+console.log('Koa application is up and running on port 1337')
+
+export default server

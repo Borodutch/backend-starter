@@ -11,8 +11,10 @@ describe("Messages", () => {
     runMongo(await mongoServer.getUri())
   })
 
+  afterAll(async () => app.close());
+
   test('google login route test', async () => {
-    const response = await request(app.callback())
+    const response = await request(app)
       .post('/login/google')
       .send({ accessToken: 'test' })
     expect(response.body.name).toBe('Alexander Brennenburg')
