@@ -6,12 +6,15 @@ import * as Koa from 'koa'
 import * as bodyParser from 'koa-bodyparser'
 import { bootstrapControllers } from 'koa-ts-controllers'
 import * as cors from '@koa/cors'
-import { runMongo } from '@/models/index'
+import {  runMongo  } from '@/models/index'
 import * as Router from 'koa-router'
+import { readDB, saveToDB, readIdDB, readOneDB, updatedDB, deleteDB } from './models/cont'
+import { rest } from 'lodash'
 
 if (process.env.TESTING !== 'true') {
   runMongo()
 }
+else {console.log('no db')}
 
 const app = new Koa()
 
@@ -24,6 +27,64 @@ export async function main() {
     controllers: [__dirname + '/controllers/*'],
     disableVersioning: true,
   })
+  
+  //CRUD
+ 
+router.get('/save', async (ctx, next)=>{
+   
+  let msg=ctx.request.body
+  
+ 
+    saveToDB(msg)
+ 
+  next()
+  console.log(msg)
+} )
+router.get('/read', async (ctx, next)=>{
+   
+  let msg=ctx.request.body
+
+  readDB(msg).then(async (result)=>{
+   await console.log(result)
+    ctx.body= {msg: result}
+  })
+  //ctx.body = {msg:''}
+  await next()
+} )
+router.get('/read-one', async (ctx, next)=>{
+ 
+  let msg=ctx.request.body
+  readOneDB(msg)
+   await next()
+ 
+} )
+router.get('/read-id', async (ctx, next)=>{
+   
+  let msg=ctx.request.body
+
+  readIdDB(msg)
+
+  await next()
+  } )
+router.put('/update', async (ctx, next) =>{
+ 
+  let msg=ctx.request.body
+
+  updatedDB(msg)
+
+  await next
+} 
+)
+router.delete('/delete', async (ctx, next) =>{
+   
+  let msg=ctx.request.body
+
+  deleteDB(msg)
+
+  await next
+}
+)
+//
 
   // Run app
   app.use(cors({ origin: '*' }))
@@ -31,6 +92,8 @@ export async function main() {
   app.use(router.routes())
   app.use(router.allowedMethods())
   app.listen(1337)
+  app.listen(3000, 'localhost')
+  
   console.log('Koa application is up and running on port 1337')
 }
 main()
