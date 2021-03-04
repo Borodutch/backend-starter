@@ -37,7 +37,7 @@ export const UserModel = getModelForClass(User, {
   schemaOptions: { timestamps: true },
 })
 
-interface LoginOptions {
+export interface LoginOptions {
   email?: string
   facebookId?: string
   telegramId?: string
@@ -77,6 +77,7 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
     ) {
       throw new Error()
     }
+    //checking params
     const params = {
       name: loginOptions.name,
     } as any
@@ -89,6 +90,7 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
     if (loginOptions.telegramId) {
       params.telegramId = loginOptions.telegramId
     }
+    //saving User
     user = await new UserModel({
       ...params,
       token: await sign(params),
