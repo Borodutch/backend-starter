@@ -35,6 +35,7 @@
   "dependencies": {
     "@types/koa-bodyparser": "^4.3.0",
     "axios": "^0.21.1",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^8.2.0",
     "facebook-node-sdk": "^0.2.0",
@@ -47,7 +48,7 @@
     "koa-ts-controllers": "^3.2.2",
     "lodash": "^4.17.21",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.11.19",
+    "mongoose": "5.10.18",
     "typescript": "^4.2.3"
   },
   "_moduleAliases": {
