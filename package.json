@@ -2,17 +2,17 @@
   "name": "backend-starter",
   "version": "1.0.0",
   "description": "Backend starter template",
-  "main": "dist/app.js",
+  "main": "dist/server.js",
   "repository": "https://github.com/backmeupplz/backend-starter",
   "author": "backmeupplz <backmeupplz@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "distribute": "yarn build-ts && node dist/app.js",
+    "distribute": "yarn build-ts && node dist/server.js",
     "develop": "concurrently -i -k -p \"[{name}]\" -n \"Node,TypeScript\" -c \"yellow.bold,cyan.bold\" \"yarn watch-js\" \"yarn watch-ts\"",
     "build-ts": "tsc --skipLibCheck",
     "watch-ts": "tsc -w --skipLibCheck",
-    "watch-js": "nodemon dist/app.js",
+    "watch-js": "nodemon dist/server.js",
     "test": "yarn jest --forceExit"
   },
   "devDependencies": {
@@ -35,10 +35,12 @@
   "dependencies": {
     "@types/koa-bodyparser": "^4.3.0",
     "axios": "^0.21.1",
+    "axios-mock-adapter": "^1.19.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^8.2.0",
     "facebook-node-sdk": "^0.2.0",
+    "http-graceful-shutdown": "^3.0.1",
     "joi": "^17.4.0",
     "js-yaml": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
