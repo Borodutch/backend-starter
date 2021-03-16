@@ -6,7 +6,7 @@ import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
 @Controller('/login')
-export default class {
+export default class LoginController {
   @Post('/facebook')
   async facebook(@Ctx() ctx: Context) {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
