@@ -1,42 +1,42 @@
-import axios from 'axios'
-import { Context } from 'koa'
-import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post } from 'koa-ts-controllers'
-import Facebook = require('facebook-node-sdk')
-import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import axios from 'axios';
+import { Context } from 'koa';
+import { getOrCreateUser } from '@/models/user';
+import { Controller, Ctx, Post } from 'koa-ts-controllers';
+import Facebook = require('facebook-node-sdk');
+import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload';
 
 @Controller('/login')
 export default class {
   @Post('/facebook')
   async facebook(@Ctx() ctx: Context) {
-    const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
+    const fbProfile: any = await getFBUser(ctx.request.body.accessToken);
     const user = await getOrCreateUser({
       name: fbProfile.name,
 
       email: fbProfile.email,
       facebookId: fbProfile.id,
-    })
-    return user.strippedAndFilled(true)
+    });
+    return user.strippedAndFilled(true);
   }
 
   @Post('/telegram')
   async telegram(@Ctx() ctx: Context) {
-    const data = ctx.request.body
+    const data = ctx.request.body;
     // verify the data
     if (!verifyTelegramPayload(data)) {
-      return ctx.throw(403)
+      return ctx.throw(403);
     }
 
     const user = await getOrCreateUser({
       name: `${data.first_name}${data.last_name ? ` ${data.last_name}` : ''}`,
       telegramId: data.id,
-    })
-    return user.strippedAndFilled(true)
+    });
+    return user.strippedAndFilled(true);
   }
 
   @Post('/google')
   async google(@Ctx() ctx: Context) {
-    const accessToken = ctx.request.body.accessToken
+    const accessToken = ctx.request.body.accessToken;
 
     const userData: any =
       process.env.TESTING === 'true'
@@ -45,14 +45,14 @@ export default class {
             await axios(
               `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
             )
-          ).data
+          ).data;
 
     const user = await getOrCreateUser({
       name: userData.name,
 
       email: userData.email,
-    })
-    return user.strippedAndFilled(true)
+    });
+    return user.strippedAndFilled(true);
   }
 }
 
@@ -61,17 +61,17 @@ function getFBUser(accessToken: string) {
     const fb = new Facebook({
       appID: process.env.FACEBOOK_APP_ID,
       secret: process.env.FACEBOOK_APP_SECRET,
-    })
-    fb.setAccessToken(accessToken)
+    });
+    fb.setAccessToken(accessToken);
     fb.api('/me?fields=name,email,id', (err, user) => {
-      return err ? rej(err) : res(user)
-    })
-  })
+      return err ? rej(err) : res(user);
+    });
+  });
 }
 
 function testingGoogleMock() {
   return {
     name: 'Alexander Brennenburg',
     email: 'alexanderrennenburg@gmail.com',
-  }
+  };
 }
