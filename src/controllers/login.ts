@@ -12,7 +12,6 @@ export default class LoginController {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
-
       email: fbProfile.email,
       facebookId: fbProfile.id,
     })
@@ -49,7 +48,6 @@ export default class LoginController {
 
     const user = await getOrCreateUser({
       name: userData.name,
-
       email: userData.email,
     })
     return user.strippedAndFilled(true)
