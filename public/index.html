@@ -1,0 +1,198 @@
+<div class="container-lg">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <% if (user) { %>
+                        <h2>Logged in as <%= user['name'] %></h2>
+                        <% } else { %>
+                        <h2>You are not logged in</h2>
+                        <% } %>
+                    </div>
+                    <div class="col-sm-4">
+
+                        <% if (user) {%>
+                        <a id="logoutButton" onClick="logoutUser()" class="btn btn-info add-new" href="/"> Logout</a>
+                        <a class="btn btn-info add-new" href="/add"><i class="fa fa-plus"></i> Add New</a>
+                        <% } else { %>
+                        <div>
+                        <fb:login-button 
+                        id="fb-btn"
+                        scope="public_profile,email, user_birthday"
+                        onlogin="checkLoginState();">
+                        </fb:login-button>
+                        <script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="backendstartbot" data-size="small" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                      </div>
+                        <% } %>
+
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% messages.forEach(message=> { %>
+                    <tr>
+                        <td><%=message.name%></td>
+                        <td id="<%=message.id%>"><%= message.message %></td>
+                        <% if ((user) && (message.author== (user['facebookId'] || user['telegramId']))) { %>
+                        <td>
+                            <button class="edit" onClick="updateButtonEdit(this.id)" id=<%=message.id%> title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></button>
+                            <button class="delete" onClick="deleteButton(this.id)" id=<%=message.id%> id="dlldldl" title="Delete" data-toggle="tooltip" ><i class="material-icons">&#xE872;</i></button>
+                        </td>
+                        <% } %> 
+                    </tr>
+                    <% }) %>
+    
+                </tbody>    
+            </table>
+        </div>
+    </div>
+</div>     
+
+<script>
+    function onTelegramAuth(user) {
+        fetch('/telegramlogin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({user})
+                })
+                .then(() => location.reload())
+                .catch(err => console.log(err))
+    }
+
+    const logoutUser = async () => {
+        await logout();
+        fetch('/logout', {
+            method: 'GET',         
+        })
+        .then(() => location.reload())
+        .catch(err => console.log(err)) 
+        
+    }
+
+    const deleteButton = (clicked_id) => {
+        fetch('/', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: clicked_id})
+        })
+        .then(() => location.reload())
+        .catch(err => console.log(err))
+    }
+
+    const updateButtonEdit = (clicked_id) => {
+        var input = document.createElement('input')
+        var button = document.createElement('button')
+        input.id = button.id = clicked_id
+        button.innerHTML = '<i class="material-icons icon-green">&#xE876;</i>'
+        input.style.cssText = 'margin-top:3.5%;width:100%;height:10%'
+        var origin = document.querySelector(`td[id='${clicked_id}']`)
+        var originButton = document.querySelector(`button[id='${clicked_id}']`)
+        origin.parentNode.replaceChild(input, origin)
+        originButton.parentNode.replaceChild(button, originButton)
+        updateButtonSubmit(clicked_id)
+    }
+
+
+
+    const updateButtonSubmit = (clicked_id) => {
+
+        const button = document.querySelector(`button[id='${clicked_id}']`)
+        button.addEventListener('click', (e) => {
+            const value = document.querySelector(`input[id='${clicked_id}']`).value
+            fetch('/', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id: clicked_id, message: value})
+            })
+            .then(() => location.reload())
+            .catch(err => console.log(err))
+        })
+        
+    }
+
+
+
+    window.fbAsyncInit = function() {
+        console.log('async init why')
+    FB.init({
+        appId      : '1567347070139156',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v10.0'
+    });
+        
+    FB.getLoginStatus(function(response) {
+        console.log('why')
+        //statusChangeCallback(response);
+    });   
+    };
+
+    (function(d, s, id){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function statusChangeCallback (response) {
+        if (response.status === 'connected') {
+            console.log(1)
+            
+            FB.api('/me?fields=name,email', function (userData) {
+            if (userData && !userData.error) {
+                console.log(2)
+
+                fetch('/facebooklogin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({response, name: userData.name})
+                })
+                .then(() => location.reload())
+                .catch(err => console.log(err))
+            console.log('logged in and auth')
+                console.log(userData)
+            }
+            })
+
+            
+
+        } else {
+            console.log('not auth..ed')
+        }
+    }
+
+    
+  
+    function checkLoginState() {
+        console.log('whywhywhy')
+    FB.getLoginStatus(function(response) {
+        console.log(3)
+
+        statusChangeCallback(response);
+    });
+    }
+
+    function logout () {
+        FB.logout(function (response) {
+            setElemets(false)
+        })
+    }
+</script>

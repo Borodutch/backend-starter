@@ -30,7 +30,7 @@ export const app = new Koa()
     app.use(serve('./public'))
     
     render(app, {
-      root: path.join(__dirname, 'views'),
+      root: path.join(__dirname, '..', 'public'),
       layout: 'layout',
       viewExt: 'html',
       cache: false,
