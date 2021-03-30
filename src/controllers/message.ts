@@ -1,5 +1,5 @@
 import { MessageModel } from '@/models/message'
-import { getOrCreateUser } from '@/models/user'
+import { UserModel } from '@/models/user'
 import { Context } from 'koa'
 import { Controller, Ctx, Get, Post, Put, Delete } from 'koa-ts-controllers'
 
@@ -28,11 +28,8 @@ export default class MessageController {
   @Post('/add')
   async postMessage(@Ctx() ctx: Context) {
     try {
-      const user = await getOrCreateUser({
-        telegramId: ctx.request.body.telegramId,
-        facebookId: ctx.request.body.facebookId,
-        email: ctx.request.body.email,
-        name: ctx.request.body.name,
+      const user = await UserModel.findOne({
+        token: ctx.headers.token.toString(),
       })
       const message = await new MessageModel({
         author: user,
@@ -47,7 +44,11 @@ export default class MessageController {
   @Put('/:id')
   async putMessage(@Ctx() ctx: Context) {
     try {
-      await MessageModel.findByIdAndUpdate(ctx.params.id, {
+      const message = await checkAuth(
+        ctx.headers.token.toString(),
+        ctx.params.id
+      )
+      await message.updateOne({
         title: ctx.request.body.title,
         body: ctx.request.body.body,
       })
@@ -59,9 +60,23 @@ export default class MessageController {
   @Delete('/:id')
   async deleteMessage(@Ctx() ctx: Context) {
     try {
-      await MessageModel.findByIdAndDelete(ctx.params.id)
+      const message = await checkAuth(
+        ctx.headers.token.toString(),
+        ctx.params.id
+      )
+      await MessageModel.deleteOne(message)
     } catch (err) {
       console.log(err)
     }
+  }
+}
+
+async function checkAuth(token: string, messageId: string) {
+  const user = await UserModel.findOne({ token: token })
+  const message = await MessageModel.findById(messageId)
+  if (user.token === message.author.token) {
+    return message
+  } else {
+    throw 'invalid auth'
   }
 }
