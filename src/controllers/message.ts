@@ -16,6 +16,9 @@ import { authMiddleware } from '@/middlewares/authMiddleware'
 export default class MessageController {
   @Get('/')
   async getAllMessages(@Ctx() ctx: Context) {
+    if (typeof ctx.headers.token !== 'string') {
+      return ctx.throw(401, 'Invalid token')
+    }
     const user = await UserModel.findOne({
       token: ctx.headers.token,
     })
@@ -34,6 +37,9 @@ export default class MessageController {
 
   @Post('/add')
   async postMessage(@Ctx() ctx: Context, next) {
+    if (typeof ctx.headers.token !== 'string') {
+      return ctx.throw(401, 'Invalid token')
+    }
     const user = await UserModel.findOne({
       token: ctx.headers.token,
     })
