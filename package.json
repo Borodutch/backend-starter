@@ -40,7 +40,6 @@
     "class-validator": "^0.13.1",
     "dotenv": "^8.2.0",
     "facebook-node-sdk": "^0.2.0",
-    "global": "^4.4.0",
     "http-graceful-shutdown": "^3.0.1",
     "joi": "^17.4.0",
     "js-yaml": "^4.0.0",
