@@ -11,36 +11,11 @@ import {
 } from 'koa-ts-controllers'
 import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
-import { getOrCreateUser, User } from '@/models/user'
-import { verify } from '@/helpers/jwt'
-
-async function authMiddleware(ctx: Context, next) {
-  const token = ctx.headers['authorization']
-
-  if (!token) {
-    return ctx.throw(401, "You're not logged in")
-  }
-  try {
-    const payload = (await verify(token)) as User
-
-    const { name, email, facebookId, telegramId } = payload
-
-    ctx.state.user = await getOrCreateUser({
-      name,
-      email,
-      facebookId,
-      telegramId,
-    })
-
-    await next()
-  } catch (err) {
-    return ctx.throw(err)
-  }
-}
+import { authMiddleware } from '@/middleware/middleware'
 
 @Controller('/message')
 export default class MessageController {
-  @Post('/save')
+  @Post('/')
   @Flow(authMiddleware)
   async createMessage(@Body('body') body: string, @Ctx() ctx: Context) {
     const user = ctx.state.user
@@ -49,26 +24,25 @@ export default class MessageController {
         body: body,
         user: user._id,
       })
-      console.log(message.user)
       return message
     } catch (error) {
-      return ctx.throw(400, 'Failed to add message')
+      return ctx.throw(500, 'Failed to add message')
     }
   }
 
-  @Get('/read')
+  @Get('/')
   @Flow(authMiddleware)
   async getMessages(@Ctx() ctx: Context) {
-    const user = ctx.state.user.id
+    const user = ctx.state.user
     try {
       const userMessages = await MessageModel.find({ user: user._id })
       return userMessages
     } catch (error) {
-      return ctx.throw(400, 'Failed to read messages')
+      return ctx.throw(500, 'Failed to read messages')
     }
   }
 
-  @Delete('/del/:id')
+  @Delete('/:id')
   @Flow(authMiddleware)
   async deleteMessage(@Params('id') id: string, @Ctx() ctx: Context) {
     const user = ctx.state.user
@@ -79,11 +53,11 @@ export default class MessageController {
       })
       ctx.status = 200
     } catch (error) {
-      return ctx.throw(400, 'Failed to delete message')
+      return ctx.throw(500, 'Failed to delete message')
     }
   }
 
-  @Put('/upd/:id')
+  @Put('/:id')
   @Flow(authMiddleware)
   async updateMessage(
     @Params('id') id: string,
@@ -103,7 +77,7 @@ export default class MessageController {
       )
       ctx.status = 200
     } catch (error) {
-      return ctx.throw(400, 'Failed to edit message')
+      return ctx.throw(500, 'Failed to edit message')
     }
   }
 }
