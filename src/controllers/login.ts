@@ -7,6 +7,18 @@ import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
 @Controller('/login')
 export default class LoginController {
+  @Post('/')
+  async email(@Ctx() ctx: Context) {
+    const data = ctx.request.body
+
+    //имя == email для тестов
+    const user = await getOrCreateUser({
+      name: data.email,
+      email: data.email,
+    })
+    return user.strippedAndFilled(true)
+  }
+
   @Post('/facebook')
   async facebook(@Ctx() ctx: Context) {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)

@@ -1,43 +1,51 @@
-import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose';
+import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
 
 export class Message {
   @prop({ index: true, required: true })
-  text?: string;
+  userId: string
+
+  @prop({ index: true, required: true })
+  text: string
 
   // Mongo property
-  _doc: any;
+  _doc: any
 }
 
 export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
-});
+})
 
-export async function addMessage(messageText: string) {
-  let message: DocumentType<Message> | undefined;
+export async function addMessage(userId: string, messageText: string) {
+  let message: DocumentType<Message> | undefined
 
   message = await new MessageModel({
+    userId,
     text: messageText,
-  }).save();
+  }).save()
 
-  return message;
+  return message
 }
 
-export async function deleteMessage(id: string) {
-  return await MessageModel.findByIdAndDelete(id);
+export async function deleteMessage(userId: string, id: string) {
+  return MessageModel.findOneAndDelete({ _id: id, userId })
 }
 
-export async function updateMessage(id: string, messageText: string) {
-  return await MessageModel.findByIdAndUpdate(
+export async function updateMessage(
+  id: string,
+  userId: string,
+  messageText: string
+) {
+  return MessageModel.findByIdAndUpdate(
     id,
-    { text: messageText },
+    { userId, text: messageText },
     { new: true, useFindAndModify: false }
-  );
+  )
 }
 
-export async function getMessages() {
-  return await MessageModel.find();
+export async function getMessages(userId: string) {
+  return MessageModel.find({ userId })
 }
 
-export async function getMessage(id: string) {
-  return await MessageModel.findById(id);
+export async function getMessage(userId: string, id: string) {
+  return MessageModel.findOne({ _id: id, userId })
 }
