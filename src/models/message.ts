@@ -1,18 +1,17 @@
-import { prop, getModelForClass } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+import { User, UserModel } from './user';
 
 export class Message {
-    @prop({ required: true })
-    note?: string
-      
-    // Mongo property
-    _doc: any
-  }
-  
-  export const MessageModel = getModelForClass(Message, {
-    schemaOptions: { timestamps: true },
-  })
-  
-  interface MessageOptions {
-    note?: string
-    
-  }
+  @prop({ ref: () => User, required: true, index: true })
+  userId?: string;
+
+  @prop({ required: true })
+  note?: string;
+
+  // Mongo property
+  _doc: any;
+}
+
+export const MessageModel = getModelForClass(Message, {
+  schemaOptions: { timestamps: true },
+});
