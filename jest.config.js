@@ -4,6 +4,7 @@ module.exports = {
     '@/(.*)': '<rootDir>/src/$1',
   },
   preset: 'ts-jest',
+  setupFiles: ['dotenv/config'],
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],
   testPathIgnorePatterns: ['testUtils'],

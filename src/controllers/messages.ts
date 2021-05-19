@@ -56,6 +56,13 @@ export default class MessageController {
     }
   }
 
+  // List of all messages - cheat for tests
+  @Get('/messagesCheat')
+  async messagesCheat(@Ctx() ctx: Context) {
+    const msgList: any = await MessageModel.find()
+    return msgList
+  }
+
   // Read (find) message by ID
   @Get('/:id')
   async messageRead(@Params() params: any, @Ctx() ctx: Context) {
