@@ -1,49 +1,58 @@
-import { Body, Controller, Get, Post, Put, Delete, Flow } from 'koa-ts-controllers'
-import authMiddleware from '@/middleware/authMiddleware';
-import { MessageModel } from '@/models/message';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Flow,
+  Ctx,
+} from 'koa-ts-controllers'
+import authMiddleware from '@/middleware/authMiddleware'
+import { MessageModel } from '@/models/message'
+import { Context } from 'koa'
 
 @Controller('/messages')
-@Flow([ authMiddleware ]) // // for Users only
-export default class MesagesController {
+@Flow([authMiddleware])
+export default class MessagesController {
   @Get('/')
-  async listMessages() {    
-    return await MessageModel.find()
+  async listMessages(@Ctx() ctx: Context) {
+    return MessageModel.find({ authorId: ctx.state.user._id })
   }
 
   @Post('/')
-  async postMessage(
-    @Body('content') content: string  
-  ) {
+  async postMessage(@Ctx() ctx: Context) {
     const message = await new MessageModel({
-      content
+      authorId: ctx.state.user._id,
+      content: ctx.request.body.content,
     }).save()
-    return { 
+    return {
       response: 'message posted',
-      message
+      message,
     }
   }
 
   @Put('/')
-  async updateMessage(
-    @Body('_id') _id: string,
-    @Body('content') content: string
-  ) {
-    const message = await MessageModel.findById(_id)
-    message.content = content 
-    
+  async updateMessage(@Ctx() ctx: Context) {
+    const originalMessage = await MessageModel.findOneAndUpdate(
+      {
+        _id: ctx.request.body._id,
+        authorId: ctx.state.user._id,
+      },
+      {
+        $set: {
+          content: ctx.request.body.content,
+        },
+      }
+    )
+
     return {
       response: 'message updated',
-      message: await message.save()
+      originalMessage,
     }
   }
 
   @Delete('/')
-  async deleteMessage(
-    @Body('_id') _id: string
-  ) {
-    await MessageModel.deleteOne({ _id })
-    return {
-      response: 'message deleted',
-    }
+  async deleteMessage(@Ctx() ctx: Context) {
+    await MessageModel.deleteOne({ _id: ctx.request.body._id })
   }
 }
