@@ -16,13 +16,15 @@ import { Context } from 'koa'
 export default class MessagesController {
   @Get('/')
   async listMessages(@Ctx() ctx: Context) {
-    return MessageModel.find({ authorId: ctx.state.user._id })
+    console.log(ctx.state.user)
+
+    return MessageModel.find({ author: ctx.state.user })
   }
 
   @Post('/')
   async postMessage(@Ctx() ctx: Context) {
     const message = await new MessageModel({
-      authorId: ctx.state.user._id,
+      author: ctx.state.user,
       content: ctx.request.body.content,
     }).save()
     return {
@@ -33,26 +35,33 @@ export default class MessagesController {
 
   @Put('/')
   async updateMessage(@Ctx() ctx: Context) {
-    const originalMessage = await MessageModel.findOneAndUpdate(
-      {
-        _id: ctx.request.body._id,
-        authorId: ctx.state.user._id,
-      },
-      {
-        $set: {
-          content: ctx.request.body.content,
-        },
-      }
-    )
+    const message = await MessageModel.findOne({
+      _id: ctx.request.body._id,
+      author: ctx.state.user,
+    })
+    if (!message) {
+      ctx.status = 403
+      return { error: 'Forbidden' }
+    }
+
+    message.content = ctx.request.body.content
+    await message.save()
 
     return {
       response: 'message updated',
-      originalMessage,
+      message,
     }
   }
 
   @Delete('/')
   async deleteMessage(@Ctx() ctx: Context) {
-    await MessageModel.deleteOne({ _id: ctx.request.body._id })
+    const { deletedCount } = await MessageModel.deleteOne({
+      _id: ctx.request.body._id,
+      author: ctx.state.user,
+    })
+    if (deletedCount === 0) {
+      ctx.status = 403
+      return { error: 'Forbidden' }
+    }
   }
 }

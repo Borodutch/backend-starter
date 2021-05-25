@@ -1,8 +1,9 @@
-import { prop, getModelForClass } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
+import { User } from './user'
 
 export class Message {
-  @prop({ required: true, index: true })
-  authorId: string
+  @prop({ required: true, index: true, ref: User })
+  author: Ref<User>
   @prop({ required: true })
   content: string
 }
