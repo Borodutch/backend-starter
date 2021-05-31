@@ -1,5 +1,5 @@
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
-import { User } from './user'
+import { User } from '@/models/user'
 
 export class Message {
   @prop({ required: true, index: true, ref: User })

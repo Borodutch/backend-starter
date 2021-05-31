@@ -1,7 +1,6 @@
 import { Context } from 'koa'
 import { verify } from '@/helpers/jwt'
-import { UserModel } from '../models/user'
-
+import { UserModel } from '@/models/user'
 
 export default async (ctx: Context, next) => {
     try {
@@ -11,6 +10,5 @@ export default async (ctx: Context, next) => {
     }catch (error){
         ctx.status = 404
         ctx.body = { error: 'Unauthorized' }
-        console.log(error, 'error in auth middlware');
    }
 }
