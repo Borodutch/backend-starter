@@ -6,7 +6,7 @@ import {
   addMessage,
   updateMessageById,
   deleteMessageById,
-} from '@/models/msg'
+} from '@/models/message'
 import { auth } from '@/middleware/auth'
 
 @Flow(auth)
@@ -14,26 +14,26 @@ import { auth } from '@/middleware/auth'
 export default class MessageController {
   @Get('/')
   async getMessages(@Ctx() ctx: Context) {
-    return await getMessages(ctx.state.user._id)
+    return getMessages(ctx.state.user)
   }
 
   @Get('/:id')
   async getMessage(@Ctx() ctx: Context) {
-    return await getMessageById(ctx.state.user._id, ctx.params.id)
+    return await getMessageById(ctx.state.user, ctx.params.id)
   }
 
   @Post('/')
   async createMessage(@Ctx() ctx: Context) {
-    return addMessage(ctx.state.user._id, ctx.state.text)
+    return addMessage(ctx.state.user, ctx.state.text)
   }
 
   @Put('/')
   async updateMessage(@Ctx() ctx: Context) {
-    return updateMessageById(ctx.state.user._id, ctx.state.id, ctx.state.text)
+    return updateMessageById(ctx.state.user, ctx.state.id, ctx.state.text)
   }
 
   @Delete('/:id')
   async deleteMessage(@Ctx() ctx: Context) {
-    return await deleteMessageById(ctx.state.user._id, ctx.params.id)
+    return await deleteMessageById(ctx.state.user, ctx.params.id)
   }
 }
