@@ -7,84 +7,82 @@ import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
 @Controller('/login')
 export default class LoginController {
-    @Post('/facebook')
-    async facebook(@Ctx() ctx: Context) {
-        const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
-        const user = await getOrCreateUser({
-            name: fbProfile.name,
+  @Post('/facebook')
+  async facebook(@Ctx() ctx: Context) {
+    const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
+    const user = await getOrCreateUser({
+      name: fbProfile.name,
 
-            email: fbProfile.email,
-            facebookId: fbProfile.id,
-        })
-        return user.strippedAndFilled(true)
+      email: fbProfile.email,
+      facebookId: fbProfile.id,
+    })
+    return user.strippedAndFilled(true)
+  }
+
+  @Post('/telegram')
+  async telegram(@Ctx() ctx: Context) {
+    const data = ctx.request.body
+    // verify the data
+    if (!verifyTelegramPayload(data)) {
+      return ctx.throw(403)
     }
 
-    @Post('/telegram')
-    async telegram(@Ctx() ctx: Context) {
-        const data = ctx.request.body
-        // verify the data
-        if (!verifyTelegramPayload(data)) {
-            return ctx.throw(403)
-        }
+    const user = await getOrCreateUser({
+      name: `${data.first_name}${data.last_name ? ` ${data.last_name}` : ''}`,
+      telegramId: data.id,
+    })
+    return user.strippedAndFilled(true)
+  }
 
-        const user = await getOrCreateUser({
-            name: `${data.first_name}${
-                data.last_name ? ` ${data.last_name}` : ''
-            }`,
-            telegramId: data.id,
-        })
-        return user.strippedAndFilled(true)
-    }
+  @Post('/google')
+  async google(@Ctx() ctx: Context) {
+    const accessToken = ctx.request.body.accessToken
 
-    @Post('/google')
-    async google(@Ctx() ctx: Context) {
-        const accessToken = ctx.request.body.accessToken
+    const userData: any =
+      process.env.TESTING === 'true'
+        ? testingGoogleMock()
+        : (
+            await axios(
+              `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
+            )
+          ).data
 
-        const userData: any =
-            process.env.TESTING === 'true'
-                ? testingGoogleMock()
-                : (
-                      await axios(
-                          `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
-                      )
-                  ).data
+    const user = await getOrCreateUser({
+      name: userData.name,
 
-        const user = await getOrCreateUser({
-            name: userData.name,
+      email: userData.email,
+    })
+    return user.strippedAndFilled(true)
+  }
 
-            email: userData.email,
-        })
-        return user.strippedAndFilled(true)
-    }
-
-    @Post('/email')
-    async email(@Ctx() ctx: Context) {
-        const name = ctx.request.body.name
-        const email = ctx.request.body.email
-        const user = await getOrCreateUser({
-            name: name,
-            email: email,
-        })
-        return user.strippedAndFilled(true)
-    }
+  @Post('/email')
+  async email(@Ctx() ctx: Context) {
+    const name = ctx.request.body.name
+    const email = ctx.request.body.email
+    const user = await getOrCreateUser({
+      name: name,
+      email: email,
+    })
+    return user.strippedAndFilled(true)
+  }
 }
 
 function getFBUser(accessToken: string) {
-    return new Promise((res, rej) => {
-        const fb = new Facebook({
-            appID: process.env.FACEBOOK_APP_ID,
-            secret: process.env.FACEBOOK_APP_SECRET,
-        })
-        fb.setAccessToken(accessToken)
-        fb.api('/me?fields=name,email,id', (err, user) => {
-            return err ? rej(err) : res(user)
-        })
+  return new Promise((res, rej) => {
+    const fb = new Facebook({
+      appID: process.env.FACEBOOK_APP_ID,
+      secret: process.env.FACEBOOK_APP_SECRET,
     })
+    fb.setAccessToken(accessToken)
+    fb.api('/me?fields=name,email,id', (err, user) => {
+      return err ? rej(err) : res(user)
+    })
+  })
 }
 
 function testingGoogleMock() {
-    return {
-        name: 'Alexander Brennenburg',
-        email: 'alexanderrennenburg@gmail.com',
-    }
+  return {
+    name: 'Alexander Brennenburg',
+    email: 'alexanderrennenburg@gmail.com',
+  }
 }
