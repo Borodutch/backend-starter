@@ -4,10 +4,13 @@ import { getOrCreateUser } from '@/models/user'
 
 export async function auth(ctx: Context, next) {
   try {
-    const payload = await verify(ctx.headers.token as string)
+    const payload = (await verify(ctx.headers.token as string)) as {
+      name: string
+      email: string
+    }
     ctx.state.user = await getOrCreateUser({
-      name: payload['name'],
-      email: payload['email'],
+      name: payload.name,
+      email: payload.email,
     })
     return next()
   } catch (e) {
