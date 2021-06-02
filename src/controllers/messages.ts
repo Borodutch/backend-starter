@@ -57,7 +57,7 @@ export default class MessagesController {
       author: ctx.state.user,
     });
     if (deletedCount === 0) {
-      ctx.throw(404, 'Page not found');
+      ctx.throw(404, 'Message not found');
     }
   }
 }
