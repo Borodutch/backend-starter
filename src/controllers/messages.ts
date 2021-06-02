@@ -38,7 +38,7 @@ export default class MessagesController {
       author: ctx.state.user,
     });
     if (!message) {
-      ctx.throw(404, 'Page not found');
+      ctx.throw(404, 'Message not found');
     }
 
     message.content = ctx.request.body.content;

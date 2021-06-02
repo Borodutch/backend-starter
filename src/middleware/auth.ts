@@ -8,7 +8,7 @@ export default async (ctx: Context, next) => {
     await verify(token);
     ctx.state.user = await UserModel.findOne({ token });
   } catch (error) {
-    ctx.status = 404;
+    ctx.status = 403;
     ctx.body = { error: 'Unauthorized' };
   }
 };
