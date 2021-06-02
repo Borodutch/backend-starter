@@ -16,8 +16,6 @@ import { Context } from 'koa'
 export default class MessagesController {
   @Get('/')
   async listMessages(@Ctx() ctx: Context) {
-    console.log(ctx.state.user)
-
     return MessageModel.find({ author: ctx.state.user })
   }
 
