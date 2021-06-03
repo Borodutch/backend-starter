@@ -17,5 +17,5 @@ runMongo().then(() => {
 })
 // Start rest
 app.listen(1337).on('listening', () => {
-  console.log('HTTP is listening on 1337')
+  console.log('-- HTTP is listening on 1337 http://localhost:1337')
 })
