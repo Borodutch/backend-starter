@@ -15,6 +15,7 @@ import { runMongo } from '@/models/index'
 runMongo().then(() => {
   console.log('Mongo connected')
 })
+
 // Start rest
 app.listen(1337).on('listening', () => {
   console.log('HTTP is listening on 1337')

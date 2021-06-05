@@ -5,9 +5,10 @@ export function runMongo(mongoUrl = process.env.MONGO) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: true,
+    useFindAndModify: false,
   })
 }
+
 export function stopMongo() {
   return mongoose.disconnect()
 }
