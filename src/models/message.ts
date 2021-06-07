@@ -9,16 +9,9 @@ export class Message {
   name: string
 
   // Mongo property
-  _doc: any
+  //_doc: any
 }
 
 export const MessageModel = getModelForClass(Message, {
-  schemaOptions: { timestamps: true },
+  schemaOptions: { timestamps: true }
 })
-
-export async function getOrCreateUser(message: Message) {
-  if (!message.name) {
-    throw new Error()
-  }
-  return message
-}

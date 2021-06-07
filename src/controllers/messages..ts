@@ -1,8 +1,10 @@
 import { Context } from 'koa';
 import { Controller, Ctx, Post, Get, Params, Delete, Body } from 'amala';
+import { Message, MessageModel, } from '@/models/message';
+import { DocumentType } from '@typegoose/typegoose';
 
 interface backResponce {
-  message?: string;
+  message?: any;
   id?: number;
   body?: object;
 }
@@ -12,16 +14,21 @@ export default class MessageController {
   
   @Get('/message')
   async getMessages() {
+    const msg: DocumentType<Message>[] = await MessageModel.find()
+
     const result: backResponce = {
-      message: 'Show all messages'
+      message: msg
     };
     return result;
   }
 
   @Post('/message')
   async createMessage(@Ctx() ctx: Context) {
+    let text = 'NEW LINERR'
+    let msg: DocumentType<Message> = await MessageModel.create({ name: 'SomeCat', message: text })
+
     const result: backResponce = {
-      message: 'Create a new message',
+      message: msg,
       body: ctx.request.body,
     };
     return result;
