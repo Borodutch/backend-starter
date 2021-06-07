@@ -5,7 +5,7 @@ export function runMongo(mongoUrl = process.env.MONGO) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false,
+    useFindAndModify: true,
   })
 }
 
