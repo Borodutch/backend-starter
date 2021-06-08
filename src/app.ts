@@ -27,22 +27,22 @@ export const app = new Koa()
     const messageHandler = new MessageController();
     // Create a new message
     // Example http://127.0.0.1:1337/message?body=test&createdBy=Nick
-    router.post('/message', messageHandler.createMessage)
+    router.post('/message', messageHandler.create)
 
     // Get a message
     // Example http://127.0.0.1:1337/message/60bb41a4d4a24632a81a697b
-    router.get('/message/:id', messageHandler.getMessage)
+    router.get('/message/:id', messageHandler.getOne)
 
     // Get all messages
-    router.get('/messages', messageHandler.getAllMessages)
+    router.get('/messages', messageHandler.getAll)
 
     // Update a message
     // Example http://127.0.0.1:1337/message/60bb3e3cb0c4dc2fa17a8b65?body=message
-    router.patch('/message/:id', messageHandler.updateMessage)
+    router.patch('/message/:id', messageHandler.update)
 
     // Delete a message
     // Example: http://127.0.0.1:1337/message/60bb568c9ca14e127590375c
-    router.delete('/message/:id', messageHandler.deleteMessage)
+    router.delete('/message/:id', messageHandler.delete)
 
   } catch (err) {
     console.log('Koa app starting error: ', err)
