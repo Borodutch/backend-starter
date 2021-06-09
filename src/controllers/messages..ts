@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { Controller, Ctx, Post, Get, Params, Delete, Body } from 'amala';
-import { Message, MessageModel, } from '@/models/messageModel';
+import { Message, MessageModel, } from '@/models/message';
 import { DocumentType } from '@typegoose/typegoose';
 
 const CURREN_USER_NAME = 'user'
