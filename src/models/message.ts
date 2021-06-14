@@ -23,69 +23,58 @@ export async function createMessage(messageOptions: MessageOptions) {
     body: messageOptions.body,
     createdBy: messageOptions.createdBy
   })
-
-  await message.save()
-    .then((result) => {
-      return message;
-    })
-    .catch((err) => {
-      console.log(err) 
-    })
+  try {
+    await message.save()
+    return message;
+  } catch(err) {
+    console.log(err) 
+  }
 }
 
 export async function getAllMessages() {
-  console.log('inside model')
-  
-  await MessageModel.find()
-    .then((result) => {
-      console.log('inside model, before return')
-      console.log(result)
-      return result
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  try {
+    return await MessageModel.find()
+  } catch(err) {
+    console.log(err)
+  }
 }
 
 export async function getMessage(id: string) {
-  await MessageModel.findById(id)
-    .then((result) => {
-      return result
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  try {
+    return await MessageModel.findById(id)
+  } catch(err) {
+    console.log(err)
+  }
 }
 
 export async function updateMessage(id: string, data: any){
   let message: DocumentType<Message> | undefined
-  message = await MessageModel.findById(id)
-    .then(() => {
-      if (data.body) {
-        //message.body = data.body
-        console.log(`new message body is ${data.body}`)
-      }
-      if (data.createdBy) {
-        //message.createdBy = data.createdBy
-        console.log(`new message crreator is ${data.createdBy}`)
-      }
-    })
+  try {
+    message = await MessageModel.findById(id)
+    if (data.body) {
+      message.body = data.body
+      console.log(`new message body is ${data.body}`)
+    }
+    if (data.createdBy) {
+      message.createdBy = data.createdBy
+      console.log(`new message crreator is ${data.createdBy}`)
+    }
+
+    try {
+      return await message.save()
+    } catch(err) {
+      console.log(err)
+    }
     
-    await message.save()
-      .then((result) => {
-        return result
-      })
-      .catch((err) => {
-        console.log(err) 
-      })
+  } catch(err) {
+    console.log(err)
+  }
 }
 
 export async function deleteMessage(id: string) {
-  await MessageModel.findByIdAndDelete(id)
-    .then((result) => {
-      return result
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  try {
+    return await MessageModel.findByIdAndDelete(id)
+  } catch(err) {
+    console.log(err)
+  }
 }
