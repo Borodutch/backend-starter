@@ -8,8 +8,6 @@ import { Server } from 'http'
 import { completeUser, dropMongo, startKoa, stopServer } from './testUtils'
 import { UserModel } from '@/models/user'
 
-const mongoServer = new MongoMemoryServer()
-
 describe('Login endpoint', () => {
   const axiosMock = new MockAdapter(axios)
 
