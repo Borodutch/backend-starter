@@ -1,4 +1,4 @@
-import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
+import { prop, getModelForClass, DocumentType } from "@typegoose/typegoose"
 
 export class Message {
   @prop()
@@ -12,7 +12,7 @@ export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-interface MessageOptions  {
+interface MessageOptions {
   body: string | string[]
   createdBy: string | string[]
 }
@@ -21,20 +21,20 @@ export async function createMessage(messageOptions: MessageOptions) {
   let message: DocumentType<Message> | undefined
   message = new MessageModel({
     body: messageOptions.body,
-    createdBy: messageOptions.createdBy
+    createdBy: messageOptions.createdBy,
   })
   try {
     await message.save()
-    return message;
-  } catch(err) {
-    console.log(err) 
+    return message
+  } catch (err) {
+    console.log(err)
   }
 }
 
 export async function getAllMessages() {
   try {
     return await MessageModel.find()
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
@@ -42,12 +42,12 @@ export async function getAllMessages() {
 export async function getMessage(id: string) {
   try {
     return await MessageModel.findById(id)
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
 
-export async function updateMessage(id: string, data: any){
+export async function updateMessage(id: string, data: any) {
   let message: DocumentType<Message> | undefined
   try {
     message = await MessageModel.findById(id)
@@ -62,11 +62,10 @@ export async function updateMessage(id: string, data: any){
 
     try {
       return await message.save()
-    } catch(err) {
+    } catch (err) {
       console.log(err)
     }
-    
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
@@ -74,7 +73,7 @@ export async function updateMessage(id: string, data: any){
 export async function deleteMessage(id: string) {
   try {
     return await MessageModel.findByIdAndDelete(id)
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
