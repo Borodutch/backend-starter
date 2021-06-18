@@ -1,8 +1,8 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
 
-export class Messages {
+class Messages {
     @prop({ required: true, index: true })     
-    messages?: string 
+    messages?: string
 }   
-export const MessagesModel = getModelForClass(Messages, 
+export const MsgsModel = getModelForClass(Messages, 
     { schemaOptions: { timestamps: true }, })
