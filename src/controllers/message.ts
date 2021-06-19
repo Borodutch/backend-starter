@@ -6,61 +6,59 @@ import {
   updateMessage,
   deleteMessage,
 } from '@/models/message'
-import { Controller, Ctx, Post, Get, Patch, Delete } from 'koa-ts-controllers'
+import { Controller, Post, Get, Patch, Delete, Params, Query } from 'amala'
 
+@Controller('/message')
 export default class MessageController {
-  @Post('/message')
-  async create(@Ctx() ctx: Context) {
+  @Post('/')
+  async create(
+    @Params('id') id: string,
+    @Query('body') body: string,
+    @Query('createdBy') createdBy: string
+  ) {
     try {
-      const message = await createMessage({
-        body: ctx.query.body,
-        createdBy: ctx.query.createdBy,
-      })
-      return message
+      return await createMessage({ body, createdBy })
     } catch (err) {
       console.log(err)
     }
   }
 
-  @Get('/message/:id')
-  async getOne(@Ctx() ctx: Context) {
+  @Get('/:id')
+  async getOne(@Params('id') id: string) {
     try {
-      const message = await getMessage(ctx.params.id)
-      return message
+      return await getMessage(id)
     } catch (err) {
       console.log(err)
     }
   }
 
-  @Get('/messages')
+  @Get('/all')
   async getAll() {
     try {
-      const messages: any = await getAllMessages()
-      return messages
+      return await getAllMessages()
     } catch (err) {
       console.log(err)
     }
   }
 
-  @Patch('/message/:id')
-  async update(@Ctx() ctx: Context) {
-    const newMessageData = {
-      body: ctx.query.body,
-      createdBy: ctx.query.createdBy,
-    }
+  @Patch('/:id')
+  async update(
+    @Params('id') id: string,
+    @Query('body') body: string,
+    @Query('createdBy') createdBy: string
+  ) {
+    const newMessageData = { body, createdBy }
     try {
-      const newMessage = await updateMessage(ctx.params.id, newMessageData)
-      return newMessage
+      return await updateMessage(id, newMessageData)
     } catch (err) {
       console.log(err)
     }
   }
 
-  @Delete('/message/:id')
-  async delete(@Ctx() ctx: Context) {
+  @Delete('/:id')
+  async delete(@Params('id') id: string) {
     try {
-      const message = await deleteMessage(ctx.params.id)
-      return message
+      return await deleteMessage(id)
     } catch (err) {
       console.log(err)
     }

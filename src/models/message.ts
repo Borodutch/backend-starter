@@ -28,11 +28,13 @@ export async function createMessage(messageOptions: MessageOptions) {
 }
 
 export async function getAllMessages() {
-  return await MessageModel.find()
+  const messages = await MessageModel.find()
+  return messages
 }
 
 export async function getMessage(id: string) {
-  return await MessageModel.findById(id)
+  const message = await MessageModel.findById(id)
+  return message
 }
 
 export async function updateMessage(id: string, data: any) {
@@ -45,9 +47,11 @@ export async function updateMessage(id: string, data: any) {
     message.createdBy = data.createdBy
   }
 
-  return await message.save()
+  await message.save()
+  return message
 }
 
 export async function deleteMessage(id: string) {
-  return await MessageModel.findByIdAndDelete(id)
+  await MessageModel.findByIdAndDelete(id)
+  return `The message with id: ${id} is deleted`
 }
