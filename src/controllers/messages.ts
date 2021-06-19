@@ -1,5 +1,4 @@
-// import { Context } from 'koa'
-import { MsgsModel } from '@/models/msgModel'
+import { MsgsModel } from '@/models/message'
 import { Controller, Ctx, Get, Post, Put, Delete } from 'amala'
 
 @Controller('/message')
