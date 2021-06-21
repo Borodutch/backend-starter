@@ -1,29 +1,29 @@
-import { MsgsModel } from "@/models/message";
-import { Controller, Ctx, Get, Post, Put, Delete } from "amala";
+import { MessageModel } from '@/models/message'
+import { Controller, Get, Post, Put, Delete, Params, Body } from 'amala'
 
-@Controller("/message")
+@Controller('/message')
 export default class {
-  @Post("/create")
-  async create(@Ctx() ctx) {
-    const newMsg = new MsgsModel(ctx.request.body);
-    await newMsg.save();
+  @Post('/create')
+  async create(@Body() body) {
+    const newMsg = new MessageModel(body)
+    await newMsg.save()
   }
 
-  @Get("/read/:id")
-  async read(@Ctx() ctx) {
-    const someMsg = await MsgsModel.findById(ctx.params.id);
-    return someMsg;
+  @Get('/read/:id')
+  async read(@Params('id') id) {
+    const someMsg = await MessageModel.findById(id)
+    return someMsg
   }
 
-  @Put("/update/:id")
-  async update(@Ctx() ctx) {
-    await MsgsModel.findByIdAndUpdate(ctx.params.id, {
-      message: ctx.request.body,
-    });
+  @Put('/update/:id')
+  async update(@Body() body, @Params('id') id) {
+    await MessageModel.findByIdAndUpdate(id, {
+      message: body,
+    })
   }
 
-  @Delete("/delete/:id")
-  async delete(@Ctx() ctx) {
-    await MsgsModel.findByIdAndDelete(ctx.params.id);
+  @Delete('/delete/:id')
+  async delete(@Params('id') id) {
+    await MessageModel.findByIdAndDelete(id)
   }
 }
