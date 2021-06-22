@@ -4,7 +4,6 @@ import { User } from './user'
 export class Message {
   @prop({ required: true, index: true })
   body: string
-  author?: string //write function and remove '?'
 }
 
 export const MessageModel = getModelForClass(Message, {
