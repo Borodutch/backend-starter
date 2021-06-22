@@ -40,7 +40,7 @@ export class MessageController {
   async listMessages(@CurrentUser() user: User, @Ctx() ctx: Context) {
     try {
       const messages = await MessageModel.find({ author: user.name })
-      return (ctx.body = messages)
+      return messages
     } catch (error) {
       return ctx.throw(500, 'Unable to display your mesasges')
     }
