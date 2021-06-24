@@ -12,7 +12,7 @@ import { Context } from 'koa'
 class messageController {
   @Get('/')
   async messageList(@Ctx() ctx: Context) {
-    return (ctx.body = showAllMessages())
+    return showAllMessages()
   }
   @Post('/add')
   async messageAdd(@Ctx() ctx: Context) {
@@ -22,7 +22,7 @@ class messageController {
   @Get('/:id')
   async showSingleMessage(@Ctx() ctx: Context, @Params('id') id: string) {
     const messageId = ctx.params.id
-    return (ctx.body = findMessageById(messageId))
+    return findMessageById(messageId)
   }
   @Delete('/:id')
   async deleteSingleMessage(@Ctx() ctx: Context, @Params('id') id: string) {
