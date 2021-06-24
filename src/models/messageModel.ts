@@ -1,33 +1,53 @@
 import { getModelForClass, prop } from '@typegoose/typegoose'
-import { User } from './user'
 
 export class Message {
-  @prop({ required: true, index: true })
-  body: string
+  @prop({ required: true })
+  text: string
 }
 
 export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-export async function createMessage(body: string) {
-  const message = new MessageModel({ body: body }).save()
+export async function createMessage(text: string) {
+  try {
+    let message = await new MessageModel({ text }).save()
+    return message
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function showAllMessages() {
-  let messageList = MessageModel.find()
-  return messageList
+  try {
+    let messageList = await MessageModel.find()
+    return messageList
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function findMessageById(id: string) {
-  let message = MessageModel.findById(id)
-  return message
+  try {
+    let message = await MessageModel.findById(id)
+    return message
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function deleteMessageById(id: string) {
-  await MessageModel.findByIdAndDelete({ _id: id })
+  try {
+    await MessageModel.findByIdAndDelete({ _id: id })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-export async function updateMessage(id: string, body: string) {
-  await MessageModel.findByIdAndUpdate({ _id: id }, { body: body })
+export async function updateMessage(id: string, text: string) {
+  try {
+    await MessageModel.findByIdAndUpdate({ _id: id }, { text })
+  } catch (error) {
+    console.log(error)
+  }
 }
