@@ -10,44 +10,21 @@ export const MessageModel = getModelForClass(Message, {
 })
 
 export async function createMessage(text: string) {
-  try {
-    let message = await new MessageModel({ text }).save()
-    return message
-  } catch (error) {
-    console.log(error)
-  }
+  return await new MessageModel({ text }).save()
 }
 
-export async function showAllMessages() {
-  try {
-    let messageList = await MessageModel.find()
-    return messageList
-  } catch (error) {
-    console.log(error)
-  }
+export async function getMessages() {
+  return await MessageModel.find()
 }
 
 export async function findMessageById(id: string) {
-  try {
-    let message = await MessageModel.findById(id)
-    return message
-  } catch (error) {
-    console.log(error)
-  }
+  return await MessageModel.findById(id)
 }
 
 export async function deleteMessageById(id: string) {
-  try {
-    await MessageModel.findByIdAndDelete({ _id: id })
-  } catch (error) {
-    console.log(error)
-  }
+  await MessageModel.findByIdAndDelete({ _id: id })
 }
 
 export async function updateMessage(id: string, text: string) {
-  try {
-    await MessageModel.findByIdAndUpdate({ _id: id }, { text })
-  } catch (error) {
-    console.log(error)
-  }
+  await MessageModel.findByIdAndUpdate({ _id: id }, { text })
 }
