@@ -11,13 +11,3 @@ export const auth = async (ctx, next) => {
     await next()
   }
 }
-
-export const login = async (ctx) => {
-  const user = await MessageModel.findOne({ author: ctx.request.body })
-  if (!user) {
-    return 'user not found'
-  } else {
-    const token = jwt.sign({ user }, process.env.JWT)
-    ctx.headers['Authorization'] = 'Bearer ' + token
-  }
-}
