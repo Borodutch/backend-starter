@@ -7,7 +7,7 @@ export async function requireAuth(
   next: () => void | Promise<void>
 ) {
   try {
-    const token = ctx.cookies.get('authToken')
+    const token = ctx.headers.authorization as string
     const data = (await verify(token)) as User
     const { name, email, facebookId, telegramId } = data
 
@@ -18,7 +18,7 @@ export async function requireAuth(
       telegramId,
     })
 
-    return next()
+    await next()
   } catch (error) {
     return ctx.throw(401, 'Unauthorized')
   }

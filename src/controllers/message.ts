@@ -17,7 +17,7 @@ import { Context } from 'koa'
 import { User } from '@/models/user'
 
 @Controller('/messages')
-@Flow(requireAuth)
+@Flow([requireAuth])
 export class MessageController {
   @Post('/create')
   async createMessage(
@@ -27,7 +27,7 @@ export class MessageController {
   ) {
     try {
       const message = await MessageModel.create({
-        body: text,
+        text,
         author: user.name,
       })
       return message
@@ -47,7 +47,7 @@ export class MessageController {
   }
 
   @Get('/:id')
-  @Flow(isAuthor)
+  @Flow([isAuthor])
   async listSpecificMessage(@Params('id') id: string, @Ctx() ctx: Context) {
     try {
       const message = await MessageModel.findById(id)
@@ -58,7 +58,7 @@ export class MessageController {
   }
 
   @Put('/:id')
-  @Flow(isAuthor)
+  @Flow([isAuthor])
   async updateMessage(
     @Params('id') id: string,
     @Body('text') text: string,
@@ -66,20 +66,20 @@ export class MessageController {
   ) {
     try {
       const message = await MessageModel.findById(id)
-      message.body = text
+      message.text = text
       message.save()
-      ctx.redirect('/messages')
+      return message
     } catch (error) {
       return ctx.throw(500, 'Unable to update your message')
     }
   }
 
   @Delete('/:id')
-  @Flow(isAuthor)
+  @Flow([isAuthor])
   async deleteMessage(@Params('id') id: string, @Ctx() ctx: Context) {
     try {
       await MessageModel.deleteOne({ _id: id })
-      ctx.redirect('/messages')
+      return ctx.redirect('/messages')
     } catch (error) {
       return ctx.throw(500, 'Unable to delete your message')
     }

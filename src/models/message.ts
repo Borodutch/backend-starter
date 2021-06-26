@@ -3,10 +3,10 @@ import { User } from '@/models/user'
 
 class Message {
   @prop({ required: true })
-  body: string
+  text: string
 
   @prop({ required: true, ref: User })
-  author: Ref<User>
+  author: string
 }
 
 export const MessageModel = getModelForClass(Message, {
