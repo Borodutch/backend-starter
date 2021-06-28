@@ -9,22 +9,22 @@ export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-export async function createMessage(text: string) {
-  return await new MessageModel({ text }).save()
+export function createMessage(text: string) {
+  return new MessageModel({ text }).save()
 }
 
-export async function getMessages() {
-  return await MessageModel.find()
+export function getMessages() {
+  return MessageModel.find()
 }
 
-export async function findMessageById(id: string) {
-  return await MessageModel.findById(id)
+export function findMessageById(id: string) {
+  return MessageModel.findById(id)
 }
 
-export async function deleteMessageById(id: string) {
-  await MessageModel.findByIdAndDelete({ _id: id })
+export function deleteMessageById(id: string) {
+  return MessageModel.findByIdAndDelete({ _id: id })
 }
 
-export async function updateMessage(id: string, text: string) {
-  await MessageModel.findByIdAndUpdate({ _id: id }, { text })
+export function updateMessage(id: string, text: string) {
+  return MessageModel.findByIdAndUpdate({ _id: id }, { text })
 }
