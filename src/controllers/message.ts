@@ -22,36 +22,25 @@ import { Context } from 'koa'
 class MessageController {
   @Get('/')
   async messageList(@Ctx() ctx: Context) {
-    return await getMessages().catch(({ statusCode, message }) => {
-      ctx.throw(statusCode, JSON.stringify({ message }))
-    })
+    return await getMessages()
   }
 
   @Post('/add')
-  async messageAdd(@Ctx() ctx: Context, @Body() addData: string) {
-    await createMessage(addData).catch(({ statusCode, message }) => {
-      ctx.throw(statusCode, JSON.stringify({ message }))
-    })
+  async messageAdd(@Body() addData: string) {
+    await createMessage(addData)
   }
 
   @Get('/:id')
-  async showSingleMessage(
-    @Ctx() ctx: Context,
-    @Params('id') messageId: string
-  ) {
-    return await findMessageById(messageId).catch(({ statusCode, message }) => {
-      ctx.throw(statusCode, JSON.stringify({ message }))
-    })
+  async showSingleMessage(@Params('id') messageId: string) {
+    return await findMessageById(messageId)
   }
 
   @Delete('/:id')
   async deleteSingleMessage(
-    @Ctx() ctx: Context,
+    // @Ctx() ctx: Context,
     @Params('id') messageId: string
   ) {
-    await deleteMessageById(messageId).catch(({ statusCode, message }) => {
-      ctx.throw(statusCode, JSON.stringify({ message }))
-    })
+    await deleteMessageById(messageId)
   }
 
   @Put('/:id')
@@ -60,8 +49,6 @@ class MessageController {
     @Params('id') messageId: any,
     @Body() putData: string
   ) {
-    await updateMessage(messageId, putData).catch(({ statusCode, message }) => {
-      ctx.throw(statusCode, JSON.stringify({ message }))
-    })
+    await updateMessage(messageId, putData)
   }
 }
