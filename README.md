@@ -7,22 +7,18 @@ This repository is to be used as a starter for Koa based Node.js applications wr
 1. Clone this repo: `git clone https://github.com/backmeupplz/backend-starter`
 2. Launch the [mongo database](https://www.mongodb.com/) locally
 3. Create `.env` with the environment variables listed below
-4. Run `yarn install` in the root folder
+4. Run `yarn` in the root folder
 5. Run `yarn develop`
 
-And you should be good to go! Feel free to fork and submit pull requests. Documentation is [also available](https://github.com/backmeupplz/backend-starter/tree/master/docs) in this repo.
+And you should be good to go! Feel free to fork and submit pull requests.
 
 ## Environment variables
 
-| Name                                     | Description                                 |
-| ---------------------------------------- | ------------------------------------------- |
-| `MONGO`                                  | URL of the mongo database                   |
-| `JWT`                                    | secret for JWT                              |
-| `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET` | Facebook login credentials                  |
-| `TELEGRAM_LOGIN_TOKEN`                   | Telegram login bot                          |
+| Name                                     | Description                |
+| ---------------------------------------- | -------------------------- |
+| `MONGO`                                  | URL of the mongo database  |
+| `JWT`                                    | secret for JWT             |
+| `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET` | Facebook login credentials |
+| `TELEGRAM_LOGIN_TOKEN`                   | Telegram login bot         |
 
 Also, please, consider looking at `.env.sample`.
-
-## Continuous integration
-
-Any commit pushed to master gets deployed to [backend.todorant.com](https://backend.todorant.com) via [CI Ninja](https://github.com/backmeupplz/ci-ninja).
