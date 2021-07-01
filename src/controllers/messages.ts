@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get, Params, Delete } from 'amala'
+import { Controller, Body, Post, Get, Params, Put, Delete } from 'amala'
 import {
   createMessage,
   readMessageById,
@@ -8,18 +8,21 @@ import {
 
 @Controller('/messages')
 export default class MessageController {
-  @Post('/add')
-  async createMessage(@Body() body: string) {
+  @Post('/')
+  async createMessage(@Body() body: object) {
     await createMessage(body)
   }
 
-  @Get('/')
+  @Get('/:id')
   async getMessage(@Params('id') messageId: string) {
     return await readMessageById(messageId)
   }
 
   @Post('/:id')
-  async updateMessage(@Params('id') messageId: string, @Body() body: string) {
+  async updateMessage(
+    @Params('id') messageId: string,
+    @Body() body: { text: string }
+  ) {
     return await updateMessageByIdAndText(messageId, body)
   }
 

@@ -1,26 +1,27 @@
-import { prop, getModelForClass } from '@typegoose/typegoose'
+import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
 
 export class Message {
-  @prop({ required: true })
-  text: string
+  @prop({ index: true })
+  text?: string
 }
 
 export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-export function createMessage(text: string) {
-  return new MessageModel(text).save()
+export function createMessage(body: object) {
+  return new MessageModel(body).save()
 }
 
-export async function readMessageById(id: number | string) {
+export async function readMessageById(id: string) {
   return MessageModel.findById(id)
 }
 
-export function updateMessageByIdAndText(id: number | string, text) {
-  return MessageModel.findByIdAndUpdate(id, text)
+export function updateMessageByIdAndText(id: string, body: { text: string }) {
+  let { text } = body
+  return MessageModel.findByIdAndUpdate(id, { text })
 }
 
-export function deleteMessageById(id: number | string) {
+export function deleteMessageById(id: string) {
   return MessageModel.findByIdAndDelete(id)
 }
