@@ -11,7 +11,6 @@ export default class MessageController {
   @Post('/add')
   async createMessage(@Body() body: string) {
     await createMessage(body)
-    console.log(body)
   }
 
   @Get('/')
