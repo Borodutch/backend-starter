@@ -1,7 +1,7 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
 
 export class Message {
-  @prop({ required: true, timestamps: true })
+  @prop({ required: true })
   text: string
 }
 
