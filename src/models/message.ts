@@ -1,8 +1,10 @@
-import { getModelForClass, prop } from '@typegoose/typegoose'
+import { getModelForClass, prop, Ref } from '@typegoose/typegoose'
+import { User } from './user'
 
 export class Message {
-  @prop({ required: true })
+  @prop({ required: true, ref: User })
   text: string
+  author: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message, {
