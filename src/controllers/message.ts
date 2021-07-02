@@ -36,10 +36,7 @@ class MessageController {
   }
 
   @Delete('/:id')
-  async deleteSingleMessage(
-    // @Ctx() ctx: Context,
-    @Params('id') messageId: string
-  ) {
+  async deleteSingleMessage(@Params('id') messageId: string) {
     await deleteMessageById(messageId)
   }
 
