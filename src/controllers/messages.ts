@@ -1,33 +1,42 @@
-import { Controller, Body, Post, Get, Params, Put, Delete } from 'amala'
+import { Context } from 'koa'
+import { Controller, Post, Get, Params, Delete, Ctx, Flow } from 'amala'
 import {
   createMessage,
   readMessageById,
-  updateMessageByIdAndText,
+  readMessagesByUser,
+  updateMessageById,
   deleteMessageById,
 } from '@/models/message'
+import { authenticate } from '@/middlewares/auth'
 
+@Flow(authenticate)
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
-  async createMessage(@Body() body: object) {
-    await createMessage(body)
+  async createMessage(@Ctx() ctx: Context) {
+    await createMessage(ctx.state.user, ctx.context.body)
   }
 
   @Get('/:id')
   async getMessage(@Params('id') messageId: string) {
     return await readMessageById(messageId)
   }
+  @Get('/:id')
+  async getMessagesByUser(@Ctx() ctx: Context) {
+    return await readMessagesByUser(ctx.state.user)
+  }
 
   @Post('/:id')
-  async updateMessage(
-    @Params('id') messageId: string,
-    @Body() body: { text: string }
-  ) {
-    return await updateMessageByIdAndText(messageId, body)
+  async updateMessage(@Ctx() ctx: Context) {
+    return await updateMessageById(
+      ctx.state.user,
+      ctx.params.messageId,
+      ctx.context.body
+    )
   }
 
   @Delete('/:id')
-  async deleteMessage(@Params('id') messageId: string) {
-    return await deleteMessageById(messageId)
+  async deleteMessage(@Ctx() ctx: Context) {
+    return await deleteMessageById(ctx.state.user, ctx.params.messageId)
   }
 }
