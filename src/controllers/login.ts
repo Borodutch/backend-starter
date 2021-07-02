@@ -1,12 +1,19 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post } from 'amala'
+import { Controller, Ctx, Flow, Get, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import { auth } from '@/middlewares/auth'
 
 @Controller('/login')
 export default class LoginController {
+  @Get('/')
+  @Flow(auth)
+  async login(@Ctx() ctx: Context) {
+    return ctx.state.user
+  }
+
   @Post('/facebook')
   async facebook(@Ctx() ctx: Context) {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
