@@ -1,4 +1,4 @@
-import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref, DocumentType } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
 export class Message {
@@ -6,15 +6,16 @@ export class Message {
   user: Ref<User>
 
   @prop({ index: true })
-  text?: string
+  text: string
 }
 
 export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-export async function createMessage(user: User, body: object) {
-  return await new MessageModel({ body, user }).save()
+export async function createMessage(user: User, msgText: string) {
+  console.log(msgText)
+  return await new MessageModel({ user, text: msgText }).save()
 }
 
 export async function readMessageById(id: string) {
