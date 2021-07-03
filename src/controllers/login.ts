@@ -1,9 +1,12 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import { Message, MessageModel } from '@/models/message'
+import * as jwt from 'jsonwebtoken'
+import { DocumentType } from '@typegoose/typegoose'
 
 @Controller('/login')
 export default class LoginController {
@@ -53,6 +56,23 @@ export default class LoginController {
       email: userData.email,
     })
     return user.strippedAndFilled(true)
+  }
+
+  @Post('/email')
+  async email(@Body() body, @Ctx() ctx: Context) {
+    let user = await MessageModel.findOne({ email: body })
+    if (user) {
+      const token = jwt.sign({ user }, process.env.JWT)
+      ctx.append('Authorization', token)
+
+      return 'You`re logged in ' + user
+    } else {
+      user = await new MessageModel({ email: body }).save()
+      const token = jwt.sign({ user }, process.env.JWT)
+      ctx.append('Authorization', token)
+      
+      return user.email + ' successfully logged'
+    }
   }
 }
 

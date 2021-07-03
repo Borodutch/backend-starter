@@ -1,13 +1,13 @@
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
-class Message {
+export class Message {
   @prop({ required: true })
+  email?: string
+  @prop()
   author: Ref<User>
-  @prop({ required: true })  
+  @prop()
   text: string
 }
 
-export const MessageModel = getModelForClass(Message, {
-  schemaOptions: { timestamps: true },
-})
+export const MessageModel = getModelForClass(Message)

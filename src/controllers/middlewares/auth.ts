@@ -1,17 +1,17 @@
-import { MessageModel } from '@/models/message'
 import * as jwt from 'jsonwebtoken'
 import { Context, Next } from 'koa'
 
 export const auth = async (ctx: Context, next: Next) => {
-  const token = ctx.headers['Authorization']
+  const token = ctx.headers.authorization
   if (!token) {
-    ctx.throw(400, 'token not found')
+    return ctx.throw(400, 'token not found')
   }
-  const decoded = jwt.verify(token as string, process.env.JWT)
-  const user = await MessageModel.findOne({ decoded })
-  if (!user) {
-    ctx.throw(400, 'user not found')
+  try {
+    const decoded: any = jwt.verify(token, process.env.JWT)
+    ctx.state.user = decoded.user
+
+    return next()
+  } catch {
+    ctx.throw(401, 'Token is not valid')
   }
-  ctx.state.user = user
-  return next()
 }

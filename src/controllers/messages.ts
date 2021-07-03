@@ -15,27 +15,45 @@ import {
 export default class {
   @Post('/')
   @Flow(auth)
-  async create(@Body('text') body) {
-    const newMsg = new MessageModel({ text: body })
-    await newMsg.save()
+  async create(
+    @Body('author') author,
+    @Body('text') text,
+    @CurrentUser() user
+  ) {
+    let thisuser = await MessageModel.findById(user._id)
+    thisuser.author = author
+    thisuser.text = text
+    await thisuser.save()
+
+    return thisuser
   }
 
   @Get('/:id')
   @Flow(auth)
   async read(@CurrentUser() user) {
-    const someMsg = await MessageModel.findById(user.id)
-    return someMsg
+    const thisuser = await MessageModel.findById(user._id)
+    return thisuser
   }
 
   @Put('/:id')
   @Flow(auth)
-  async update(@Body('text') body, @CurrentUser() user) {
-    await MessageModel.findByIdAndUpdate(user.id, { text: body })
+  async update(
+    @Body('author') author,
+    @Body('text') text,
+    @CurrentUser() user
+  ) {
+    const thisuser = await MessageModel.findByIdAndUpdate(
+      user._id,
+      { author, text },
+      { new: true }
+    )
+    return thisuser
   }
 
   @Delete('/:id')
   @Flow(auth)
   async delete(@CurrentUser() user) {
-    await MessageModel.findByIdAndDelete(user.id)
+    const thisuser = await MessageModel.findByIdAndDelete(user._id)
+    return thisuser + '  deleted'
   }
 }
