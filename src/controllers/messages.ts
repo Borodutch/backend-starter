@@ -8,12 +8,16 @@ import {
   Put,
   Body,
   IsString,
+  Query,
+  IsArray,
 } from 'amala'
 import {
-  createUserMessage,
-  getUserMessage,
-  deleteUserMessage,
-  changeUserMessage,
+  createMessage,
+  getMessage,
+  getAllMessages,
+  deleteMessages,
+  deleteOneMessage,
+  changeMessage,
 } from '@/models/message'
 
 import { Context } from 'koa'
@@ -26,47 +30,52 @@ class MessageChangeInput {
   @IsString()
   message: string
 }
+
 class MessageAddInput {
   @IsString()
   message: string
 }
 
+class MessagesDeleteInput {
+  @IsArray()
+  id: string[]
+}
+
 @Controller('/messages')
 export default class MessageController {
-  //get all messages
   @Get('/')
-  async getAllMessages() {
-    return await getUserMessage()
+  async getUserMessages() {
+    return await getAllMessages()
   }
-  //get message
+
   @Get('/:id')
-  async getMessage(@Params('id') id: string) {
-    return await getUserMessage(id)
+  async getUserMessage(@Params('id') id: string) {
+    return await getMessage(id)
   }
-  //add new massage
+
   @Post('/')
-  async addMessage(
-    @Ctx() ctx: Context,
-    @Body({ required: true }) body: MessageAddInput
-  ) {
-    return (ctx.response.body = await createUserMessage(body.message))
+  async addUserMessage(@Body({ required: true }) body: MessageAddInput) {
+    return await createMessage(body.message)
   }
-  //delete message
+
+  @Delete('/:id')
+  async deleteOneUserMessage(@Params('id') id: string) {
+    return await deleteOneMessage(id)
+  }
+
   @Delete('/')
-  async deleteMessage(@Ctx() ctx: Context) {
-    const id = <string[]>ctx.request.query.id
-    if (id) {
-      return (ctx.response.body = await deleteUserMessage(id))
-    } else {
-      return (ctx.response.status = 400)
-    }
+  async deleteUserMessages(
+    @Ctx() ctx: Context,
+    @Query({ required: true }) query: MessagesDeleteInput
+  ) {
+    return await deleteMessages(query.id)
   }
-  //change message
+
   @Put('/')
-  async changeMessage(
+  async changeUserMessage(
     @Ctx() ctx: Context,
     @Body({ required: true }) body: MessageChangeInput
   ) {
-    return (ctx.response.body = await changeUserMessage(body.id, body.message))
+    return await changeMessage(body.id, body.message)
   }
 }

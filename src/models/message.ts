@@ -1,65 +1,43 @@
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
-import { User } from './user'
+import { User } from '@/models/user'
 
-//model for user message
-export class UserMessage {
+export class Message {
   @prop({ required: false })
   user: Ref<User>
   @prop({ required: true })
   message: string
 }
 
-export const UserMessageModel = getModelForClass(UserMessage)
+export const messageModel = getModelForClass(Message)
 
-//get message
-export async function getUserMessage(id?: string) {
-  if (id) {
-    return await UserMessageModel.find({ _id: id }, (err, data) => {
-      if (err) throw err
-      return data
-    })
-  } else {
-    return await UserMessageModel.find({}, (err, data) => {
-      if (err) throw err
-      return data
-    })
+export async function getAllMessages() {
+  return await messageModel.find({})
+}
+
+export async function getMessage(id: string) {
+  return await messageModel.find({ _id: id })
+}
+
+export async function createMessage(message: string) {
+  return await new messageModel({ message: message }).save()
+}
+
+export async function deleteOneMessage(id: string) {
+  return await messageModel.findByIdAndDelete({ _id: id })
+}
+
+export async function deleteMessages(id: string[]) {
+  let userMessages: Message[] = []
+  for (let i = 0; i < id.length; i++) {
+    userMessages.push(await messageModel.findByIdAndDelete({ _id: id[i] }))
   }
-}
-//add message
-export async function createUserMessage(message: string): Promise<UserMessage> {
-  const { _id: id } = await UserMessageModel.create({ message } as UserMessage)
-  const userMessage = await UserMessageModel.findById(id).exec()
-  return userMessage
+  return userMessages
 }
 
-//delete message
-export async function deleteUserMessage(id: string[]) {
-  let userMessages: UserMessage[] = []
-  if (typeof id === 'string') {
-    await UserMessageModel.findByIdAndDelete({ _id: id }, (err, data) => {
-      if (err) throw err
-      userMessages.push(data)
-    })
-  } else {
-    for (let i = 0; i < id.length; i++) {
-      await UserMessageModel.findByIdAndDelete({ _id: id[i] }, (err, data) => {
-        if (err) throw err
-        userMessages.push(data)
-      })
-    }
-    return userMessages
-  }
-}
-
-//change message
-export async function changeUserMessage(id: string, message: string) {
-  return await UserMessageModel.findOneAndUpdate(
+export async function changeMessage(id: string, message: string) {
+  return await messageModel.findOneAndUpdate(
     { _id: id },
     { message: message },
-    { useFindAndModify: false },
-    (err, data) => {
-      if (err) throw err
-      return data
-    }
+    { useFindAndModify: false }
   )
 }
