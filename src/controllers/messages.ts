@@ -1,42 +1,83 @@
-import { Context } from 'koa'
-import { Controller, Post, Get, Params, Delete, Ctx, Body, Flow } from 'amala'
+import {
+  Controller,
+  Post,
+  Get,
+  Params,
+  Delete,
+  Body,
+  Flow,
+  CurrentUser,
+} from 'amala'
 import {
   createMessage,
   readMessageById,
   readMessagesByUser,
   updateMessageById,
   deleteMessageById,
+  Message,
 } from '@/models/message'
 import { authenticate } from '@/middlewares/auth'
+import { User } from '@/models/user'
+import { Context } from 'koa'
 
 @Flow(authenticate)
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
-  async createMessage(@Ctx() ctx: Context) {
-    await createMessage(ctx.state.user, ctx.request.body.text)
+  async createMessage(
+    ctx: Context,
+    @CurrentUser() user: User,
+    @Body() body: { text: Message }
+  ) {
+    try {
+      await createMessage(user, body.text)
+    } catch (e) {
+      ctx.throw(400)
+    }
   }
 
   @Get('/:id')
-  async getMessage(@Params('id') messageId: string) {
-    return await readMessageById(messageId)
+  async getMessage(ctx: Context, @Params('id') messageId: string) {
+    try {
+      return await readMessageById(messageId)
+    } catch (e) {
+      ctx.throw(400)
+    }
   }
+
   @Get('/:id')
-  async getMessagesByUser(@Ctx() ctx: Context) {
-    return await readMessagesByUser(ctx.state.user)
+  async getMessagesByUser(ctx: Context, @CurrentUser() user: User) {
+    try {
+      return await readMessagesByUser(user)
+    } catch (e) {
+      ctx.throw(400)
+    }
   }
 
   @Post('/:id')
-  async updateMessage(@Ctx() ctx: Context) {
-    return await updateMessageById(
-      ctx.state.user,
-      ctx.params.messageId,
-      ctx.context.body
-    )
+  async updateMessage(
+    ctx: Context,
+    @Params() id: { id: string },
+    @CurrentUser() user: User,
+    @Body() text: object
+  ) {
+    try {
+      return await updateMessageById(id.id, user, text)
+    } catch (e) {
+      ctx.throw(400)
+    }
   }
 
   @Delete('/:id')
-  async deleteMessage(@Ctx() ctx: Context) {
-    return await deleteMessageById(ctx.state.user, ctx.params.messageId)
+  async deleteMessage(
+    ctx: Context,
+    @CurrentUser() user: User,
+    @Params() id: { id: string }
+  ) {
+    try {
+      return await deleteMessageById(user, id.id)
+    } catch (e) {
+      ctx.throw(400)
+    }
   }
 }

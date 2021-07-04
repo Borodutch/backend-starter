@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
@@ -12,7 +12,6 @@ export default class LoginController {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
-
       email: fbProfile.email,
       facebookId: fbProfile.id,
     })
@@ -56,9 +55,9 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async emailOnly(@Ctx() ctx: Context) {
-    const name = ctx.request.body.name
-    const email = ctx.request.body.email
+  async email(@Body() body: { name: string; email: string }) {
+    const name = body.name
+    const email = body.email
     const user = await getOrCreateUser({
       name,
       email,
