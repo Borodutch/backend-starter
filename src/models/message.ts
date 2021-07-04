@@ -7,6 +7,8 @@ export class Message {
 
   @prop({ required: true })
   text: string
+
+  _doc: any
 }
 
 export const MessageModel = getModelForClass(Message, {
@@ -25,10 +27,10 @@ export async function readMessagesByUser(user: User) {
   return await MessageModel.find(user)
 }
 
-export async function updateMessageById(id: string, user: User, text: object) {
-  return await MessageModel.findOneAndUpdate({ id, user }, text)
+export async function updateMessageById(id: string, text: object) {
+  return await MessageModel.findOneAndUpdate({ _id: id }, text)
 }
 
-export async function deleteMessageById(user: User, id: string) {
-  return await MessageModel.findOneAndDelete({ _id: id, user })
+export async function deleteMessageById(id: string) {
+  return await MessageModel.findOneAndDelete({ _id: id })
 }

@@ -7,6 +7,7 @@ import {
   Body,
   Flow,
   CurrentUser,
+  Ctx,
 } from 'amala'
 import {
   createMessage,
@@ -25,7 +26,7 @@ import { Context } from 'koa'
 export default class MessageController {
   @Post('/')
   async createMessage(
-    ctx: Context,
+    @Ctx() ctx: Context,
     @CurrentUser() user: User,
     @Body() body: { text: Message }
   ) {
@@ -37,47 +38,67 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  async getMessage(ctx: Context, @Params('id') messageId: string) {
-    try {
-      return await readMessageById(messageId)
-    } catch (e) {
+  async getMessage(
+    @Ctx() ctx: Context,
+    @Params('id') messageId: { id: string },
+    @CurrentUser() user: User
+  ) {
+    if (
+      (await readMessageById(messageId.id))._doc.user._id.toString() ==
+      user._doc._id.toString()
+    ) {
+      return await readMessageById(messageId.id)
+    } else {
       ctx.throw(400)
     }
   }
 
   @Get('/:id')
-  async getMessagesByUser(ctx: Context, @CurrentUser() user: User) {
-    try {
+  async getMessagesByUser(
+    @Ctx() ctx: Context,
+    @Params('id') messageId: { id: string },
+    @CurrentUser() user: User
+  ) {
+    if (
+      (await readMessageById(messageId.id))._doc.user._id.toString() ==
+      user._doc._id.toString()
+    ) {
       return await readMessagesByUser(user)
-    } catch (e) {
-      ctx.throw(400)
+    } else {
+      ctx.throw(401)
     }
   }
 
   @Post('/:id')
   async updateMessage(
-    ctx: Context,
-    @Params() id: { id: string },
+    @Ctx() ctx: Context,
+    @Params() messageId: { id: string },
     @CurrentUser() user: User,
     @Body() text: object
   ) {
-    try {
-      return await updateMessageById(id.id, user, text)
-    } catch (e) {
-      ctx.throw(400)
+    if (
+      (await readMessageById(messageId.id))._doc.user._id.toString() ==
+      user._doc._id.toString()
+    ) {
+      return await updateMessageById(messageId.id, text)
+    } else {
+      ctx.throw(401)
     }
   }
 
   @Delete('/:id')
   async deleteMessage(
-    ctx: Context,
+    @Ctx() ctx: Context,
     @CurrentUser() user: User,
-    @Params() id: { id: string }
+    @Params() messageId: { id: string }
   ) {
-    try {
-      return await deleteMessageById(user, id.id)
-    } catch (e) {
-      ctx.throw(400)
+    if (
+      (await readMessageById(messageId.id))._doc.user._id.toString() ==
+      user._doc._id.toString()
+    ) {
+      return await deleteMessageById(messageId.id)
+    } else {
+      ctx.throw(401)
     }
   }
 }
