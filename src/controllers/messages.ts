@@ -19,7 +19,6 @@ import {
   deleteOneMessage,
   changeMessage,
 } from '@/models/message'
-
 import { Context } from 'koa'
 
 // Validator classes
