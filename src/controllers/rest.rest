@@ -1,9 +1,0 @@
-# POST http://localhost:1337/log
-# content-type: application/json
-
-# {
-#     "author": "qwerty"
-# }
-
-
-DELETE http://localhost:1337/
