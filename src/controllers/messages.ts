@@ -15,9 +15,9 @@ import {
   readMessagesByUser,
   updateMessageById,
   deleteMessageById,
-  Message,
 } from '@/models/message'
 import { authenticate } from '@/middlewares/auth'
+import { compareUsersMessage } from '@/middlewares/compareUsers'
 import { User } from '@/models/user'
 import { Context } from 'koa'
 
@@ -26,12 +26,12 @@ import { Context } from 'koa'
 export default class MessageController {
   @Post('/')
   async createMessage(
+    @Body('text') text: string,
     @Ctx() ctx: Context,
-    @CurrentUser() user: User,
-    @Body() body: { text: Message }
+    @CurrentUser() user: User
   ) {
     try {
-      await createMessage(user, body.text)
+      await createMessage(user, text)
     } catch (e) {
       ctx.throw(400)
     }
@@ -40,49 +40,34 @@ export default class MessageController {
   @Get('/:id')
   async getMessage(
     @Ctx() ctx: Context,
-    @Params('id') messageId: { id: string },
+    @Params('id') id: string,
     @CurrentUser() user: User
   ) {
-    if (
-      (await readMessageById(messageId.id))._doc.user._id.toString() ==
-      user._doc._id.toString()
-    ) {
-      return await readMessageById(messageId.id)
-    } else {
-      ctx.throw(400)
+    if (await compareUsersMessage(ctx, id, user)) {
+      return await readMessageById(id)
     }
   }
 
   @Get('/:id')
   async getMessagesByUser(
     @Ctx() ctx: Context,
-    @Params('id') messageId: { id: string },
+    @Params('id') id: string,
     @CurrentUser() user: User
   ) {
-    if (
-      (await readMessageById(messageId.id))._doc.user._id.toString() ==
-      user._doc._id.toString()
-    ) {
+    if (await compareUsersMessage(ctx, id, user)) {
       return await readMessagesByUser(user)
-    } else {
-      ctx.throw(401)
     }
   }
 
   @Post('/:id')
   async updateMessage(
     @Ctx() ctx: Context,
-    @Params() messageId: { id: string },
+    @Params('id') id: string,
     @CurrentUser() user: User,
-    @Body() text: object
+    @Body('text') text: string
   ) {
-    if (
-      (await readMessageById(messageId.id))._doc.user._id.toString() ==
-      user._doc._id.toString()
-    ) {
-      return await updateMessageById(messageId.id, text)
-    } else {
-      ctx.throw(401)
+    if (await compareUsersMessage(ctx, id, user)) {
+      return await updateMessageById(id, text)
     }
   }
 
@@ -90,15 +75,10 @@ export default class MessageController {
   async deleteMessage(
     @Ctx() ctx: Context,
     @CurrentUser() user: User,
-    @Params() messageId: { id: string }
+    @Params('id') id: string
   ) {
-    if (
-      (await readMessageById(messageId.id))._doc.user._id.toString() ==
-      user._doc._id.toString()
-    ) {
-      return await deleteMessageById(messageId.id)
-    } else {
-      ctx.throw(401)
+    if (await compareUsersMessage(ctx, id, user)) {
+      return await deleteMessageById(id)
     }
   }
 }

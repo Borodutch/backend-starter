@@ -1,8 +1,8 @@
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import { verify } from '@/helpers/jwt'
 import { getOrCreateUser } from '@/models/User'
 
-export async function authenticate(ctx: Context, next: Function) {
+export async function authenticate(ctx: Context, next: Next) {
   const token = ctx.headers.token as string
 
   try {

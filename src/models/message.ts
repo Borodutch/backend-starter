@@ -15,7 +15,7 @@ export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-export async function createMessage(user: User, text: Message) {
+export async function createMessage(user: User, text: string) {
   return await new MessageModel({ user, text }).save()
 }
 
@@ -27,8 +27,8 @@ export async function readMessagesByUser(user: User) {
   return await MessageModel.find(user)
 }
 
-export async function updateMessageById(id: string, text: object) {
-  return await MessageModel.findOneAndUpdate({ _id: id }, text)
+export async function updateMessageById(id: string, text: string) {
+  return await MessageModel.findOneAndUpdate({ _id: id }, { text })
 }
 
 export async function deleteMessageById(id: string) {
