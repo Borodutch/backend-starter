@@ -9,51 +9,43 @@ import {
   Delete,
   Body,
   CurrentUser,
+  Params,
 } from 'amala'
 
 @Controller('/')
 export default class {
   @Post('/')
   @Flow(auth)
-  async create(
-    @Body('author') author,
-    @Body('text') text,
-    @CurrentUser() user
-  ) {
-    let thisuser = await MessageModel.findById(user._id)
-    thisuser.author = author
-    thisuser.text = text
-    await thisuser.save()
-
-    return thisuser
+  async create(@Body('text') text, @CurrentUser() user) {
+    const message = await new MessageModel({ author: user, text }).save()
+    return { newMessage: message.text }
   }
 
-  @Get('/:id')
+  @Get('/')
   @Flow(auth)
-  async read(@CurrentUser() user) {
-    const thisuser = await MessageModel.findById(user._id)
-    return thisuser
+  async getAll(@CurrentUser() user) {
+    const messages = await MessageModel.find({ author: user })
+    const texts = messages.map((item) => {
+      return item.text
+    })
+    return { texts }
   }
 
   @Put('/:id')
   @Flow(auth)
-  async update(
-    @Body('author') author,
-    @Body('text') text,
-    @CurrentUser() user
-  ) {
-    const thisuser = await MessageModel.findByIdAndUpdate(
-      user._id,
-      { author, text },
+  async update(@Body('text') text, @Params('id') id) {
+    const message = await MessageModel.findByIdAndUpdate(
+      id,
+      { text },
       { new: true }
     )
-    return thisuser
+    return { updatedMessage: message.text }
   }
 
   @Delete('/:id')
   @Flow(auth)
-  async delete(@CurrentUser() user) {
-    const thisuser = await MessageModel.findByIdAndDelete(user._id)
-    return thisuser + '  deleted'
+  async delete(@Params('id') id) {
+    const message = await MessageModel.findByIdAndDelete(id)
+    return { deletedMessage: message.text }
   }
 }

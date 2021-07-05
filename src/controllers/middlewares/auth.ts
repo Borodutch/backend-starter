@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken'
+import { verify } from '@/helpers/jwt'
 import { Context, Next } from 'koa'
 
 export const auth = async (ctx: Context, next: Next) => {
@@ -7,9 +7,7 @@ export const auth = async (ctx: Context, next: Next) => {
     return ctx.throw(400, 'token not found')
   }
   try {
-    const decoded: any = jwt.verify(token, process.env.JWT)
-    ctx.state.user = decoded.user
-
+    ctx.state.user = await verify(token)
     return next()
   } catch {
     ctx.throw(401, 'Token is not valid')

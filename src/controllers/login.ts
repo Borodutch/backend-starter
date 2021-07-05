@@ -4,9 +4,6 @@ import { getOrCreateUser } from '@/models/user'
 import { Body, Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
-import { Message, MessageModel } from '@/models/message'
-import * as jwt from 'jsonwebtoken'
-import { DocumentType } from '@typegoose/typegoose'
 
 @Controller('/login')
 export default class LoginController {
@@ -59,20 +56,14 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async email(@Body() body, @Ctx() ctx: Context) {
-    let user = await MessageModel.findOne({ email: body })
-    if (user) {
-      const token = jwt.sign({ user }, process.env.JWT)
-      ctx.append('Authorization', token)
+  async email(@Body('email') email, @Ctx() ctx: Context) {
+    let user = await getOrCreateUser({
+      name: email.split('@')[0],
+      email,
+    })
+    ctx.append('Authorization', user.token)
 
-      return 'You`re logged in ' + user
-    } else {
-      user = await new MessageModel({ email: body }).save()
-      const token = jwt.sign({ user }, process.env.JWT)
-      ctx.append('Authorization', token)
-      
-      return user.email + ' successfully logged'
-    }
+    return { userLogged: user.name }
   }
 }
 

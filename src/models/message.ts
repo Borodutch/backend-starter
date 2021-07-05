@@ -3,11 +3,11 @@ import { User } from '@/models/user'
 
 export class Message {
   @prop({ required: true })
-  email?: string
-  @prop()
   author: Ref<User>
-  @prop()
+  @prop({ required: true })
   text: string
 }
 
-export const MessageModel = getModelForClass(Message)
+export const MessageModel = getModelForClass(Message, {
+  schemaOptions: { timestamps: true },
+})
