@@ -56,14 +56,12 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async email(@Body('email') email, @Ctx() ctx: Context) {
-    let user = await getOrCreateUser({
+  async email(@Body('email') email) {
+    const user = await getOrCreateUser({
       name: email.split('@')[0],
       email,
     })
-    ctx.append('Authorization', user.token)
-
-    return { userLogged: user.name }
+    return user
   }
 }
 
