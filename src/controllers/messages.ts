@@ -17,7 +17,7 @@ import {
   deleteMessageById,
 } from '@/models/message'
 import { authenticate } from '@/middlewares/auth'
-import { compareUsersMessage } from '@/middlewares/compareUsers'
+import { checkMessageAuthor } from '@/middlewares/checkMessageAuthor'
 import { User } from '@/models/user'
 import { Context } from 'koa'
 
@@ -37,48 +37,27 @@ export default class MessageController {
     }
   }
 
+  @Flow(checkMessageAuthor)
   @Get('/:id')
-  async getMessage(
-    @Ctx() ctx: Context,
-    @Params('id') id: string,
-    @CurrentUser() user: User
-  ) {
-    if (await compareUsersMessage(ctx, id, user)) {
-      return await readMessageById(id)
-    }
+  async getMessage(@Params('id') id: string) {
+    return await readMessageById(id)
   }
 
+  @Flow(checkMessageAuthor)
   @Get('/:id')
-  async getMessagesByUser(
-    @Ctx() ctx: Context,
-    @Params('id') id: string,
-    @CurrentUser() user: User
-  ) {
-    if (await compareUsersMessage(ctx, id, user)) {
-      return await readMessagesByUser(user)
-    }
+  async getMessagesByUser(@CurrentUser() user: User) {
+    return await readMessagesByUser(user)
   }
 
+  @Flow(checkMessageAuthor)
   @Post('/:id')
-  async updateMessage(
-    @Ctx() ctx: Context,
-    @Params('id') id: string,
-    @CurrentUser() user: User,
-    @Body('text') text: string
-  ) {
-    if (await compareUsersMessage(ctx, id, user)) {
-      return await updateMessageById(id, text)
-    }
+  async updateMessage(@Params('id') id: string, @Body('text') text: string) {
+    return await updateMessageById(id, text)
   }
 
+  @Flow(checkMessageAuthor)
   @Delete('/:id')
-  async deleteMessage(
-    @Ctx() ctx: Context,
-    @CurrentUser() user: User,
-    @Params('id') id: string
-  ) {
-    if (await compareUsersMessage(ctx, id, user)) {
-      return await deleteMessageById(id)
-    }
+  async deleteMessage(@Params('id') id: string) {
+    return await deleteMessageById(id)
   }
 }

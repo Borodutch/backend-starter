@@ -1,4 +1,4 @@
-import { prop, getModelForClass, Ref, DocumentType } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
 export class Message {
@@ -8,6 +8,7 @@ export class Message {
   @prop({ required: true })
   text: string
 
+  // Mongo Acess
   _doc: any
 }
 
@@ -15,22 +16,22 @@ export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
 
-export async function createMessage(user: User, text: string) {
-  return await new MessageModel({ user, text }).save()
+export function createMessage(user: User, text: string) {
+  return new MessageModel({ user, text }).save()
 }
 
-export async function readMessageById(id: string) {
-  return await MessageModel.findById(id)
+export function readMessageById(id: string) {
+  return MessageModel.findById(id)
 }
 
-export async function readMessagesByUser(user: User) {
-  return await MessageModel.find(user)
+export function readMessagesByUser(user: User) {
+  return MessageModel.find(user)
 }
 
-export async function updateMessageById(id: string, text: string) {
-  return await MessageModel.findOneAndUpdate({ _id: id }, { text })
+export function updateMessageById(id: string, text: string) {
+  return MessageModel.findOneAndUpdate({ _id: id }, { text })
 }
 
-export async function deleteMessageById(id: string) {
-  return await MessageModel.findOneAndDelete({ _id: id })
+export function deleteMessageById(id: string) {
+  return MessageModel.findOneAndDelete({ _id: id })
 }
