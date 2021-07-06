@@ -1,5 +1,5 @@
 import { MessageModel } from '@/models/message'
-import { auth } from '@/controllers/middlewares/auth'
+import { auth, check } from '@/controllers/middlewares/auth'
 import {
   Controller,
   Flow,
@@ -9,45 +9,46 @@ import {
   Delete,
   Body,
   CurrentUser,
-  Params,
   Ctx,
 } from 'amala'
+import { Context } from 'koa'
 
 @Controller('/')
+@Flow(auth)
 export default class {
   @Post('/')
-  @Flow(auth)
   async create(@Body('text') text, @CurrentUser() user, @Ctx() ctx) {
     await new MessageModel({ author: user, text }).save()
     ctx.status = 200
   }
 
   @Get('/')
-  @Flow(auth)
   async getAll(@CurrentUser() user) {
     const messages = await MessageModel.find({ author: user })
     return messages
   }
 
+  @Get('/:id')
+  @Flow(check)
+  async getOne(@Ctx() ctx) {
+    const message = await MessageModel.findOne({ _id: ctx.state.message._id })
+    return message
+  }
+
   @Put('/:id')
-  @Flow(auth)
-  async update(
-    @Body('text') text,
-    @Params('id') id,
-    @CurrentUser() user,
-    @Ctx() ctx
-  ) {
-    await MessageModel.findOneAndUpdate({ _id: id, author: user }, { text })
+  @Flow(check)
+  async update(@Body('text') text, @Ctx() ctx: Context) {
+    await MessageModel.findOneAndUpdate(
+      { _id: ctx.state.message._id },
+      { text }
+    )
     ctx.status = 200
   }
 
   @Delete('/:id')
-  @Flow(auth)
-  async delete(@Params('id') id, @CurrentUser() user, @Ctx() ctx) {
-    await MessageModel.findOneAndDelete({
-      _id: id,
-      author: user,
-    })
+  @Flow(check)
+  async delete(@Ctx() ctx: Context) {
+    await MessageModel.findOneAndDelete({ _id: ctx.state.message._id })
     ctx.status = 200
   }
 }
