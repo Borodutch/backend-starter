@@ -1,6 +1,5 @@
 import {
   Controller,
-  Ctx,
   Params,
   Delete,
   Get,
@@ -10,6 +9,8 @@ import {
   IsString,
   Query,
   IsArray,
+  Flow,
+  CurrentUser,
 } from 'amala'
 import {
   createMessage,
@@ -19,7 +20,8 @@ import {
   deleteOneMessage,
   changeMessage,
 } from '@/models/message'
-import { Context } from 'koa'
+import { authUser } from '@/middlewares/authUser'
+import { User } from '@/models/user'
 
 // Validator classes
 class MessageChangeInput {
@@ -40,41 +42,48 @@ class MessagesDeleteInput {
   id: string[]
 }
 
+@Flow(authUser)
 @Controller('/messages')
 export default class MessageController {
   @Get('/')
-  async getUserMessages() {
-    return await getAllMessages()
+  async getUserMessages(@CurrentUser() user: User) {
+    return await getAllMessages(user)
   }
 
   @Get('/:id')
-  async getUserMessage(@Params('id') id: string) {
-    return await getMessage(id)
+  async getUserMessage(@Params('id') id: string, @CurrentUser() user: User) {
+    return await getMessage(id, user)
   }
 
   @Post('/')
-  async addUserMessage(@Body({ required: true }) body: MessageAddInput) {
-    return await createMessage(body.message)
+  async addUserMessage(
+    @Body({ required: true }) body: MessageAddInput,
+    @CurrentUser() user: User
+  ) {
+    return await createMessage(body.message, user)
   }
 
   @Delete('/:id')
-  async deleteOneUserMessage(@Params('id') id: string) {
-    return await deleteOneMessage(id)
+  async deleteOneUserMessage(
+    @Params('id') id: string,
+    @CurrentUser() user: User
+  ) {
+    return await deleteOneMessage(id, user)
   }
 
   @Delete('/')
   async deleteUserMessages(
-    @Ctx() ctx: Context,
-    @Query({ required: true }) query: MessagesDeleteInput
+    @Query({ required: true }) query: MessagesDeleteInput,
+    @CurrentUser() user: User
   ) {
-    return await deleteMessages(query.id)
+    return await deleteMessages(query.id, user)
   }
 
   @Put('/')
   async changeUserMessage(
-    @Ctx() ctx: Context,
-    @Body({ required: true }) body: MessageChangeInput
+    @Body({ required: true }) body: MessageChangeInput,
+    @CurrentUser() user: User
   ) {
-    return await changeMessage(body.id, body.message)
+    return await changeMessage(body.id, body.message, user)
   }
 }
