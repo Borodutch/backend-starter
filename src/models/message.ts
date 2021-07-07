@@ -24,10 +24,6 @@ export function readMessageById(id: string) {
   return MessageModel.findById(id)
 }
 
-export function readMessagesByUser(user: User) {
-  return MessageModel.find(user)
-}
-
 export function updateMessageById(id: string, text: string) {
   return MessageModel.findOneAndUpdate({ _id: id }, { text })
 }

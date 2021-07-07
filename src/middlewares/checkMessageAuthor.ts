@@ -8,8 +8,9 @@ export async function checkMessageAuthor(ctx: Context, next: Next) {
     (await readMessageById(msgId))._doc.user._id.toString() ===
     user._doc._id.toString()
   ) {
+    ctx.state.message = readMessageById(msgId)
     return next()
   } else {
-    ctx.throw(401)
+    ctx.throw(404)
   }
 }

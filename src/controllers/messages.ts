@@ -8,11 +8,10 @@ import {
   Flow,
   CurrentUser,
   Ctx,
+  Put,
 } from 'amala'
 import {
   createMessage,
-  readMessageById,
-  readMessagesByUser,
   updateMessageById,
   deleteMessageById,
 } from '@/models/message'
@@ -39,18 +38,12 @@ export default class MessageController {
 
   @Flow(checkMessageAuthor)
   @Get('/:id')
-  async getMessage(@Params('id') id: string) {
-    return await readMessageById(id)
+  async getMessage(@Ctx() ctx: Context) {
+    return ctx.state.message
   }
 
   @Flow(checkMessageAuthor)
-  @Get('/:id')
-  async getMessagesByUser(@CurrentUser() user: User) {
-    return await readMessagesByUser(user)
-  }
-
-  @Flow(checkMessageAuthor)
-  @Post('/:id')
+  @Put('/:id')
   async updateMessage(@Params('id') id: string, @Body('text') text: string) {
     return await updateMessageById(id, text)
   }
