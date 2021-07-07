@@ -1,5 +1,6 @@
 import { MessageModel } from '@/models/message'
-import { auth, check } from '@/controllers/middlewares/auth'
+import { auth } from '@/controllers/middlewares/auth'
+import { checkMessage } from '@/controllers/middlewares/checkMessage'
 import {
   Controller,
   Flow,
@@ -29,26 +30,22 @@ export default class {
   }
 
   @Get('/:id')
-  @Flow(check)
+  @Flow(checkMessage)
   async getOne(@Ctx() ctx) {
-    const message = await MessageModel.findOne({ _id: ctx.state.message._id })
-    return message
+    return ctx.state.message
   }
 
   @Put('/:id')
-  @Flow(check)
+  @Flow(checkMessage)
   async update(@Body('text') text, @Ctx() ctx: Context) {
-    await MessageModel.findOneAndUpdate(
-      { _id: ctx.state.message._id },
-      { text }
-    )
+    await MessageModel.updateOne(ctx.state.message, { text })
     ctx.status = 200
   }
 
   @Delete('/:id')
-  @Flow(check)
+  @Flow(checkMessage)
   async delete(@Ctx() ctx: Context) {
-    await MessageModel.findOneAndDelete({ _id: ctx.state.message._id })
+    await MessageModel.deleteOne(ctx.state.message)
     ctx.status = 200
   }
 }
