@@ -1,4 +1,5 @@
 import {
+  Ctx,
   Controller,
   Params,
   Delete,
@@ -7,23 +8,21 @@ import {
   Put,
   Body,
   IsString,
-  Query,
   IsArray,
   Flow,
   CurrentUser,
 } from 'amala'
+import { Context } from 'koa'
 import {
   createMessage,
   getMessage,
   getAllMessages,
-  deleteMessages,
   deleteOneMessage,
   changeMessage,
 } from '@/models/message'
 import { authUser } from '@/middlewares/authUser'
 import { User } from '@/models/user'
 
-// Validator classes
 class MessageChangeInput {
   @IsString()
   id: string
@@ -37,22 +36,25 @@ class MessageAddInput {
   message: string
 }
 
-class MessagesDeleteInput {
-  @IsArray()
-  id: string[]
-}
-
 @Flow(authUser)
 @Controller('/messages')
 export default class MessageController {
   @Get('/')
-  async getUserMessages(@CurrentUser() user: User) {
-    return await getAllMessages(user)
+  async getAllUserMessages(@Ctx() ctx: Context, @CurrentUser() user: User) {
+    const messages = await getAllMessages(user)
+    if (messages.length > 0) return messages
+    else ctx.throw(404, 'messages not found')
   }
 
   @Get('/:id')
-  async getUserMessage(@Params('id') id: string, @CurrentUser() user: User) {
-    return await getMessage(id, user)
+  async getUserMessage(
+    @Ctx() ctx: Context,
+    @Params('id') id: string,
+    @CurrentUser() user: User
+  ) {
+    const message = await getMessage(id, user)
+    if (message.length > 0) return message
+    else ctx.throw(404, 'message not found')
   }
 
   @Post('/')
@@ -65,25 +67,24 @@ export default class MessageController {
 
   @Delete('/:id')
   async deleteOneUserMessage(
+    @Ctx() ctx: Context,
     @Params('id') id: string,
     @CurrentUser() user: User
   ) {
-    return await deleteOneMessage(id, user)
-  }
-
-  @Delete('/')
-  async deleteUserMessages(
-    @Query({ required: true }) query: MessagesDeleteInput,
-    @CurrentUser() user: User
-  ) {
-    return await deleteMessages(query.id, user)
+    const message = await deleteOneMessage(id, user)
+    if (message) return message
+    else ctx.throw(404, 'message not found')
   }
 
   @Put('/')
   async changeUserMessage(
+    @Ctx() ctx: Context,
     @Body({ required: true }) body: MessageChangeInput,
     @CurrentUser() user: User
   ) {
-    return await changeMessage(body.id, body.message, user)
+    const message = await changeMessage(body.id, body.message, user)
+    console.log(message)
+    if (message) return message
+    else ctx.throw(404, 'message not found')
   }
 }

@@ -5,8 +5,7 @@ import { Body, Controller, Ctx, IsEmail, IsString, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
-// Validator classes
-class emailInput {
+class EmailInput {
   @IsString()
   name: string
 
@@ -65,7 +64,7 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async addUserMessage(@Body({ required: true }) body: emailInput) {
+  async email(@Body({ required: true }) body: EmailInput) {
     const user = await getOrCreateUser({
       name: body.name,
       email: body.email,

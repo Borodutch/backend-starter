@@ -3,7 +3,7 @@ import { verify } from '@/helpers/jwt'
 import { getOrCreateUser } from '@/models/User'
 
 export async function authUser(ctx: Context, next: Next) {
-  const token = <string>ctx.headers.token
+  const token = ctx.headers.token as string
   if (token) {
     try {
       const verifyToken = (await verify(token)) as {
