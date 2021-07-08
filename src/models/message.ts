@@ -7,9 +7,6 @@ export class Message {
 
   @prop({ required: true })
   text: string
-
-  // Mongo Acess
-  _doc: any
 }
 
 export const MessageModel = getModelForClass(Message, {
@@ -22,12 +19,4 @@ export function createMessage(user: User, text: string) {
 
 export function readMessageById(id: string) {
   return MessageModel.findById(id)
-}
-
-export function updateMessageById(id: string, text: string) {
-  return MessageModel.findOneAndUpdate({ _id: id }, { text })
-}
-
-export function deleteMessageById(id: string) {
-  return MessageModel.findOneAndDelete({ _id: id })
 }

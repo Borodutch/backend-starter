@@ -4,13 +4,14 @@ import { Context, Next } from 'koa'
 export async function checkMessageAuthor(ctx: Context, next: Next) {
   const msgId = ctx.params.id as string
   const user = ctx.state.user
-  if (
-    (await readMessageById(msgId))._doc.user._id.toString() ===
-    user._doc._id.toString()
-  ) {
-    ctx.state.message = readMessageById(msgId)
-    return next()
-  } else {
+  try {
+    if (
+      (await readMessageById(msgId)).toObject().user._id.toString() === user.id
+    ) {
+      ctx.state.message = await readMessageById(msgId)
+      return next()
+    }
+  } catch (e) {
     ctx.throw(404)
   }
 }

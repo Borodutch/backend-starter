@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Get,
-  Params,
   Delete,
   Body,
   Flow,
@@ -10,11 +9,7 @@ import {
   Ctx,
   Put,
 } from 'amala'
-import {
-  createMessage,
-  updateMessageById,
-  deleteMessageById,
-} from '@/models/message'
+import { createMessage, MessageModel } from '@/models/message'
 import { authenticate } from '@/middlewares/auth'
 import { checkMessageAuthor } from '@/middlewares/checkMessageAuthor'
 import { User } from '@/models/user'
@@ -32,25 +27,26 @@ export default class MessageController {
     try {
       await createMessage(user, text)
     } catch (e) {
-      ctx.throw(400)
+      ctx.throw(404)
     }
   }
 
   @Flow(checkMessageAuthor)
   @Get('/:id')
-  async getMessage(@Ctx() ctx: Context) {
+  getMessage(@Ctx() ctx: Context) {
     return ctx.state.message
   }
 
   @Flow(checkMessageAuthor)
   @Put('/:id')
-  async updateMessage(@Params('id') id: string, @Body('text') text: string) {
-    return await updateMessageById(id, text)
+  async updateMessage(@Ctx() ctx: Context, @Body('text') text: string) {
+    ctx.state.message.text = text
+    return ctx.state.message.save()
   }
 
   @Flow(checkMessageAuthor)
   @Delete('/:id')
-  async deleteMessage(@Params('id') id: string) {
-    return await deleteMessageById(id)
+  async deleteMessage(@Ctx() ctx: Context) {
+    return await MessageModel.findOneAndDelete({ _id: ctx.state.message.id })
   }
 }
