@@ -9,7 +9,7 @@ import {
   Ctx,
   Put,
 } from 'amala'
-import { createMessage, MessageModel } from '@/models/message'
+import { MessageModel } from '@/models/message'
 import { authenticate } from '@/middlewares/auth'
 import { checkMessageAuthor } from '@/middlewares/checkMessageAuthor'
 import { User } from '@/models/user'
@@ -19,16 +19,8 @@ import { Context } from 'koa'
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
-  async createMessage(
-    @Body('text') text: string,
-    @Ctx() ctx: Context,
-    @CurrentUser() user: User
-  ) {
-    try {
-      await createMessage(user, text)
-    } catch (e) {
-      ctx.throw(404)
-    }
+  async createMessage(@Body('text') text: string, @CurrentUser() user: User) {
+    return await new MessageModel({ user, text }).save()
   }
 
   @Flow(checkMessageAuthor)
@@ -47,6 +39,6 @@ export default class MessageController {
   @Flow(checkMessageAuthor)
   @Delete('/:id')
   async deleteMessage(@Ctx() ctx: Context) {
-    return await MessageModel.findOneAndDelete({ _id: ctx.state.message.id })
+    return await MessageModel.deleteOne({ _id: ctx.state.message.id })
   }
 }

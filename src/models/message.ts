@@ -1,9 +1,8 @@
-import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
-import { User } from '@/models/user'
+import { prop, getModelForClass } from '@typegoose/typegoose'
 
 export class Message {
   @prop({ index: true, required: true })
-  user: Ref<User>
+  user: () => 'User'
 
   @prop({ required: true })
   text: string
@@ -12,11 +11,3 @@ export class Message {
 export const MessageModel = getModelForClass(Message, {
   schemaOptions: { timestamps: true },
 })
-
-export function createMessage(user: User, text: string) {
-  return new MessageModel({ user, text }).save()
-}
-
-export function readMessageById(id: string) {
-  return MessageModel.findById(id)
-}
