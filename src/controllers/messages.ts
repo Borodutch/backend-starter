@@ -41,7 +41,7 @@ export default class MessageController {
   }
 
   @Post('/')
-  async addUserMessage(
+  async createUserMessage(
     @Body({ required: true }) body: MessageInput,
     @CurrentUser() user: User
   ) {
