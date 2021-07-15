@@ -10,7 +10,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 describe('REST methods', () => {
   let server: Server
   const token = process.env.TOKEN
-  let id: string
+  let id: string 
 
   beforeAll(async () => {
     const mongoServer = new MongoMemoryServer()
