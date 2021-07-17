@@ -1,3 +1,4 @@
+import { auth, userVerify } from '@/middlewares/auth'
 import {
   createMessage,
   getMessages,
@@ -5,6 +6,8 @@ import {
   deleteMessageById,
   updateMessage,
 } from '@/models/message'
+import { User } from '@/models/user'
+import { Ref } from '@typegoose/typegoose'
 import {
   Controller,
   Ctx,
@@ -15,37 +18,63 @@ import {
   Params,
   Put,
   Body,
+  CurrentUser,
 } from 'amala'
 import { Context } from 'koa'
 
 @Controller('/messages')
+@Flow(auth)
 class MessageController {
   @Get('/')
-  async messageList(@Ctx() ctx: Context) {
-    return await getMessages()
+  async messageList(@CurrentUser() author: Ref<User>) {
+    return await getMessages(author)
   }
 
   @Post('/add')
-  async messageAdd(@Body() addData: string) {
-    await createMessage(addData)
+  async messageAdd(
+    @Body('text') text: string,
+    @CurrentUser() author: Ref<User>
+  ) {
+    await createMessage(text, author)
   }
 
   @Get('/:id')
-  async showSingleMessage(@Params('id') messageId: string) {
-    return await findMessageById(messageId)
+  async showSingleMessage(
+    @Params('id') messageId: string,
+    @CurrentUser() user: Ref<User>,
+    @Ctx() ctx: Context
+  ) {
+    if (await userVerify(messageId, user)) {
+      return await findMessageById(messageId)
+    } else {
+      ctx.throw(400, 'User is not is not allowed to view this message')
+    }
   }
 
   @Delete('/:id')
-  async deleteSingleMessage(@Params('id') messageId: string) {
-    await deleteMessageById(messageId)
+  async deleteSingleMessage(
+    @Params('id') messageId: string,
+    @CurrentUser() user: Ref<User>,
+    @Ctx() ctx: Context
+  ) {
+    if (await userVerify(messageId, user)) {
+      return await deleteMessageById(messageId)
+    } else {
+      ctx.throw(400, 'User is not allowed to delete this message')
+    }
   }
 
   @Put('/:id')
   async updateSingleMessage(
     @Ctx() ctx: Context,
     @Params('id') messageId: any,
-    @Body() putData: string
+    @Body('text') text: string,
+    @CurrentUser() user: Ref<User>
   ) {
-    await updateMessage(messageId, putData)
+    if (await userVerify(messageId, user)) {
+      return await updateMessage(messageId, text)
+    } else {
+      ctx.throw(400, 'User is not allowed to alter this message')
+    }
   }
 }
