@@ -1,17 +1,21 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Flow, Get, Post } from 'amala'
+import { Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import { auth } from '@/middlewares/auth'
 
 @Controller('/login')
 export default class LoginController {
-  @Get('/')
-  @Flow(auth)
-  async login(@Ctx() ctx: Context) {
-    return ctx.state.user
+  @Post('/email')
+  async email(@Ctx() ctx: Context) {
+    const user = await getOrCreateUser({
+      name: ctx.request.body.author.name,
+      email: ctx.request.body.author.email,
+    })
+    ctx.cookies.set('jwt', user.token)
+    return user.strippedAndFilled(true)
   }
 
   @Post('/facebook')
@@ -29,7 +33,6 @@ export default class LoginController {
   @Post('/telegram')
   async telegram(@Ctx() ctx: Context) {
     const data = ctx.request.body
-    // verify the data
     if (!verifyTelegramPayload(data)) {
       return ctx.throw(403)
     }
