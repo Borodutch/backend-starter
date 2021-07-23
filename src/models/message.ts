@@ -17,18 +17,9 @@ export async function getAllMessages(user: User) {
 }
 
 export async function createMessage(message: string, user: User) {
-  return new messageModel({ message: message, user: user }).save()
+  return new messageModel({ message, user }).save()
 }
 
 export async function deleteOneMessage(id: string) {
   return messageModel.findByIdAndDelete(id)
-}
-
-export async function changeMessage(id: string, message: string) {
-  await messageModel.findOneAndUpdate(
-    { _id: id },
-    { message: message },
-    { useFindAndModify: false }
-  )
-  return messageModel.findById(id)
 }

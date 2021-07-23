@@ -4,7 +4,7 @@ import { Server } from 'http'
 
 export function dropMongo() {
   return Promise.all(
-    Object.values(mongoose.connection.collections).map((collection) =>
+    Object.values(mongoose.connection.collections).map((collection: any) =>
       collection.deleteMany({})
     )
   )

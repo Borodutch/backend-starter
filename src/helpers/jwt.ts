@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 
-const secret = process.env.JWT
+const secret = '123' + process.env.JWT
 
 export function sign(payload: object) {
   return new Promise((res, rej) => {

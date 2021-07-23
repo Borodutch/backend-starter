@@ -15,7 +15,6 @@ import {
   createMessage,
   getAllMessages,
   deleteOneMessage,
-  changeMessage,
 } from '@/models/message'
 import { authUser } from '@/middlewares/authUser'
 import { User } from '@/models/user'
@@ -60,6 +59,7 @@ export default class MessageController {
     @Ctx() ctx: Context,
     @Body({ required: true }) body: MessageInput
   ) {
-    return await changeMessage(ctx.state.message?._id, body.message)
+    ctx.state.message.message = body.message
+    return ctx.state.message.save()
   }
 }

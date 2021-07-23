@@ -1,7 +1,7 @@
 import * as crypto from 'crypto'
 
 export interface TelegramLoginPayload {
-  id: number
+  id: string
   hash: string
   auth_date: string
   first_name?: string
