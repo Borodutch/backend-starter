@@ -1,22 +1,18 @@
-import * as mongoose from 'mongoose'
+import { getModelForClass, prop } from '@typegoose/typegoose'
 
+export class Message {
+  @prop({ required: true })
+  authorToken: String
+  @prop({ required: true })
+  body: String
+  @prop({ default: Date.now() })
+  timeOfCreation: Date
 
-const messageSchema = mongoose.Schema({
-  authorToken: {
-    type: String,
-    required: true,
-  },
-  body: {
-    type: String,
-    required: true,
-  },
-  timeOfCreation: {
-    type: Date,
-    default: Date.now(),
-  },
-})
+  //Mongo property
+  _doc: any
+}
 
-const message = mongoose.model('message', messageSchema)
-
-export { message }
-
+export const MessageModel = getModelForClass(Message,
+  {
+    schemaOptions: { timestamps: true },
+  })
