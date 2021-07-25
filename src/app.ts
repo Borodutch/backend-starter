@@ -4,6 +4,7 @@ import * as bodyParser from 'koa-bodyparser'
 import { bootstrapControllers } from 'amala'
 import * as cors from '@koa/cors'
 import * as Router from 'koa-router'
+import {userAuth} from '@/middleware/auth'
 
 export const app = new Koa()
 ;(async () => {
@@ -14,6 +15,7 @@ export const app = new Koa()
       router,
       basePath: '/',
       controllers: [__dirname + '/controllers/*'],
+      flow: [userAuth],
       disableVersioning: true,
     })
     app.use(cors({ origin: '*' }))
