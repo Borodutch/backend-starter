@@ -1,14 +1,13 @@
-import { sign } from '@/helpers/jwt'
-import { prop, getModelForClass, DocumentType} from '@typegoose/typegoose'
-import * as mongoose from 'mongoose';
-import { omit } from 'lodash'
+import { prop, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
+import * as mongoose from 'mongoose'
+import { User } from '@/models/user'
 
 export class Message {
-  @prop({ required: true})
+  @prop({ required: true })
   text: string
 
-  @prop({ required: true})
-  user_id: mongoose.Types.ObjectId
+  @prop({ required: true, ref: 'User' })
+  user: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message, {
