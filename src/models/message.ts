@@ -1,5 +1,4 @@
-import { prop, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
-import * as mongoose from 'mongoose'
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
 export class Message {

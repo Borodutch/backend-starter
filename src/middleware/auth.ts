@@ -1,12 +1,13 @@
-import { UserModel as User } from '@/models/user'
+import { UserModel } from '@/models/user'
+import { Context } from 'koa'
 
-export async function userAuth(ctx, next) {
-  const user = await User.findOne({
-    token: ctx.request.header.accesstoken,
-  }).exec()
+export async function userAuth(ctx: Context, next: Function) {
+  const user = await UserModel.findOne({
+    token: ctx.request.headers.accesstoken,
+  })
   if (user) {
     ctx.state.user = user
-    return next()
+    return await next()
   }
-  ctx.response.status = 401
+  ctx.throw(401)
 }
