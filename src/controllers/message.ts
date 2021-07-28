@@ -12,7 +12,7 @@ import {
   CurrentUser,
   Body,
 } from 'amala'
-import { MessageModel as Message } from '@/models/message'
+import { MessageModel } from '@/models/message'
 import { userAuth } from '@/middleware/auth'
 
 @Controller('/message')
@@ -24,7 +24,7 @@ export default class MessageController {
     @Params('id') id: string,
     @CurrentUser() user: User
   ) {
-    const message = await Message.findOne({
+    const message = await MessageModel.findOne({
       _id: id,
       user: user,
     })
@@ -36,23 +36,15 @@ export default class MessageController {
 
   @Get('/')
   async getMessageByUser(@Ctx() ctx: Context, @CurrentUser() user) {
-    const message = await Message.find({
-      user
+    const message = await MessageModel.find({
+      user,
     })
-    if (!message) {
-      ctx.throw(404)
-    }
     return message
   }
 
   @Post('/')
-  async createMessage(@CurrentUser() user, @Body('text') text: any) {
-    const newMessage = new Message({
-      user: user,
-      text: text,
-    })
-    await newMessage.save()
-    return { status: 'ok', id: newMessage._id }
+  async createMessage(@CurrentUser() user, @Body('text') text: string) {
+    return await new MessageModel({ user, text }).save()
   }
 
   @Delete('/:id')
@@ -61,14 +53,13 @@ export default class MessageController {
     @Params('id') id: string,
     @CurrentUser() user
   ) {
-    const ret = await Message.findOneAndDelete({
+    const deleteMessage = await MessageModel.findOneAndDelete({
       _id: id,
       user: user,
     })
-    if (!ret) {
+    if (!deleteMessage) {
       return ctx.throw(404)
     }
-    return ret
   }
 
   @Put('/:id')
@@ -78,12 +69,9 @@ export default class MessageController {
     @CurrentUser() user: User,
     @Body('text') text: string
   ) {
-    const message = Message.findOneAndUpdate(
-      {
-        _id: id,
-        user: user,
-      },
-      { text: text }
+    const message = await MessageModel.findOneAndUpdate(
+      { _id: id, user },
+      { text }
     )
     if (!message) {
       return ctx.throw(404)

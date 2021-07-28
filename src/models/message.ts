@@ -5,7 +5,7 @@ export class Message {
   @prop({ required: true })
   text: string
 
-  @prop({ required: true, ref: 'User' })
+  @prop({ required: true, ref: () => User })
   user: Ref<User>
 }
 
