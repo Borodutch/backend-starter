@@ -1,18 +1,12 @@
-import { getModelForClass, prop } from '@typegoose/typegoose'
-
+import { getModelForClass, prop, Ref } from '@typegoose/typegoose'
+import { User } from '@/models/user'
 export class Message {
+  @prop({ required: true, ref: 'User' })
+  author: Ref<User>
   @prop({ required: true })
-  authorToken: String
-  @prop({ required: true })
-  body: String
-  @prop({ default: Date.now() })
-  timeOfCreation: Date
-
-  //Mongo property
-  _doc: any
+  text: string
 }
 
-export const MessageModel = getModelForClass(Message,
-  {
-    schemaOptions: { timestamps: true },
-  })
+export const MessageModel = getModelForClass(Message, {
+  schemaOptions: { timestamps: true },
+})

@@ -1,12 +1,12 @@
-import { verify } from '@/helpers/jwt'
 import { Context, Next } from 'koa'
+import { User, UserModel } from '@/models/user'
+import { Ref } from '@typegoose/typegoose'
 
 export const authVerify = async (ctx: Context, next: Next) => {
-  const token = ctx.cookies.get('jwt')
-  if (!token) {
-    return ctx.throw(400, 'Please sign Up')
+  const user: Ref<User> = await UserModel.findOne({ token: ctx.headers.token })
+  if (!user) {
+    return ctx.throw(401, 'Please sign Up')
   }
-  ctx.state.user = await verify(token)
-  console.log(ctx.state.user)
-  return await next()
+  ctx.state.user = user
+  return next()
 }
