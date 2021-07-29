@@ -1,9 +1,14 @@
-import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 import { MessageModel } from '@/models/message'
 import { isEqual } from 'lodash'
+import { Context, Next } from 'koa'
 
-export const authorCheck = async (id_: string, user: Ref<User>) => {
-  const message = await MessageModel.find({ _id: id_ })
-  return isEqual(message[0].author, user._id)
+export const authorCheck = async (ctx: Context, next: Next) => {
+  const user = ctx.state.user
+  const id = ctx.params.id
+  const message = await MessageModel.findOne({ _id: id })
+  if (!isEqual(message.author, user._id)) {
+    ctx.throw(404)
+  }
+  return next()
 }

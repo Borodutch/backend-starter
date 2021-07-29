@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
@@ -10,59 +9,33 @@ import {
   Post,
   Put,
 } from 'amala'
-import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
 import { authVerify } from '@/middleware/auth'
 import { authorCheck } from '@/middleware/authorCheck'
-import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
 @Controller('/message')
 @Flow(authVerify)
 export default class MessageController {
   @Get('/')
-  async showMessages(@Ctx() ctx: Context) {
-    return await MessageModel.find({})
+  async showMessages(@CurrentUser() author: User) {
+    return await MessageModel.find({ author })
   }
 
   @Post('/add')
-  async addMessage(
-    @Ctx() ctx: Context,
-    @CurrentUser() user: Ref<User>,
-    @Body('message') message: string
-  ) {
-    return await MessageModel({
-      author: user,
-      text: message,
-    }).save()
+  async addMessage(@CurrentUser() author: User, @Body('message') text: string) {
+    return await MessageModel({ author, text }).save()
   }
 
   @Delete('/:id')
-  async deleteMessage(
-    @Ctx() ctx: Context,
-    @Params('id') id_: string,
-    @CurrentUser() user: Ref<User>
-  ) {
-    if (await authorCheck(id_, user)) {
-      return await MessageModel.findByIdAndDelete(id_, (err) => {
-        if (err) console.log(err)
-      })
-    }
-    return ctx.throw(403, 'Only author can delete this message')
+  @Flow(authorCheck)
+  async deleteMessage(@Params('id') id: string) {
+    return await MessageModel.findByIdAndDelete(id)
   }
 
   @Put('/:id')
-  async editMessage(
-    @Ctx() ctx: Context,
-    @Params('id') id_: string,
-    @CurrentUser() user: Ref<User>,
-    @Body('message') message: string
-  ) {
-    if (await authorCheck(id_, user)) {
-      return await MessageModel.findByIdAndUpdate(id_, {
-        text: message,
-      })
-    }
-    return ctx.throw(403, 'Only author can edit this message')
+  @Flow(authorCheck)
+  async editMessage(@Params('id') id: string, @Body('message') text: string) {
+    return await MessageModel.findByIdAndUpdate(id, { text })
   }
 }
