@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
+  Ctx,
   CurrentUser,
   Delete,
   Flow,
   Get,
-  Params,
   Post,
   Put,
 } from 'amala'
@@ -13,6 +13,7 @@ import { MessageModel } from '@/models/message'
 import { authVerify } from '@/middleware/auth'
 import { authorCheck } from '@/middleware/authorCheck'
 import { User } from '@/models/user'
+import { Context } from 'koa'
 
 @Controller('/message')
 @Flow(authVerify)
@@ -22,20 +23,20 @@ export default class MessageController {
     return await MessageModel.find({ author })
   }
 
-  @Post('/add')
-  async addMessage(@CurrentUser() author: User, @Body('message') text: string) {
+  @Post('/')
+  async addMessage(@CurrentUser() author: User, @Body('text') text: string) {
     return await MessageModel({ author, text }).save()
   }
 
   @Delete('/:id')
   @Flow(authorCheck)
-  async deleteMessage(@Params('id') id: string) {
-    return await MessageModel.findByIdAndDelete(id)
+  async deleteMessage(@Ctx() ctx: Context) {
+    return await MessageModel.deleteOne(ctx.state.message)
   }
 
   @Put('/:id')
   @Flow(authorCheck)
-  async editMessage(@Params('id') id: string, @Body('message') text: string) {
-    return await MessageModel.findByIdAndUpdate(id, { text })
+  async editMessage(@Ctx() ctx: Context, @Body('text') text: string) {
+    return await MessageModel.updateOne(ctx.state.message, { text })
   }
 }
