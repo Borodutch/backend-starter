@@ -11,7 +11,7 @@ import {
 export default class MessageController {
   @Get('/')
   async readMessages(@Ctx() ctx: Context) {
-    return readMessages(ctx.state.user)
+    return readMessages(ctx.state.user, ctx.state.text)
   }
 
   @Post('/')
