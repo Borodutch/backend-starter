@@ -1,5 +1,5 @@
 import { Context } from 'koa'
-import { Controller, Ctx, Delete, Get, Post, Put, Flow } from 'amala'
+import { Controller, Ctx, Delete, Get, Post, Put,} from 'amala'
 import {
   readMessages,
   createMessage,
