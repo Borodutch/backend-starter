@@ -3,7 +3,7 @@ import { User } from './user'
 
 export class Message {
   @prop()
-  body: string
+  text: string
 
   @prop()
   author: Ref<User>
@@ -14,14 +14,14 @@ export const MessageModel = getModelForClass(Message, {
 })
 
 interface MessageOptions {
-  body: string
+  text: string
   author: Ref<User>
 }
 
 export async function createMessage(messageOptions: MessageOptions) {
   let message: DocumentType<Message> | undefined
   message = new MessageModel({
-    body: messageOptions.body,
+    text: messageOptions.text,
     author: messageOptions.author,
   })
   await message.save()
@@ -41,8 +41,8 @@ export async function getMessage(id: string) {
 export async function updateMessage(id: string, data: any) {
   let message: DocumentType<Message> | undefined
   message = await MessageModel.findById(id)
-  if (data.body) {
-    message.body = data.body
+  if (data.text) {
+    message.text = data.text
   }
   if (data.author) {
     message.author = data.author

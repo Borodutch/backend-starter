@@ -15,11 +15,11 @@ export default class MessageController {
   @Post('/')
   async create(
     @Params('id') id: string,
-    @Query('body') body: string,
+    @Query('text') text: string,
     @Query('author') author: Ref<User>
   ) {
     try {
-      return await createMessage({ body, author })
+      return await createMessage({ text, author })
     } catch (err) {
       console.log(err)
     }
@@ -46,10 +46,10 @@ export default class MessageController {
   @Patch('/:id')
   async update(
     @Params('id') id: string,
-    @Query('body') body: string,
+    @Query('text') text: string,
     @Query('author') author: Ref<User>
   ) {
-    const newMessageData = { body, author }
+    const newMessageData = { text, author }
     try {
       return await updateMessage(id, newMessageData)
     } catch (err) {
