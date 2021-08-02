@@ -3,7 +3,7 @@ import { User } from './user'
 
 export class Message {
   @prop()
-  text: string
+  text: Required<String>
 
   @prop()
   author: Ref<User>
@@ -14,7 +14,7 @@ export const MessageModel = getModelForClass(Message, {
 })
 
 interface MessageOptions {
-  text: string
+  text: Required<String>
   author: Ref<User>
 }
 
