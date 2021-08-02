@@ -7,6 +7,8 @@ import {
   deleteMessage,
 } from '@/models/message'
 import { Controller, Post, Get, Patch, Delete, Params, Query } from 'amala'
+import { Ref } from '@typegoose/typegoose'
+import { User } from '@/models/user'
 
 @Controller('/message')
 export default class MessageController {
@@ -14,7 +16,7 @@ export default class MessageController {
   async create(
     @Params('id') id: string,
     @Query('body') body: string,
-    @Query('createdBy') createdBy: string
+    @Query('createdBy') createdBy: Ref<User>
   ) {
     try {
       return await createMessage({ body, createdBy })
@@ -45,7 +47,7 @@ export default class MessageController {
   async update(
     @Params('id') id: string,
     @Query('body') body: string,
-    @Query('createdBy') createdBy: string
+    @Query('createdBy') createdBy: Ref<User>
   ) {
     const newMessageData = { body, createdBy }
     try {

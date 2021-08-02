@@ -1,11 +1,12 @@
-import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
+import { prop, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
+import { User } from './user'
 
 export class Message {
   @prop()
   body: string
 
   @prop()
-  createdBy: string
+  createdBy: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message, {
@@ -13,8 +14,8 @@ export const MessageModel = getModelForClass(Message, {
 })
 
 interface MessageOptions {
-  body: string | string[]
-  createdBy: string | string[]
+  body: string
+  createdBy: Ref<User>
 }
 
 export async function createMessage(messageOptions: MessageOptions) {
