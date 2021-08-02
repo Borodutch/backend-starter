@@ -16,10 +16,10 @@ export default class MessageController {
   async create(
     @Params('id') id: string,
     @Query('body') body: string,
-    @Query('createdBy') createdBy: Ref<User>
+    @Query('author') author: Ref<User>
   ) {
     try {
-      return await createMessage({ body, createdBy })
+      return await createMessage({ body, author })
     } catch (err) {
       console.log(err)
     }
@@ -47,9 +47,9 @@ export default class MessageController {
   async update(
     @Params('id') id: string,
     @Query('body') body: string,
-    @Query('createdBy') createdBy: Ref<User>
+    @Query('author') author: Ref<User>
   ) {
-    const newMessageData = { body, createdBy }
+    const newMessageData = { body, author }
     try {
       return await updateMessage(id, newMessageData)
     } catch (err) {

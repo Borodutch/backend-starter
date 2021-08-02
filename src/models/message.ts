@@ -6,7 +6,7 @@ export class Message {
   body: string
 
   @prop()
-  createdBy: Ref<User>
+  author: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message, {
@@ -15,14 +15,14 @@ export const MessageModel = getModelForClass(Message, {
 
 interface MessageOptions {
   body: string
-  createdBy: Ref<User>
+  author: Ref<User>
 }
 
 export async function createMessage(messageOptions: MessageOptions) {
   let message: DocumentType<Message> | undefined
   message = new MessageModel({
     body: messageOptions.body,
-    createdBy: messageOptions.createdBy,
+    author: messageOptions.author,
   })
   await message.save()
   return message
@@ -44,8 +44,8 @@ export async function updateMessage(id: string, data: any) {
   if (data.body) {
     message.body = data.body
   }
-  if (data.createdBy) {
-    message.createdBy = data.createdBy
+  if (data.author) {
+    message.author = data.author
   }
 
   await message.save()
