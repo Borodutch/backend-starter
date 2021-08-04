@@ -1,15 +1,18 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post, Body } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
-import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import {
+  TelegramLoginPayload,
+  verifyTelegramPayload,
+} from '@/helpers/verifyTelegramPayload'
 
 @Controller('/login')
 export default class LoginController {
   @Post('/facebook')
-  async facebook(@Ctx() ctx: Context) {
-    const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
+  async facebook(@Body('accessToken') accessToken: string) {
+    const fbProfile: any = await getFBUser(accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
 
@@ -20,8 +23,7 @@ export default class LoginController {
   }
 
   @Post('/telegram')
-  async telegram(@Ctx() ctx: Context) {
-    const data = ctx.request.body
+  async telegram(@Ctx() ctx: Context, @Body() data: TelegramLoginPayload) {
     // verify the data
     if (!verifyTelegramPayload(data)) {
       return ctx.throw(403)
@@ -35,9 +37,7 @@ export default class LoginController {
   }
 
   @Post('/google')
-  async google(@Ctx() ctx: Context) {
-    const accessToken = ctx.request.body.accessToken
-
+  async google(@Body('accessToken') accessToken: string) {
     const userData: any =
       process.env.TESTING === 'true'
         ? testingGoogleMock()
