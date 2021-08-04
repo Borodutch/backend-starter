@@ -21,12 +21,13 @@ describe('Test message CRUD', () => {
 
   beforeEach(async () => {
     await dropMongo()
-    await UserModel.create(completeUser)
+    const testUser = await UserModel.create(completeUser)
 
     const testMessage = await MessageModel.create({
       text: 'New message',
-      user: await UserModel.findOne({ token: testUserToken }),
+      user: testUser,
     })
+
     testMessageId = testMessage._id.toString()
   })
 
