@@ -27,29 +27,17 @@ export default class MessageController {
     @Body('text') text: string,
     @Query('author') author: Ref<User>
   ) {
-    try {
-      return await createMessage({ text, author })
-    } catch (err) {
-      console.log(err)
-    }
+    return await createMessage({ text, author })
   }
 
   @Get('/:id')
   async getOne(@Params('id') id: string) {
-    try {
-      return await getMessage(id)
-    } catch (err) {
-      console.log(err)
-    }
+    return await getMessage(id)
   }
 
   @Get('/all')
   async getAll() {
-    try {
-      return await getAllMessages()
-    } catch (err) {
-      console.log(err)
-    }
+    return await getAllMessages()
   }
 
   @Patch('/:id')
@@ -59,19 +47,11 @@ export default class MessageController {
     @Query('author') author: Ref<User>
   ) {
     const newMessageData = { text, author }
-    try {
-      return await updateMessage(id, newMessageData)
-    } catch (err) {
-      console.log(err)
-    }
+    return await updateMessage(id, newMessageData)
   }
 
   @Delete('/:id')
   async delete(@Params('id') id: string) {
-    try {
-      return await deleteMessage(id)
-    } catch (err) {
-      console.log(err)
-    }
+    return await deleteMessage(id)
   }
 }
