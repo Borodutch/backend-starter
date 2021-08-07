@@ -1,12 +1,11 @@
-import { Context } from 'koa'
 import { Controller, Get, Post, Put, Delete, Flow, Body, Params } from 'amala';
-import { msgModel } from '@/models/index';
+import { msgModel } from '@/models/message';
 
-@Controller('/crud')
-    export class ControllerCRUD {
+@Controller('/messagesCtrl')
+    export class MsgController {
 
-        @Post('/add')    
-        async addAnsw( @Body('msg') message: string | number ) {
+        @Post('/')    
+        async addAnsw( @Body('message') message: string ) {
           const newMessage = await msgModel.create({ msg: message });
           return `Сообщение сохранено. ID:${newMessage._id}. Текст: ${newMessage}`
         };
