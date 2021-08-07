@@ -7,7 +7,10 @@ export function runMongo(mongoUrl = process.env.MONGO) {
     useCreateIndex: true,
     useFindAndModify: true,
   })
-}
+};
 export function stopMongo() {
   return mongoose.disconnect()
-}
+};
+
+export const msgModel = mongoose.model('Message', new mongoose.Schema({ msg: String }));
+
