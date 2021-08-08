@@ -7,8 +7,9 @@ import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
 @Controller('/login')
 export default class LoginController {
+
   @Post('/facebook')
-  async facebook(@Ctx() ctx: Context) {
+  async facebook(@Ctx() ctx) {
     const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
@@ -21,7 +22,7 @@ export default class LoginController {
 
   @Post('/telegram')
   async telegram(@Ctx() ctx: Context) {
-    const data = ctx.request.body
+    const data: any = ctx.request.body
     // verify the data
     if (!verifyTelegramPayload(data)) {
       return ctx.throw(403)
@@ -35,7 +36,7 @@ export default class LoginController {
   }
 
   @Post('/google')
-  async google(@Ctx() ctx: Context) {
+  async google(@Ctx() ctx) {
     const accessToken = ctx.request.body.accessToken
 
     const userData: any =
