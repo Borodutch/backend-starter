@@ -54,6 +54,11 @@ export default class LoginController {
     })
     return user.strippedAndFilled(true)
   }
+
+  @Post('/email')
+  async email(@Ctx() ctx: Context) {
+    const // finish here
+  }
 }
 
 function getFBUser(accessToken: string) {
