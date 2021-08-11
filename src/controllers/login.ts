@@ -1,11 +1,9 @@
 import axios from 'axios'
-import { Context, Request } from 'koa'
+import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
 import { Controller, Ctx, Post, Body } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
-import { stringify } from 'querystring'
-import { isAnyArrayBuffer } from 'util/types'
 
 @Controller('/login')
 export default class LoginController {
