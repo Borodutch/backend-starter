@@ -1,15 +1,16 @@
-import mongoose = require("mongoose");
+import mongoose = require('mongoose')
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
+import { User } from '@/models/user'
 
-const Schema = mongoose.Schema;
+export class Message {
+  @prop({ index: true })
+  title?: string
+  @prop({ index: true })
+  body?: string
+  @prop({ ref: () => User })
+  user?: Ref<User>
+}
 
-const MessageSchema = new Schema({
-  title: String,
-  body: String,
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  }
-});
-
-const Message = mongoose.model("message", MessageSchema);
-export default Message;
+export const MessageModel = getModelForClass(Message, {
+  schemaOptions: { timestamps: true },
+})

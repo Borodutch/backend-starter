@@ -40,8 +40,7 @@ export const UserModel = getModelForClass(User, {
 interface LoginOptions {
   email?: string
   facebookId?: string
-  telegramId?: string
-  
+  telegramId?: number
   name: string
 }
 

@@ -1,19 +1,20 @@
 import axios from 'axios'
-import { Context } from 'koa'
+import { Context, Request } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post } from 'amala'
+import { Controller, Ctx, Post, Body } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import { stringify } from 'querystring'
+import { isAnyArrayBuffer } from 'util/types'
 
 @Controller('/login')
 export default class LoginController {
-
   @Post('/facebook')
-  async facebook(@Ctx() ctx) {
-    const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
+  async facebook(@Body() leadData: { accessToken: string }) {
+    const { accessToken } = leadData
+    const fbProfile: any = await getFBUser(accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
-
       email: fbProfile.email,
       facebookId: fbProfile.id,
     })
@@ -22,7 +23,13 @@ export default class LoginController {
 
   @Post('/telegram')
   async telegram(@Ctx() ctx: Context) {
-    const data: any = ctx.request.body
+    const data = ctx.request.body as {
+      id: number
+      hash: string
+      auth_date: string
+      first_name: string
+      last_name: string
+    }
     // verify the data
     if (!verifyTelegramPayload(data)) {
       return ctx.throw(403)
@@ -36,9 +43,8 @@ export default class LoginController {
   }
 
   @Post('/google')
-  async google(@Ctx() ctx) {
-    const accessToken = ctx.request.body.accessToken
-
+  async google(@Body() leadData: { accessToken: string }) {
+    const { accessToken } = leadData
     const userData: any =
       process.env.TESTING === 'true'
         ? testingGoogleMock()
@@ -56,17 +62,12 @@ export default class LoginController {
     return user.strippedAndFilled(true)
   }
 
-  // Login without password for testing purpose
-  // {
-  //   "name": "User Name",
-  //   "email": "User Email"
-  // }
-  @Post('/')
-  async loginTestUser(@Ctx() ctx: Context){
-    const {name, email}: any = ctx.request.body
+  @Post('/email')
+  async loginTestUser(@Body() leadData: { name: string; email: string }) {
+    const { name, email } = leadData
     const user = await getOrCreateUser({
       name,
-      email
+      email,
     })
     return user.strippedAndFilled(true)
   }
