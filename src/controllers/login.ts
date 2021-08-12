@@ -1,16 +1,15 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Body, Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, KoaBodyOptions, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
 @Controller('/login')
 export default class LoginController {
   @Post('/facebook')
-  async facebook(@Body() leadData: { accessToken: string }) {
-    const { accessToken } = leadData
-    const fbProfile: any = await getFBUser(accessToken)
+  async facebook(@Ctx() ctx: Context) {
+    const fbProfile: any = await getFBUser(ctx.request.body.accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
       email: fbProfile.email,
@@ -41,8 +40,9 @@ export default class LoginController {
   }
 
   @Post('/google')
-  async google(@Body() leadData: { accessToken: string }) {
-    const { accessToken } = leadData
+  async google(@Ctx() ctx: Context) {
+    const accessToken = ctx.request.body.accessToken
+
     const userData: any =
       process.env.TESTING === 'true'
         ? testingGoogleMock()
@@ -61,7 +61,10 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async loginTestUser(@Body('name') name: string, @Body('email') email: string) {
+  async loginTestUser(
+    @Body('name') name: string,
+    @Body('email') email: string
+  ) {
     const user = await getOrCreateUser({
       name,
       email,
