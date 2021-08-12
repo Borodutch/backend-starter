@@ -41,6 +41,7 @@ interface LoginOptions {
   email?: string
   facebookId?: string
   telegramId?: number
+
   name: string
 }
 

@@ -1,27 +1,26 @@
 import { MessageModel as Message } from '@/models/message'
 import { Context } from 'koa'
-import { Controller, Ctx, Delete, Get, Params, Post, Put } from 'amala'
+import { Body, Controller, Ctx, Delete, Get, Params, Post, Put } from 'amala'
 
 @Controller('/message')
 export default class MessageController {
   @Post('/')
-  async createMessage(@Ctx() ctx: Context) {
-    const messageProps: any = ctx.request.body
+  async createMessage(@Body() leadData: { accessToken: string }) {
+    const messageProps = leadData
     let message = await Message.create(messageProps)
     message = await message.populate('user').execPopulate()
     return message
   }
 
   @Get('/:id')
-  async getMessage(@Params() params: any) {
-    const id = params.id
+  async getMessage(@Params('id') id: string) {
     const message = await Message.findById(id)
     return message
   }
 
   @Put('/:id')
-  async updateMessage(@Ctx() ctx: Context) {
-    const id = ctx.originalUrl.split('/')[2]
+  async updateMessage(@Params('id') id: string, @Ctx() ctx: Context) {
+    console.log(ctx.request.body)
     const messageProps: any = ctx.request.body
     await Message.findByIdAndUpdate(
       id,
@@ -39,7 +38,7 @@ export default class MessageController {
   @Delete('/:id')
   async deleteMessage(@Params() params: any) {
     const id = params.id
-    await Message.findByIdAndDelete(id)
+    Message.findByIdAndDelete(id)
       .then((deleteMessage) => {
         console.log(deleteMessage)
       })

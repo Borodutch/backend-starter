@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Controller, Ctx, Post, Body } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
@@ -61,8 +61,7 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async loginTestUser(@Body() leadData: { name: string; email: string }) {
-    const { name, email } = leadData
+  async loginTestUser(@Body('name') name: string, @Body('email') email: string) {
     const user = await getOrCreateUser({
       name,
       email,
