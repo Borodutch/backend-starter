@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Body, Controller, Ctx, KoaBodyOptions, Post } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 
