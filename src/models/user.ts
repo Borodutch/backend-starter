@@ -7,8 +7,8 @@ export class User {
   email?: string
   @prop({ index: true, lowercase: true })
   facebookId?: string
-  @prop({ index: true, lowercase: true })
-  telegramId?: string
+  @prop({ index: true })
+  telegramId?: number
   @prop({ required: true, index: true })
   name: string
 

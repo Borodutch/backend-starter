@@ -1,14 +1,29 @@
 import { MessageModel as Message } from '@/models/message'
 import { Context } from 'koa'
-import { Body, Controller, Ctx, Delete, Get, Params, Post, Put } from 'amala'
+import {
+  Body,
+  Controller,
+  Ctx,
+  CurrentUser,
+  Delete,
+  Get,
+  Params,
+  Post,
+  Put,
+  Flow,
+} from 'amala'
+import { authMiddleware } from '@/helpers/authMiddleware'
 
 @Controller('/message')
+@Flow([authMiddleware])
 export default class MessageController {
   @Post('/')
-  async createMessage(@Body() leadData: { accessToken: string }) {
-    const messageProps = leadData
-    let message = await Message.create(messageProps)
-    message = await message.populate('user').execPopulate()
+  async createMessage(@Body('text') text: string, @CurrentUser() currentUser) {
+    const user = currentUser._id
+    const message = await Message.create({
+      text,
+      user,
+    })
     return message
   }
 
@@ -38,12 +53,12 @@ export default class MessageController {
   @Delete('/:id')
   async deleteMessage(@Params() params: any) {
     const id = params.id
-    Message.findByIdAndDelete(id)
-      .then((deleteMessage) => {
-        console.log(deleteMessage)
-      })
-      .catch((err) => {
+    await Message.findByIdAndDelete(id, function (err, deleteMessage) {
+      if (err) {
         console.log(err)
-      })
+      } else {
+        console.log(deleteMessage)
+      }
+    })
   }
 }
