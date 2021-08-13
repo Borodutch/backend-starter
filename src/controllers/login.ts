@@ -54,6 +54,7 @@ export default class LoginController {
     })
     return user.strippedAndFilled(true)
   }
+  
   @Post('/email')
   async email(@Body('email') email: string, @Body('name') name: string) {
     const user = await getOrCreateUser({
