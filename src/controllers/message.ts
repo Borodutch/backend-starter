@@ -18,8 +18,7 @@ import { authMiddleware } from '@/helpers/authMiddleware'
 @Flow([authMiddleware])
 export default class MessageController {
   @Post('/')
-  async createMessage(@Body('text') text: string, @CurrentUser() currentUser) {
-    const user = currentUser._id
+  async createMessage(@Body('text') text: string, @CurrentUser() user) {
     const message = await Message.create({
       text,
       user,
@@ -28,32 +27,42 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  async getMessage(@Params('id') id: string) {
+  async getMessage(
+    @Params('id') id: string,
+    @CurrentUser() user,
+    @Ctx() ctx: Context
+  ) {
     const message = await Message.findById(id)
-    return message
+    if (String(message.user) === String(user._id)) {
+      return message
+    } else {
+      return ctx.throw(404, 'Not Found')
+    }
   }
 
   @Put('/:id')
-  async updateMessage(@Params('id') id: string, @Ctx() ctx: Context) {
-    console.log(ctx.request.body)
-    const messageProps: any = ctx.request.body
-    await Message.findByIdAndUpdate(
+  updateMessage(
+    @Params('id') id: string,
+    @Body() messageProps,
+    @Ctx() ctx: Context
+  ) {
+    Message.findByIdAndUpdate(
       id,
       { $set: messageProps },
       { new: true },
       (err, updatedMessage) => {
         if (err) {
-          console.log(err)
+          return ctx.throw(404, 'Not Found')
         }
-        console.log(updatedMessage)
+        return updatedMessage
       }
     )
   }
 
   @Delete('/:id')
-  async deleteMessage(@Params() params: any) {
+  deleteMessage(@Params() params: any) {
     const id = params.id
-    await Message.findByIdAndDelete(id, function (err, deleteMessage) {
+    Message.findByIdAndDelete(id, function (err, deleteMessage) {
       if (err) {
         console.log(err)
       } else {
