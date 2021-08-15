@@ -8,5 +8,6 @@ export async function checkUsersMiddleware(ctx: Context, next: Next) {
   if (!(String(message.user) === String(user._id))) {
     return ctx.throw(404, 'Not Found')
   }
+  ctx.state.message = message
   next()
 }

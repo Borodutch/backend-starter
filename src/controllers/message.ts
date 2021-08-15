@@ -14,10 +14,9 @@ import {
 } from 'amala'
 import { authMiddleware } from '@/helpers/authMiddleware'
 import { checkUsersMiddleware } from '@/helpers/checkUsersMiddleware'
-import { off } from 'process'
 
 @Controller('/message')
-@Flow([authMiddleware])
+@Flow(authMiddleware)
 export default class MessageController {
   @Post('/')
   async createMessage(@Body('text') text: string, @CurrentUser() user) {
@@ -28,13 +27,13 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  @Flow([checkUsersMiddleware])
-  async getMessage(@Params('id') id: string) {
-    return await Message.findById(id)
+  @Flow(checkUsersMiddleware)
+  async getMessage(@Ctx() ctx: Context) {
+    return ctx.state.message
   }
 
   @Put('/:id')
-  @Flow([checkUsersMiddleware])
+  @Flow(checkUsersMiddleware)
   async updateMessage(
     @Params('id') id: string,
     @Body() messageProps,
@@ -52,7 +51,7 @@ export default class MessageController {
   }
 
   @Delete('/:id')
-  @Flow([checkUsersMiddleware])
+  @Flow(checkUsersMiddleware)
   async deleteMessage(@Params() params: any) {
     const id = params.id
     return await Message.findByIdAndDelete(id)
