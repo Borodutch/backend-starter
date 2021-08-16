@@ -1,8 +1,10 @@
+import { userAuth } from '@/middleware/authenticate'
 import { MessageModel } from '@/models/message' 
 import { User } from '@/models/user' 
 import { Context } from 'koa' 
 import { 
   Controller, 
+  Flow,
   Get, 
   Post, 
   Put, 
@@ -13,6 +15,7 @@ import {
 } from 'amala' 
  
 @Controller('/message') 
+@Flow(userAuth)
 export default class MessageController { 
   @Get('/') 
   async showMessages(@CurrentUser() author: User) { 
