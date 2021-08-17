@@ -13,7 +13,7 @@
     "build-ts": "tsc --skipLibCheck",
     "watch-ts": "tsc -w --skipLibCheck",
     "watch-js": "nodemon dist/server.js",
-    "test": "yarn jest --forceExit"
+    "test": "yarn jest --forceExit --setupFiles dotenv/config"
   },
   "devDependencies": {
     "@koa/cors": "^3.1.0",

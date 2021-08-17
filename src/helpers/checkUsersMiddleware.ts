@@ -9,5 +9,5 @@ export async function checkUsersMiddleware(ctx: Context, next: Next) {
     return ctx.throw(404, 'Not Found')
   }
   ctx.state.message = message
-  next()
+  return next()
 }

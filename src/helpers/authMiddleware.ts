@@ -11,5 +11,5 @@ export async function authMiddleware(ctx: Context, next: Next) {
     return ctx.throw(401, 'unauthorized')
   }
   ctx.state.user = user
-  next()
+  return next()
 }
