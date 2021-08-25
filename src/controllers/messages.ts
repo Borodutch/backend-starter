@@ -1,33 +1,31 @@
-import { Controller, Get, Post, Put, Delete, Flow, Body, Params } from 'amala';
-import { msgModel } from '@/models/message';
+import { Controller, Get, Post, Put, Delete, Body, Params } from 'amala'
+import { messageModel } from '@/models/message'
 
-@Controller('/messagesCtrl')
-    export class MsgController {
+@Controller('/message')
+export class MessageController {
+  @Post('/')
+  async addMessage(@Body('message') message: string) {
+    const newMessage = await messageModel.create({ text: message })
+    return newMessage
+  }
 
-        @Post('/')    
-        async addAnsw( @Body('message') message: string ) {
-          const newMessage = await msgModel.create({ msg: message });
-          return `Сообщение сохранено. ID:${newMessage._id}. Текст: ${newMessage}`
-        };
-        
-        @Get('/')    
-        async getAnsw() {
-          const messages = await msgModel.find()
-          return messages
-        };
+  @Get('/')
+  async getMessages() {
+    const messages = await messageModel.find()
+    return messages
+  }
 
-        @Delete('/:id')    
-        async delAnsw( @Params('id') id: any ) {
-          await msgModel.deleteOne({_id: id})
-          return `Сообщение с ID: ${id} удалено`
-        };
+  @Delete('/:id')
+  async delMessage(@Params('id') id: any) {
+    await messageModel.deleteOne({ _id: id })
+    return `Сообщение с ID: ${id} удалено`
+  }
 
-        @Put('/:id')    
-        async putAnsw( @Params('id') id: any, @Body('newMsg') newMsg: string ) {
-          const message = await msgModel.findOne({_id: id});
-          message.msg = newMsg;
-          await message.save();
-          return `Собщение измененено: ${message}`
-        };
-
-    };
+  @Put('/:id')
+  async putMessage(@Params('id') id: any, @Body('newMessage') newText: string) {
+    const message = await messageModel.findOne({ _id: id })
+    message.text = newText
+    await message.save()
+    return `Собщение измененено: ${message}`
+  }
+}

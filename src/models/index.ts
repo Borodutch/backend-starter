@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import * as mongoose from 'mongoose'
 
 export function runMongo(mongoUrl = process.env.MONGO) {
   return mongoose.connect(mongoUrl, {
@@ -7,9 +7,8 @@ export function runMongo(mongoUrl = process.env.MONGO) {
     useCreateIndex: true,
     useFindAndModify: true,
   })
-};
+}
+
 export function stopMongo() {
   return mongoose.disconnect()
-};
-
-
+}

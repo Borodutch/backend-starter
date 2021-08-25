@@ -1,8 +1,8 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
 
 export class Message {
-    @prop({ required: true })
-    msg: string
-};
+  @prop({ required: true })
+  text: string
+}
 
-export const msgModel = getModelForClass(Message)
+export const messageModel = getModelForClass(Message)
