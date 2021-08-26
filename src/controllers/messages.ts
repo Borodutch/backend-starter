@@ -4,28 +4,26 @@ import { messageModel } from '@/models/message'
 @Controller('/message')
 export class MessageController {
   @Post('/')
-  async addMessage(@Body('message') message: string) {
-    const newMessage = await messageModel.create({ text: message })
-    return newMessage
+  async addMessage(@Body('message') text: string) {
+    return await messageModel.create({ text })
   }
 
   @Get('/')
   async getMessages() {
-    const messages = await messageModel.find()
-    return messages
+    return await messageModel.find()
   }
 
   @Delete('/:id')
-  async delMessage(@Params('id') id: any) {
-    await messageModel.deleteOne({ _id: id })
-    return `Сообщение с ID: ${id} удалено`
+  async delMessage(@Params('id') _id: string) {
+    const deletedText = await messageModel.deleteOne({ _id })
+    return { _id, deleted: true }
   }
 
   @Put('/:id')
-  async putMessage(@Params('id') id: any, @Body('newMessage') newText: string) {
-    const message = await messageModel.findOne({ _id: id })
+  async putMessage(@Params('id') _id: string, @Body('text') newText: string) {
+    const message = await messageModel.findOne({ _id })
     message.text = newText
     await message.save()
-    return `Собщение измененено: ${message}`
+    return message
   }
 }

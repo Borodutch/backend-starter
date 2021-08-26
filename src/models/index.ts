@@ -8,7 +8,6 @@ export function runMongo(mongoUrl = process.env.MONGO) {
     useFindAndModify: true,
   })
 }
-
 export function stopMongo() {
   return mongoose.disconnect()
 }
