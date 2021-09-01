@@ -1,11 +1,15 @@
-import {Context, Next} from 'koa'
 import { MessageModel } from '@/models/message'
-export async function CheckUser(ctx: Context, next: Next){
-    const message = await MessageModel.findById(ctx.params.id)
+import { Context, Next } from 'koa'
 
-    const user = ctx.state.user
+export async function checkUser(ctx: Context, next: Next) {
+  const msgId = ctx.params.id
 
-    if(message.user == user.id) {
-        return next()
-    }
+  const user = ctx.state.user
+
+  const message = await MessageModel.findById(msgId)
+
+  if (message.user['_id'] == user.id) {
+    ctx.state.message = message
+    return next()
+  }
 }
