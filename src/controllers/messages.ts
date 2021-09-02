@@ -1,6 +1,6 @@
 import { MessageModel } from '@/models/message'
-import { auth } from '@/controllers/middlewares/auth'
-import { checkMessage } from '@/controllers/middlewares/checkMessage'
+import { auth } from '@/middlewares/auth'
+import { checkMessage } from '@/middlewares/checkMessage'
 import {
   Controller,
   Flow,
@@ -18,7 +18,7 @@ import { Context } from 'koa'
 @Flow(auth)
 export default class {
   @Post('/')
-  async create(@Body('text') text, @CurrentUser() user, @Ctx() ctx) {
+  async create(@Body('text') text, @CurrentUser() user, @Ctx() ctx: Context) {
     await new MessageModel({ author: user, text }).save()
     ctx.status = 200
   }
@@ -31,7 +31,7 @@ export default class {
 
   @Get('/:id')
   @Flow(checkMessage)
-  async getOne(@Ctx() ctx) {
+  async getOne(@Ctx() ctx: Context) {
     return ctx.state.message
   }
 

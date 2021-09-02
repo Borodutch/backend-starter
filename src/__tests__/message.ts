@@ -10,7 +10,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 describe('REST methods', () => {
   let server: Server
   const token = process.env.TOKEN
-  let id: string  
+  let id: string
 
   beforeAll(async () => {
     const mongoServer = new MongoMemoryServer()
@@ -54,7 +54,7 @@ describe('REST methods', () => {
       .put(`/${id}`)
       .set('Authorization', token)
       .send({ text: 'text edited' })
-    expect(putResponse.statusCode).toEqual(204)  
+    expect(putResponse.statusCode).toEqual(204)
   })
 
   it('should delete a message', async () => {

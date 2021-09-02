@@ -16,7 +16,7 @@ export const app = new Koa()
       controllers: [__dirname + '/controllers/*'],
       disableVersioning: true,
     })
-    app.use(cors({ origin: '*' }))
+    app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
     app.use(bodyParser())
     app.use(router.routes())
     app.use(router.allowedMethods())

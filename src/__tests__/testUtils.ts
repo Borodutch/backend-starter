@@ -31,9 +31,9 @@ export function stopServer(server: Server) {
 }
 
 export const completeUser = {
-  name: 'Alexander Brennenburg',
-  email: 'alexanderrennenburg@gmail.com',
+  username: 'Alexander Brennenburg',
+  password: 'alexanderrennenburg@gmail.com',
   token:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWxleGFuZGVyIEJyZW5uZW5idXJnIiwic3Vic2NyaXB0aW9uU3RhdHVzIjoidHJpYWwiLCJkZWxlZ2F0ZUludml0ZVRva2VuIjoiR090WWwyRUVaSE1OMmF1cSIsImVtYWlsIjoiYWxleGFuZGVycmVubmVuYnVyZ0BnbWFpbC5jb20iLCJpYXQiOjE2MDUxMjY5MTF9.Z17DwU2HuIcqBgvrzl65X47q3iRMuvybbYLmz9yc5ns',
-  _doc: '1',
+ 
 }
