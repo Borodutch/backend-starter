@@ -10,6 +10,12 @@ import {
 
 @Controller('/login')
 export default class LoginController {
+  @Post('/email')
+  async email(@Body('email') email: string, @Body('name') name: string) {
+    const user = await getOrCreateUser({ name, email })
+    return user.strippedAndFilled(true)
+  }
+
   @Post('/facebook')
   async facebook(@Body('accessToken') accessToken: string) {
     const fbProfile: any = await getFBUser(accessToken)
@@ -75,3 +81,9 @@ function testingGoogleMock() {
     email: 'alexanderrennenburg@gmail.com',
   }
 }
+
+// For testing
+// {
+//   "email": "babaksemion@gmail.com",
+//   "name": "Semion"
+// }
