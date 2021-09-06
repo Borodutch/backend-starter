@@ -16,23 +16,17 @@ import { auth } from '@/middleware/authMiddleware'
 @Flow(auth)
 export class MessageController {
   @Post('/')
-  async addMessage(
-    @Body('text') text: string,
-    @CurrentUser('name') author: string
-  ) {
+  async addMessage(@Body('text') text: string, @CurrentUser() author: string) {
     return await messageModel.create({ text, author })
   }
 
   @Get('/')
-  async getMessages(@CurrentUser('name') author: string) {
+  async getMessages(@CurrentUser() author: string) {
     return await messageModel.find({ author })
   }
 
   @Delete('/:id')
-  async delMessage(
-    @Params('id') _id: string,
-    @CurrentUser('name') author: string
-  ) {
+  async delMessage(@Params('id') _id: string, @CurrentUser() author: string) {
     const deletedText = await messageModel.deleteOne({ _id, author })
     if (deletedText['deletedCount'] === 0) {
       return {
@@ -48,7 +42,7 @@ export class MessageController {
   async putMessage(
     @Params('id') _id: string,
     @Body('text') text: string,
-    @CurrentUser('name') author: string
+    @CurrentUser() author: string
   ) {
     const updateText = await messageModel.updateOne({ _id, author }, { text })
     if (updateText['nModified'] === 0) {

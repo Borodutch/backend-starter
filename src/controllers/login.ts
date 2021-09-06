@@ -81,9 +81,3 @@ function testingGoogleMock() {
     email: 'alexanderrennenburg@gmail.com',
   }
 }
-
-// For testing
-// {
-//   "email": "babaksemion@gmail.com",
-//   "name": "Semion"
-// }
