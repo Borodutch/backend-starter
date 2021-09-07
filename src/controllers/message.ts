@@ -11,8 +11,9 @@ import {
   Ctx,
 } from 'amala'
 import { MessageModel } from '@/models/message'
-import { auth, authMessage } from '@/middleware/auth'
+import { auth } from '@/middleware/auth'
 import { Context } from 'koa'
+import { checkRights } from '@/middleware/checkRights'
 
 @Controller('/message')
 export class MessageController {
@@ -27,13 +28,13 @@ export class MessageController {
     return await MessageModel.find({ author })
   }
 
-  @Flow(authMessage)
+  @Flow([auth, checkRights])
   @Delete('/:id')
   async delMessage(@Ctx() ctx: Context) {
     return ctx.state.message.remove()
   }
 
-  @Flow(authMessage)
+  @Flow([auth, checkRights])
   @Put('/:id')
   async putMessage(@Ctx() ctx: Context, @Body('text') text: string) {
     ctx.state.message.text = text
