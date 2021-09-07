@@ -8,46 +8,35 @@ import {
   Params,
   Flow,
   CurrentUser,
+  Ctx,
 } from 'amala'
-import { messageModel } from '@/models/message'
-import { auth } from '@/middleware/authMiddleware'
+import { MessageModel } from '@/models/message'
+import { auth, authMessage } from '@/middleware/auth'
+import { Context } from 'koa'
 
 @Controller('/message')
-@Flow(auth)
 export class MessageController {
+  @Flow(auth)
   @Post('/')
   async addMessage(@Body('text') text: string, @CurrentUser() author: string) {
-    return await messageModel.create({ text, author })
+    return await MessageModel.create({ text, author })
   }
-
+  @Flow(auth)
   @Get('/')
   async getMessages(@CurrentUser() author: string) {
-    return await messageModel.find({ author })
+    return await MessageModel.find({ author })
   }
 
+  @Flow(authMessage)
   @Delete('/:id')
-  async delMessage(@Params('id') _id: string, @CurrentUser() author: string) {
-    const deletedText = await messageModel.deleteOne({ _id, author })
-    if (deletedText['deletedCount'] === 0) {
-      return {
-        _id,
-        deleted: false,
-        reason: 'Its not your messge or mistake in ID',
-      }
-    }
-    return { _id, deleted: true }
+  async delMessage(@Ctx() ctx: Context) {
+    return ctx.state.message.remove()
   }
 
+  @Flow(authMessage)
   @Put('/:id')
-  async putMessage(
-    @Params('id') _id: string,
-    @Body('text') text: string,
-    @CurrentUser() author: string
-  ) {
-    const updateText = await messageModel.updateOne({ _id, author }, { text })
-    if (updateText['nModified'] === 0) {
-      return { type: 'Error', reason: 'Cant find this message in your profile' }
-    }
-    return updateText
+  async putMessage(@Ctx() ctx: Context, @Body('text') text: string) {
+    ctx.state.message.text = text
+    return await ctx.state.message.save()
   }
 }

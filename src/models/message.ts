@@ -4,8 +4,8 @@ import { User } from '@/models/user'
 export class Message {
   @prop({ required: true })
   text: string
-  @prop({ required: false, ref: () => User })
-  author: Ref<User>
+  @prop({ ref: () => User })
+  author?: Ref<User>
 }
 
-export const messageModel = getModelForClass(Message)
+export const MessageModel = getModelForClass(Message)
