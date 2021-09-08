@@ -22,6 +22,7 @@ export class MessageController {
   async addMessage(@Body('text') text: string, @CurrentUser() author: string) {
     return await MessageModel.create({ text, author })
   }
+
   @Get('/')
   async getMessages(@CurrentUser() author: string) {
     return await MessageModel.find({ author })
