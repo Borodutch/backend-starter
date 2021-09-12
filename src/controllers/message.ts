@@ -31,7 +31,7 @@ export class MessageController {
   @Flow(checkRights)
   @Delete('/:id')
   async delMessage(@Ctx() ctx: Context) {
-    return ctx.state.message.remove()
+    return await ctx.state.message.remove()
   }
 
   @Flow(checkRights)

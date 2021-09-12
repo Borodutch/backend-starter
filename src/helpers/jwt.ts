@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken'
-
+require('dotenv').config()
 const secret = process.env.JWT
 
 export function sign(payload: object) {
