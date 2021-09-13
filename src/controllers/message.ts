@@ -13,7 +13,7 @@ import { MessageModel } from '@/models/message'
 import { User } from '@/models/user'
 import { Context } from 'koa'
 import { authentication } from '@/middlewares/auth'
-import { checkUser } from '@/middlewares/CheckUser'
+import { checkUser } from '@/middlewares/checkUser'
 
 @Flow(authentication)
 @Controller('/messages')
@@ -39,6 +39,6 @@ export default class MessageController {
   @Flow(checkUser)
   @Delete('/:id')
   async deleteMessage(@Ctx() ctx: Context) {
-    return await MessageModel.deleteOne({ _id: ctx.state.message.id })
+    return await ctx.state.message.remove()
   }
 }

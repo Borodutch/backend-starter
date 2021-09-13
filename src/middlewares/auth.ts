@@ -1,19 +1,14 @@
 import { Context, Next } from 'koa'
-import { verify } from '@/helpers/jwt'
-import { getOrCreateUser } from '@/models/user'
+import { UserModel } from '@/models/user'
 
 export async function authentication(ctx: Context, next: Next) {
   const token = ctx.headers.token as string
   if (token) {
-    try {
-      const verifyToken = (await verify(token)) as {
-        name: string
-        email: string
-      }
-      ctx.state.user = await getOrCreateUser(verifyToken)
+      ctx.state.user = await UserModel.findOne({token})
       return next()
-    } catch (err) {
-      return ctx.throw(401)
-    }
+    } 
+   if (!token) {
+    ctx.response.status = 404
+    return ctx.throw(404, "token not found")
   }
 }
