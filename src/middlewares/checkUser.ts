@@ -8,10 +8,10 @@ export async function checkUser(ctx: Context, next: Next) {
 
   const message = await MessageModel.findById(messageId)
 
-  if (message.user['_id'] == user.id) {
+  if (message.user._id == user.id) {
     ctx.state.message = message
     return next()
   } else {
-    return ctx.throw("you cannot change others messages")
+    return ctx.throw('you cannot change others messages')
   }
 }
