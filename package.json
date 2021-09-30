@@ -23,7 +23,7 @@
     "@types/jsonwebtoken": "^8.5.2",
     "@types/koa": "^2.13.3",
     "@types/lodash": "^4.14.168",
-    "@types/mongoose": "^5.10.2",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^15.12.5",
     "concurrently": "^6.0.0",
     "jest": "^27.0.6",
