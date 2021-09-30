@@ -1,4 +1,3 @@
-import { Context } from 'koa'
 import { Body, Controller, Delete, Get, Post, Put } from 'amala'
 import { MessageModel } from '@/models/message'
 
@@ -11,7 +10,7 @@ export class messageController {
 
   @Get('/:id')
   async receiveMessage(@Body('id') id: undefined) {
-    return await MessageModel.findOne({ _id: id })
+    return await MessageModel.findById(id)
   }
 
   @Put('/:id')
@@ -19,7 +18,7 @@ export class messageController {
     @Body('id') id: undefined,
     @Body('newText') newText: string
   ) {
-    const message = await MessageModel.findOne({ _id: id })
+    const message = await MessageModel.findById(id)
     message.text = newText
     await message.save()
     return { success: true }
@@ -27,7 +26,7 @@ export class messageController {
 
   @Delete('/:id')
   async deleteMessage(@Body('id') id: undefined) {
-    await MessageModel.deleteOne({ _id: id })
+    await MessageModel.findByIdAndDelete(id)
     return { success: true }
   }
 }

@@ -22,6 +22,8 @@
     "@types/jest": "^26.0.20",
     "@types/jsonwebtoken": "^8.5.2",
     "@types/koa": "^2.13.3",
+    "@types/koa__cors": "^3.0.3",
+    "@types/koa-router": "^7.4.4",
     "@types/lodash": "^4.14.168",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^15.12.5",
