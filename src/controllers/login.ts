@@ -56,8 +56,7 @@ export default class LoginController {
   }
 
   @Post('/')
-  async testLogin(@Ctx() ctx: Context) {
-    const { name, email }: any = ctx.request.body
+  async testLogin(@Body('name') name: string, @Body('email') email: string) {
     const user = await getOrCreateUser({
       name,
       email,
