@@ -19,8 +19,8 @@ import { checkUser } from '@/middlewares/checkUser'
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
-  async createMessage(@Body('text') text: string, @CurrentUser() user: User) {
-    return await new MessageModel({ user, text }).save()
+  async createMessage(@Body('text') text: string, @CurrentUser() author: User) {
+    return await new MessageModel({ author, text }).save()
   }
 
   @Flow(checkUser)

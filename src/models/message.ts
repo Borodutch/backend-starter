@@ -3,7 +3,7 @@ import { User } from '@/models/user'
 
 export class Message {
   @prop({ index: true, required: true, ref: User })
-  user: Ref<User>
+  author: Ref<User>
 
   @prop({ required: true })
   text: string
