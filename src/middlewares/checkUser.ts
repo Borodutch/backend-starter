@@ -8,14 +8,14 @@ export async function checkUser(ctx: Context, next: Next) {
 
   const message = await MessageModel.findById(messageId)
 
-  if (!message) {
-    return ctx.throw("User don't have any messages or unauthorized")
+  if (!message.author._id) {
+    return ctx.throw('Unauthorized')
   }
 
-  if (message.user._id == user.id) {
+  if (message.author._id == user.id) {
     ctx.state.message = message
     return next()
   } else {
-    return ctx.throw('you cannot change others messages')
+    return ctx.throw('404 Error')
   }
 }

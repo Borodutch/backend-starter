@@ -9,5 +9,10 @@ export async function authentication(ctx: Context, next: Next) {
   }
 
   ctx.state.user = await UserModel.findOne({ token })
+
+  if (!ctx.state.user) {
+    return ctx.throw(401, 'User unauthorized ')
+  }
+
   return next()
 }
