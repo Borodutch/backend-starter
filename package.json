@@ -22,6 +22,7 @@
     "@types/jest": "^26.0.20",
     "@types/jsonwebtoken": "^8.5.2",
     "@types/koa": "^2.13.3",
+    "@types/koa-router": "^7.4.4",
     "@types/lodash": "^4.14.168",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^15.12.5",
@@ -34,6 +35,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@koa/router": "^10.1.1",
     "@types/koa-bodyparser": "^4.3.1",
     "amala": "^7.0.0",
     "axios": "^0.21.1",
@@ -43,7 +45,7 @@
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
-    "koa-router": "^10.0.0",
+    "koa-router": "^10.1.1",
     "lodash": "^4.17.21",
     "module-alias": "^2.2.2",
     "mongoose": "5.10.18"
