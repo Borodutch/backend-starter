@@ -1,8 +1,9 @@
-import { sign } from '@/helpers/jwt'
-import { prop, getModelForClass, DocumentType } from '@typegoose/typegoose'
+import { DocumentType, getModelForClass, prop } from '@typegoose/typegoose'
 import { omit } from 'lodash'
+import { sign } from '@/helpers/jwt'
+import MongoDocument from '@/models/MongoDocument'
 
-export class User {
+export class User extends MongoDocument<User> {
   @prop({ index: true, lowercase: true })
   email?: string
   @prop({ index: true, lowercase: true })
@@ -28,9 +29,6 @@ export class User {
     }
     return omit(this._doc, stripFields)
   }
-
-  // Mongo property
-  _doc: any
 }
 
 export const UserModel = getModelForClass(User, {
@@ -77,9 +75,7 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
     ) {
       throw new Error()
     }
-    const params = {
-      name: loginOptions.name,
-    } as any
+    const params: LoginOptions = { name: loginOptions.name }
     if (loginOptions.email) {
       params.email = loginOptions.email
     }

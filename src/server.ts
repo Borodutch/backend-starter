@@ -1,5 +1,5 @@
 // Setup typegoose
-import { setGlobalOptions, Severity } from '@typegoose/typegoose'
+import { Severity, setGlobalOptions } from '@typegoose/typegoose'
 setGlobalOptions({
   options: {
     allowMixed: Severity.ALLOW,

@@ -1,5 +1,5 @@
-import * as mongoose from 'mongoose'
 import * as Koa from 'koa'
+import * as mongoose from 'mongoose'
 import { Server } from 'http'
 
 export function dropMongo() {
