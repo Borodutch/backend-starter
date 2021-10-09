@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { Context } from 'koa'
 import { getOrCreateUser } from '@/models/user'
-import { Body, Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, Flow, Get, Post } from 'amala'
 import Facebook = require('facebook-node-sdk')
 import {
   TelegramLoginPayload,
   verifyTelegramPayload,
 } from '@/helpers/verifyTelegramPayload'
+//import auth from '@/middleware/auth'
 
 @Controller('/login')
 export default class LoginController {
@@ -57,11 +58,19 @@ export default class LoginController {
 
   @Post('/')
   async testLogin(@Body('name') name: string, @Body('email') email: string) {
+    console.log(name, email)
     const user = await getOrCreateUser({
       name,
       email,
     })
     return user.strippedAndFilled(true)
+  }
+
+  @Get('/')
+  async test(@Ctx() ctx: Context) {
+    ctx.body = 'success: true'
+    console.log(ctx)
+    return { success: true }
   }
 }
 
