@@ -896,16 +896,17 @@ agent-base@6:
   dependencies:
     debug "4"
 
-amala@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/amala/-/amala-7.0.0.tgz"
-  integrity sha512-LRIgRVJ87T2fECjAf9UgHTa86ZviLSxItb7TtBjk3YHOY+NCjo60P/tMvGf6G4nppCeTjGKqN27GiiFMVrEQkQ==
+amala@5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/amala/-/amala-5.1.2.tgz#711fb040678818fdf3e831166813febf6f237c64"
+  integrity sha512-nFodc54mrTpIipwPbzz9t+xLOFjMRhpAtaiyAndro/AKOUWFlkDwwsqZhCtqu+l2Di/xcBZxXr7OZ93FPKBsnw==
   dependencies:
     "@hapi/boom" "^9.0.0"
     class-transformer "*"
     class-validator "^0.x"
-    koa "^2.x || ^3.x"
-    koa-body "*"
+    koa "^2.x"
+    koa-body "^4.2.0"
+    koa-bodyparser "*"
     koa-router "*"
     koa-session "*"
     lodash "^4.17.15"
@@ -2925,16 +2926,16 @@ kleur@^3.0.3:
   resolved "https://registry.npmjs.org/kleur/-/kleur-3.0.3.tgz"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
-koa-body@*:
+koa-body@^4.2.0:
   version "4.2.0"
-  resolved "https://registry.npmjs.org/koa-body/-/koa-body-4.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/koa-body/-/koa-body-4.2.0.tgz#37229208b820761aca5822d14c5fc55cee31b26f"
   integrity sha512-wdGu7b9amk4Fnk/ytH8GuWwfs4fsB5iNkY8kZPpgQVb04QZSv85T0M8reb+cJmvLE8cjPYvBzRikD3s6qz8OoA==
   dependencies:
     "@types/formidable" "^1.0.31"
     co-body "^5.1.1"
     formidable "^1.1.1"
 
-koa-bodyparser@^4.3.0:
+koa-bodyparser@*, koa-bodyparser@^4.3.0:
   version "4.3.0"
   resolved "https://registry.npmjs.org/koa-bodyparser/-/koa-bodyparser-4.3.0.tgz"
   integrity sha512-uyV8G29KAGwZc4q/0WUAjH+Tsmuv9ImfBUF2oZVyZtaeo0husInagyn/JH85xMSxM0hEk/mbCII5ubLDuqW/Rw==
@@ -3031,9 +3032,9 @@ koa@^2.13.1:
     type-is "^1.6.16"
     vary "^1.1.2"
 
-"koa@^2.x || ^3.x":
+koa@^2.x:
   version "2.13.3"
-  resolved "https://registry.npmjs.org/koa/-/koa-2.13.3.tgz"
+  resolved "https://registry.yarnpkg.com/koa/-/koa-2.13.3.tgz#a62641ba753ec54bee2c6da1a4f294c5fac35407"
   integrity sha512-XhXIoR+ylAwqG3HhXwnMPQAM/4xfywz52OvxZNmxmTWGGHsvmBv4NSIhURha6yMuvEex1WdtplUTHnxnKpQiGw==
   dependencies:
     accepts "^1.3.5"
