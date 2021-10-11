@@ -18,6 +18,7 @@
     "lint": "yarn pretty && eslint --ext ts,tsx,json src"
   },
   "dependencies": {
+    "@hapi/boom": "^9.1.4",
     "amala": "^7.0.0",
     "axios": "^0.22.0",
     "facebook-node-sdk": "^0.2.0",
@@ -44,7 +45,7 @@
     "axios-mock-adapter": "^1.20.0",
     "concurrently": "^6.3.0",
     "dotenv": "^10.0.0",
-    "eslint": "^8.0.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",

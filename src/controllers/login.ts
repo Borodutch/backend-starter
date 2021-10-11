@@ -5,6 +5,7 @@ import {
   TelegramLoginPayload,
   verifyTelegramPayload,
 } from '@/helpers/verifyTelegramPayload'
+import { forbidden } from '@hapi/boom'
 import { getOrCreateUser } from '@/models/user'
 import FBUser from '@/models/FBUser'
 import axios from 'axios'
@@ -27,7 +28,7 @@ export default class LoginController {
   async telegram(@Ctx() ctx: Context, @Body() data: TelegramLoginPayload) {
     // verify the data
     if (!verifyTelegramPayload(data)) {
-      return ctx.throw(403)
+      return ctx.throw(forbidden())
     }
 
     const user = await getOrCreateUser({
