@@ -15,7 +15,7 @@
     "watch-js": "nodemon dist/server.js",
     "test": "yarn jest --forceExit",
     "pretty": "prettier --list-different src",
-    "lint": "yarn pretty && eslint --ext ts,tsx,json \"src\""
+    "lint": "yarn pretty && eslint --ext ts,tsx,json src"
   },
   "dependencies": {
     "amala": "^7.0.0",
