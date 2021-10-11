@@ -18,21 +18,21 @@
     "lint": "yarn pretty && eslint --ext ts,tsx,json \"src\""
   },
   "dependencies": {
-    "@types/koa-bodyparser": "^4.3.1",
     "amala": "^5.1.2",
     "axios": "^0.21.2",
-    "axios-mock-adapter": "^1.19.0",
-    "dotenv": "^10.0.0",
     "facebook-node-sdk": "^0.2.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.0.0",
     "lodash": "^4.17.21",
-    "module-alias": "^2.2.2",
     "mongoose": "5.10.18"
   },
   "devDependencies": {
+    "@types/koa-bodyparser": "^4.3.1",
+    "axios-mock-adapter": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "module-alias": "^2.2.2",
     "@koa/cors": "^3.1.0",
     "@typegoose/typegoose": "^7.6.1",
     "@types/dotenv": "^8.2.0",
