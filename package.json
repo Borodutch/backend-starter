@@ -14,7 +14,7 @@
     "watch-ts": "tsc -w --skipLibCheck",
     "watch-js": "nodemon dist/server.js",
     "test": "yarn jest --forceExit",
-    "pretty": "prettier \"src/**\"",
+    "pretty": "prettier --list-different src",
     "lint": "yarn pretty && eslint --ext ts,tsx,json \"src\""
   },
   "dependencies": {
