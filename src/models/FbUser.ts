@@ -1,7 +1,7 @@
-interface FbUser {
+interface FBUser {
   name: string
   email: string
   id: string
 }
 
-export default FbUser
+export default FBUser

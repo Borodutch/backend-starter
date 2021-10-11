@@ -75,7 +75,7 @@ export async function getOrCreateUser(loginOptions: LoginOptions) {
     ) {
       throw new Error()
     }
-    const params: LoginOptions = { name: loginOptions.name }
+    const params: Record<string, unknown> = { name: loginOptions.name }
     if (loginOptions.email) {
       params.email = loginOptions.email
     }

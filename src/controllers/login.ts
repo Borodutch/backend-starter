@@ -6,14 +6,14 @@ import {
   verifyTelegramPayload,
 } from '@/helpers/verifyTelegramPayload'
 import { getOrCreateUser } from '@/models/user'
-import FbUser from '@/models/FbUser'
+import FBUser from '@/models/FBUser'
 import axios from 'axios'
 
 @Controller('/login')
 export default class LoginController {
   @Post('/facebook')
   async facebook(@Body('accessToken') accessToken: string) {
-    const fbProfile: FbUser = await getFBUser(accessToken)
+    const fbProfile: FBUser = await getFBUser(accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
 
@@ -57,7 +57,7 @@ export default class LoginController {
   }
 }
 
-function getFBUser(accessToken: string): Promise<FbUser> {
+function getFBUser(accessToken: string): Promise<FBUser> {
   return new Promise((res, rej) => {
     const fb = new Facebook({
       appID: process.env.FACEBOOK_APP_ID,
