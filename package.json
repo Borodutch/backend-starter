@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend starter template",
   "main": "dist/server.js",
-  "repository": "https://github.com/backmeupplz/backend-starter",
+  "repository": "https://github.com/Borodutch/backend-starter",
   "author": "backmeupplz <backmeupplz@gmail.com>",
   "license": "MIT",
   "private": false,

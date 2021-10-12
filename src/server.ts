@@ -16,6 +16,7 @@ runMongo().then(() => {
   console.log('Mongo connected')
 })
 // Start rest
-app.listen(1337).on('listening', () => {
-  console.log('HTTP is listening on 1337')
+const port = process.env.PORT || 1337
+app.listen(port).on('listening', () => {
+  console.log(`HTTP is listening on ${port}`)
 })
