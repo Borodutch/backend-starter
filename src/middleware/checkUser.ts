@@ -10,10 +10,10 @@ export default async (ctx: Context, next: Next) => {
     return ctx.throw('Unauthorized')
   }
 
-  if (message.author._id == user._id) {
-    ctx.state.message = message
-    return next()
-  } else {
+  if (message.author._id != user._id) {
     return ctx.throw('404 Error')
   }
+
+  ctx.state.message = message
+  return next()
 }
