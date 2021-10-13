@@ -1,19 +1,40 @@
 import { MessageModel } from '@/models/message'
-import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
+import {
+  Body,
+  Controller,
+  Ctx,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Params,
+  Post,
+  Put,
+} from 'amala'
+import auth from '@/middleware/auth'
+import checkUser from '@/middleware/checkUser'
+import { User } from '@/models/user'
+import { Context } from 'koa'
 
 @Controller('/message')
+@Flow(auth)
 export default class messageController {
-  @Get('/')
-  async receiveMessages() {
-    return await MessageModel.find()
+  @Post('/')
+  async createMessage(
+    @Body('newMessage') text: string,
+    @CurrentUser() user: User
+  ) {
+    return MessageModel.create({ text, user })
   }
 
-  @Post('/')
-  async createMessage(@Body('newMessage') text: string) {
-    return MessageModel.create({ text })
+  @Get('/:id')
+  @Flow(checkUser)
+  async getMessages(@Params('id') id: string) {
+    return await MessageModel.findById(id)
   }
 
   @Put('/:id')
+  @Flow(checkUser)
   async updateMessage(
     @Params('id') id: string,
     @Body('newMessage') text: string
@@ -23,6 +44,7 @@ export default class messageController {
   }
 
   @Delete('/:id')
+  @Flow(checkUser)
   async deleteMessage(@Params('id') id: string) {
     return MessageModel.findByIdAndDelete(id)
   }
