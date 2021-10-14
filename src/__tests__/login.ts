@@ -1,12 +1,12 @@
-const request = require('supertest')
-import { app } from '@/app'
+import * as request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
+import { Server } from 'http'
+import { UserModel } from '@/models/user'
+import { app } from '@/app'
+import { completeUser, dropMongo, startKoa, stopServer } from './testUtils'
 import { runMongo, stopMongo } from '@/models/index'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
-import { Server } from 'http'
-import { completeUser, dropMongo, startKoa, stopServer } from './testUtils'
-import { UserModel } from '@/models/user'
 
 describe('Login endpoint', () => {
   const axiosMock = new MockAdapter(axios)
