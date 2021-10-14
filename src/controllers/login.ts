@@ -20,7 +20,7 @@ export default class LoginController {
       email,
       facebookId: id,
     })
-    return user.strippedAndFilled(true)
+    return user.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/telegram')
@@ -36,7 +36,7 @@ export default class LoginController {
       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
       telegramId: id,
     })
-    return user.strippedAndFilled(true)
+    return user.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/google')
@@ -47,6 +47,6 @@ export default class LoginController {
       name: userData.name,
       email: userData.email,
     })
-    return user.strippedAndFilled(true)
+    return user.strippedAndFilled({ withExtra: true })
   }
 }
