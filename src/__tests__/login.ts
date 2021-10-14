@@ -1,20 +1,20 @@
 import * as request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
-import { UserModel } from '@/models/user'
 import { app } from '@/app'
-import { completeUser, dropMongo, startKoa, stopServer } from './testUtils'
+import { dropMongo, setupDotenv, startKoa, stopServer } from './testUtils'
 import { runMongo, stopMongo } from '@/models/index'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
+import testingGoogleMock from '@/helpers/testingGoogleMock'
 
 describe('Login endpoint', () => {
   const axiosMock = new MockAdapter(axios)
-
   let server: Server
 
   beforeAll(async () => {
-    const mongoServer = new MongoMemoryServer()
+    setupDotenv()
+    const mongoServer = await MongoMemoryServer.create()
     await runMongo(await mongoServer.getUri())
     server = await startKoa(app)
   })
@@ -29,18 +29,14 @@ describe('Login endpoint', () => {
   })
 
   it('should return user for valid /google request', async () => {
-    await UserModel.create(completeUser)
     axiosMock
       .onGet('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=test')
-      .reply(200, {
-        name: 'Alexander Brennenburg',
-        email: 'alexanderrennenburg@gmail.com',
-      })
+      .reply(200, testingGoogleMock)
     const response = await request(server)
       .post('/login/google')
       .send({ accessToken: 'test' })
 
-    expect(response.body.name).toBe('Alexander Brennenburg')
-    expect(response.body.email).toBe('alexanderrennenburg@gmail.com')
+    expect(response.body.name).toBe(testingGoogleMock.name)
+    expect(response.body.email).toBe(testingGoogleMock.email)
   })
 })

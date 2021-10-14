@@ -1,79 +1,52 @@
-import * as Facebook from 'facebook-node-sdk'
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
-import {
-  TelegramLoginPayload,
-  verifyTelegramPayload,
-} from '@/helpers/verifyTelegramPayload'
 import { forbidden } from '@hapi/boom'
 import { getOrCreateUser } from '@/models/user'
-import FBUser from '@/models/FBUser'
-import axios from 'axios'
+import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import FacebookLogin from '@/validators/FacebookLogin'
+import GoogleLogin from '@/validators/GoogleLogin'
+import TelegramLogin from '@/validators/TelegramLogin'
+import getFBUser from '@/helpers/getFBUser'
+import getGoogleUser from '@/helpers/getGoogleUser'
 
 @Controller('/login')
 export default class LoginController {
   @Post('/facebook')
-  async facebook(@Body('accessToken') accessToken: string) {
-    const fbProfile: FBUser = await getFBUser(accessToken)
+  async facebook(@Body({ required: true }) body: FacebookLogin) {
+    const { accessToken } = body
+    const { name, email, id } = await getFBUser(accessToken)
     const user = await getOrCreateUser({
-      name: fbProfile.name,
-
-      email: fbProfile.email,
-      facebookId: fbProfile.id,
+      name,
+      email,
+      facebookId: id,
     })
     return user.strippedAndFilled(true)
   }
 
   @Post('/telegram')
-  async telegram(@Ctx() ctx: Context, @Body() data: TelegramLoginPayload) {
-    // verify the data
-    if (!verifyTelegramPayload(data)) {
+  async telegram(
+    @Ctx() ctx: Context,
+    @Body({ required: true }) body: TelegramLogin
+  ) {
+    if (!verifyTelegramPayload(body)) {
       return ctx.throw(forbidden())
     }
-
+    const { first_name, last_name, id } = body
     const user = await getOrCreateUser({
-      name: `${data.first_name}${data.last_name ? ` ${data.last_name}` : ''}`,
-      telegramId: data.id,
+      name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
+      telegramId: id,
     })
     return user.strippedAndFilled(true)
   }
 
   @Post('/google')
-  async google(@Body('accessToken') accessToken: string) {
-    const userData =
-      process.env.TESTING === 'true'
-        ? testingGoogleMock()
-        : (
-            await axios(
-              `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
-            )
-          ).data
-
+  async google(@Body({ required: true }) body: GoogleLogin) {
+    const { accessToken } = body
+    const userData = await getGoogleUser(accessToken)
     const user = await getOrCreateUser({
       name: userData.name,
-
       email: userData.email,
     })
     return user.strippedAndFilled(true)
-  }
-}
-
-function getFBUser(accessToken: string): Promise<FBUser> {
-  return new Promise((res, rej) => {
-    const fb = new Facebook({
-      appID: process.env.FACEBOOK_APP_ID,
-      secret: process.env.FACEBOOK_APP_SECRET,
-    })
-    fb.setAccessToken(accessToken)
-    fb.api('/me?fields=name,email,id', (err, user) => {
-      return err ? rej(err) : res(user)
-    })
-  })
-}
-
-function testingGoogleMock() {
-  return {
-    name: 'Alexander Brennenburg',
-    email: 'alexanderrennenburg@gmail.com',
   }
 }
