@@ -12,8 +12,7 @@ import getGoogleUser from '@/helpers/getGoogleUser'
 @Controller('/login')
 export default class LoginController {
   @Post('/facebook')
-  async facebook(@Body({ required: true }) body: FacebookLogin) {
-    const { accessToken } = body
+  async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
     const { name, email, id } = await getFBUser(accessToken)
     const user = await getOrCreateUser({
       name,
@@ -26,12 +25,12 @@ export default class LoginController {
   @Post('/telegram')
   async telegram(
     @Ctx() ctx: Context,
-    @Body({ required: true }) body: TelegramLogin
+    @Body({ required: true }) body: TelegramLogin,
+    @Body({ required: true }) { first_name, last_name, id }: TelegramLogin
   ) {
     if (!verifyTelegramPayload(body)) {
       return ctx.throw(forbidden())
     }
-    const { first_name, last_name, id } = body
     const user = await getOrCreateUser({
       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
       telegramId: id,
@@ -40,8 +39,7 @@ export default class LoginController {
   }
 
   @Post('/google')
-  async google(@Body({ required: true }) body: GoogleLogin) {
-    const { accessToken } = body
+  async google(@Body({ required: true }) { accessToken }: GoogleLogin) {
     const userData = await getGoogleUser(accessToken)
     const user = await getOrCreateUser({
       name: userData.name,
