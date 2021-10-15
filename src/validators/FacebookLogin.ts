@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator'
+import { IsString } from 'amala'
 
 export default class FacebookLogin {
   @IsString()
