@@ -1,6 +1,6 @@
+import { Context, Next } from 'koa'
 import { UserModel } from '@/models/user'
 import { verify } from '@/helpers/jwt'
-import { Context, Next } from 'koa'
 
 export default async (ctx: Context, next: Next) => {
   try {

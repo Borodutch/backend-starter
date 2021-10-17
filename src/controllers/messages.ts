@@ -1,8 +1,6 @@
-import { MessageModel } from '@/models/message'
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
@@ -11,10 +9,10 @@ import {
   Post,
   Put,
 } from 'amala'
+import { MessageModel } from '@/models/message'
+import { User } from '@/models/user'
 import auth from '@/middleware/auth'
 import checkUser from '@/middleware/checkUser'
-import { User } from '@/models/user'
-import { Context } from 'koa'
 
 @Controller('/message')
 @Flow(auth)

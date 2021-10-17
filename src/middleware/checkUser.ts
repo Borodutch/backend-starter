@@ -1,6 +1,5 @@
-import { MessageModel } from '@/models/message'
-import { verify } from '@/helpers/jwt'
 import { Context, Next } from 'koa'
+import { MessageModel } from '@/models/message'
 
 export default async (ctx: Context, next: Next) => {
   const message = MessageModel.findById(ctx.params.id)
