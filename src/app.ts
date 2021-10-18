@@ -6,7 +6,7 @@ import * as cors from '@koa/cors'
 import { bootstrapControllers } from 'amala'
 
 export const app = new Koa()
-;(async () => {
+void (async () => {
   try {
     const router = new Router()
     await bootstrapControllers({
