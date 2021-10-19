@@ -51,26 +51,6 @@ export default class LoginController {
   @Post('/email')
   async email(@Body('name') name: string, @Body('email') email: string) {
     const user = await getOrCreateUser({ name, email })
-    return user.strippedAndFilled(true)
-  }
-}
-
-function getFBUser(accessToken: string): Promise<FBUser> {
-  return new Promise((res, rej) => {
-    const fb = new Facebook({
-      appID: process.env.FACEBOOK_APP_ID,
-      secret: process.env.FACEBOOK_APP_SECRET,
-    })
-    fb.setAccessToken(accessToken)
-    fb.api('/me?fields=name,email,id', (err, user) => {
-      return err ? rej(err) : res(user)
-    })
-  })
-}
-
-function testingGoogleMock() {
-  return {
-    name: 'Alexander Brennenburg',
-    email: 'alexanderrennenburg@gmail.com',
+    return user.strippedAndFilled({ withExtra: true })
   }
 }
