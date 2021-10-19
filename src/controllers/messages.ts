@@ -23,7 +23,7 @@ export default class messageController {
     @CurrentUser() author: User
   ) {
     console.log(text, author)
-    return MessageModel.create({ text, author })
+    return await MessageModel.create({ text, author })
   }
 
   @Get('/:id')
@@ -38,13 +38,13 @@ export default class messageController {
     @Params('id') id: string,
     @Body('newMessage') text: string
   ) {
-    MessageModel.findByIdAndUpdate(id, { text })
-    return MessageModel.findById(id)
+    await MessageModel.findByIdAndUpdate(id, { text })
+    return await MessageModel.findById(id)
   }
 
   @Delete('/:id')
   @Flow(checkUser)
   async deleteMessage(@Params('id') id: string) {
-    return MessageModel.findByIdAndDelete(id)
+    return await MessageModel.findByIdAndDelete(id)
   }
 }
