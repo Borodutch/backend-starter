@@ -1,5 +1,6 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/user'
+import { unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async (ctx: Context, next: Next) => {
@@ -10,7 +11,6 @@ export default async (ctx: Context, next: Next) => {
     return next()
   } catch (err) {
     console.log(err)
-    ctx.status = 401
-    ctx.body = { error: 'Unauthorized' }
+    ctx.throw(unauthorized())
   }
 }

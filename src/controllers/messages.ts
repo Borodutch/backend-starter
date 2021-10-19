@@ -20,9 +20,10 @@ export default class messageController {
   @Post('/')
   async createMessage(
     @Body('newMessage') text: string,
-    @CurrentUser() user: User
+    @CurrentUser() author: User
   ) {
-    return MessageModel.create({ text, user })
+    console.log(text, author)
+    return MessageModel.create({ text, author })
   }
 
   @Get('/:id')

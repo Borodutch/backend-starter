@@ -17,7 +17,6 @@ export default class LoginController {
     const fbProfile: FBUser = await getFBUser(accessToken)
     const user = await getOrCreateUser({
       name: fbProfile.name,
-
       email: fbProfile.email,
       facebookId: fbProfile.id,
     })
