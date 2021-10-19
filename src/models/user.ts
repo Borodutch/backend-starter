@@ -16,7 +16,10 @@ export class User extends MongoDocument<User> {
   @prop({ required: true, index: true, unique: true })
   token: string
 
-  strippedAndFilled(withExtra = false, withToken = true) {
+  strippedAndFilled({
+    withExtra = false,
+    withToken = true,
+  }: { withExtra?: boolean; withToken?: boolean } = {}) {
     const stripFields = ['createdAt', 'updatedAt', '__v']
     if (!withExtra) {
       stripFields.push('token')

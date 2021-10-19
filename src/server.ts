@@ -12,7 +12,7 @@ import { app } from '@/app'
 import { runMongo } from '@/models/index'
 
 // Run mongo
-runMongo().then(() => {
+void runMongo().then(() => {
   console.log('Mongo connected')
 })
 // Start rest

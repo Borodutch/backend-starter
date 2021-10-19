@@ -1,6 +1,11 @@
 import * as Koa from 'koa'
+import * as dotenv from 'dotenv'
 import * as mongoose from 'mongoose'
 import { Server } from 'http'
+
+export function setupDotenv() {
+  dotenv.config({ path: `${__dirname}/../../.env` })
+}
 
 export function dropMongo() {
   return Promise.all(
@@ -9,6 +14,7 @@ export function dropMongo() {
     )
   )
 }
+
 export function startKoa(
   app: Koa<Koa.DefaultState, Koa.DefaultContext>
 ): Promise<Server> {
@@ -28,12 +34,4 @@ export function stopServer(server: Server) {
       res()
     })
   })
-}
-
-export const completeUser = {
-  name: 'Alexander Brennenburg',
-  email: 'alexanderrennenburg@gmail.com',
-  token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWxleGFuZGVyIEJyZW5uZW5idXJnIiwic3Vic2NyaXB0aW9uU3RhdHVzIjoidHJpYWwiLCJkZWxlZ2F0ZUludml0ZVRva2VuIjoiR090WWwyRUVaSE1OMmF1cSIsImVtYWlsIjoiYWxleGFuZGVycmVubmVuYnVyZ0BnbWFpbC5jb20iLCJpYXQiOjE2MDUxMjY5MTF9.Z17DwU2HuIcqBgvrzl65X47q3iRMuvybbYLmz9yc5ns',
-  _doc: '1',
 }
