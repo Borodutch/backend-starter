@@ -10,7 +10,6 @@ export default async (ctx: Context, next: Next) => {
     ctx.state.user = await UserModel.findOne({ token })
     return next()
   } catch (err) {
-    console.log(err)
     ctx.throw(unauthorized())
   }
 }

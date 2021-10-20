@@ -18,12 +18,13 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class messageController {
   @Post('/')
+  @Flow(checkUser)
   async createMessage(
     @Body('newMessage') text: string,
     @CurrentUser() author: User
   ) {
-    console.log(text, author)
-    return await MessageModel.create({ text, author })
+    await MessageModel.create({ text, author })
+    return { success: true }
   }
 
   @Get('/:id')
@@ -39,12 +40,13 @@ export default class messageController {
     @Body('newMessage') text: string
   ) {
     await MessageModel.findByIdAndUpdate(id, { text })
-    return await MessageModel.findById(id)
+    return { success: true }
   }
 
   @Delete('/:id')
   @Flow(checkUser)
   async deleteMessage(@Params('id') id: string) {
-    return await MessageModel.findByIdAndDelete(id)
+    await MessageModel.findByIdAndDelete(id)
+    return { success: true }
   }
 }
