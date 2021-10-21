@@ -1,15 +1,17 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/user'
-import { unauthorized } from '@hapi/boom'
+import { notFound, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async (ctx: Context, next: Next) => {
-  try {
-    const token = ctx.header.token as string
-    await verify(token)
-    ctx.state.user = await UserModel.findOne({ token })
-    return next()
-  } catch (err) {
-    ctx.throw(unauthorized())
-  }
+  const token = ctx.header.token as string
+
+  if (!token) return ctx.throw(notFound())
+
+  await verify(token)
+  ctx.state.user = await UserModel.findOne({ token })
+
+  if (!ctx.state.user) return ctx.throw(unauthorized())
+
+  return next()
 }

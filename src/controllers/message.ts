@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import {
   Body,
   Controller,
@@ -19,34 +20,25 @@ import checkUser from '@/middleware/checkUser'
 export default class messageController {
   @Post('/')
   @Flow(checkUser)
-  async createMessage(
-    @Body('newMessage') text: string,
-    @CurrentUser() author: User
-  ) {
-    await MessageModel.create({ text, author })
-    return { success: true }
+  async createMessage(@Body('text') text: string, @CurrentUser() author: User) {
+    return MessageModel.create({ text, author })
   }
 
   @Get('/:id')
   @Flow(checkUser)
   async getMessages(@Params('id') id: string) {
-    return await MessageModel.findById(id)
+    return MessageModel.findById(id)
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async updateMessage(
-    @Params('id') id: string,
-    @Body('newMessage') text: string
-  ) {
-    await MessageModel.findByIdAndUpdate(id, { text })
-    return { success: true }
+  async updateMessage(@Params('id') id: string, @Body('text') text: string) {
+    return MessageModel.findByIdAndUpdate(id, { text })
   }
 
   @Delete('/:id')
   @Flow(checkUser)
   async deleteMessage(@Params('id') id: string) {
-    await MessageModel.findByIdAndDelete(id)
-    return { success: true }
+    return MessageModel.findByIdAndDelete(id)
   }
 }
