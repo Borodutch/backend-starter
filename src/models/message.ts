@@ -11,24 +11,24 @@ export const MessageModel = getModelForClass(Message)
 
 class CrudMessage {
 
-    async createMessage(text: string,time:string) {
+    async createMessage( text: string, time: string): Promise<void> {
         await new MessageModel({text, time}).save()
     }
 
-    async updateMessage(id, newText) {
-        await MessageModel.findOneAndUpdate({_id: id}, {text: newText}, {
+    async updateMessage(id: string, newText: string): Promise<void> {
+       await MessageModel.findOneAndUpdate({_id: id}, {text: newText}, {
             new: true
           })
     }
 
-    async getMessages() {
+    async getMessages(): Promise<any> {
       const messages = await MessageModel.find({})
       return messages
     }
 
-    async deleteMessage(id: string) {
+    async deleteMessage(id: string): Promise<void> {
       const response = await MessageModel.deleteOne({id: id}).exec()
-      console.log(response)
+      return response
     }
 }
 
