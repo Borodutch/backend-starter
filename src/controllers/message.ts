@@ -6,11 +6,11 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Post,
   Put,
+  State,
 } from 'amala'
-import { MessageModel } from '@/models/message'
+import { Message, MessageModel } from '@/models/message'
 import { User } from '@/models/user'
 import auth from '@/middleware/auth'
 import checkUser from '@/middleware/checkUser'
@@ -26,19 +26,30 @@ export default class messageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  async getMessages(@Params('id') id: string) {
-    return MessageModel.findById(id)
+  async getMessages(@State('message') message: Message) {
+    return message
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async updateMessage(@Params('id') id: string, @Body('text') text: string) {
-    return MessageModel.findByIdAndUpdate(id, { text })
+  async updateMessage(
+    @Body('text') text: string,
+    @State('message')
+    message: Message & {
+      _id: string
+    }
+  ) {
+    return MessageModel.findByIdAndUpdate(message._id, { text })
   }
 
   @Delete('/:id')
   @Flow(checkUser)
-  async deleteMessage(@Params('id') id: string) {
-    return MessageModel.findByIdAndDelete(id)
+  async deleteMessage(
+    @State('message')
+    message: Message & {
+      _id: string
+    }
+  ) {
+    return MessageModel.findByIdAndDelete(message._id)
   }
 }

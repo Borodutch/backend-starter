@@ -9,7 +9,7 @@ export default async (ctx: Context, next: Next) => {
   try {
     await verify(token)
   } catch (err) {
-    ctx.throw(forbidden())
+    return ctx.throw(forbidden())
   }
 
   ctx.state.user = await UserModel.findOne({ token })

@@ -4,6 +4,10 @@ import { notFound } from '@hapi/boom'
 
 export default async (ctx: Context, next: Next) => {
   const message = await MessageModel.findById(ctx.params.id)
+  if (!message) {
+    return ctx.throw(notFound())
+  }
+
   const user = ctx.state.user
 
   if (message.author.toString() != user._id.toString()) {
