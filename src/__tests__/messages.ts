@@ -1,24 +1,24 @@
-const request = require('supertest')
-import { app } from '@/app'
 import * as dotenv from 'dotenv'
+import * as request from 'supertest'
+import { app } from '@/app'
 dotenv.config({ path: '.env' })
 import { MongoMemoryServer } from 'mongodb-memory-server'
+import { Server } from 'http'
+import { UserModel } from '@/models/user'
 import { runMongo, stopMongo } from '@/models/index'
+import { setupDotenv, startKoa, stopServer } from './testUtils'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
-import { Server } from 'http'
-import { startKoa, stopServer } from './testUtils'
-import { UserModel } from '@/models/user'
 
 describe('Test messages endpoints', () => {
   const axiosMock = new MockAdapter(axios)
 
   let server: Server
   let msgId: string
-  let token = process.env.TOKEN
-
+  let token: string
   beforeAll(async () => {
-    const mongoServer = new MongoMemoryServer()
+    setupDotenv()
+    const mongoServer = await MongoMemoryServer.create()
     await runMongo(await mongoServer.getUri())
     server = await startKoa(app)
   })
@@ -28,12 +28,46 @@ describe('Test messages endpoints', () => {
     await stopServer(server)
   })
 
+  it('reg user', async () => {
+    const res = await request(server)
+      .post('/login/email')
+      .send({ email: 'Shiba@elonmusk', name: 'EA-18' })
+      .expect(200)
+
+    expect(res.body.token).toBeTruthy()
+    token = res.body.token
+  })
+
   it('Post messages', async () => {
     const res = await request(server)
       .post('/messages/')
-      .set(token, 'token')
-      .send({ message: 'test1' })
+      .set('token', token)
+      .send({ text: 'test1' })
       .expect(200)
     msgId = res.body._id
+  })
+
+  it('Get messages', async () => {
+    const res = await request(server)
+      .get(`/messages/${msgId}`)
+      .set('token', token)
+      .send()
+    expect(res.body.text).toBe('test1')
+  })
+
+  it('Put messages', async () => {
+    const res = await request(server)
+      .put(`/messages/${msgId}`)
+      .set('token', token)
+      .send({ text: 'message has been updated' })
+    expect(res.body.text).toBe('message has been updated')
+  })
+
+  it('Delete messages', async () => {
+    const res = await request(server)
+      .delete(`/messsages/${msgId}`)
+      .set('token', token)
+      .send()
+    expect(res.body.text).toBeFalsy
   })
 })

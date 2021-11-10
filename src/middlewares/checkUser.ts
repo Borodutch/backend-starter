@@ -8,11 +8,11 @@ export async function checkUser(ctx: Context, next: Next) {
 
   const message = await MessageModel.findById(messageId)
 
-  if (!message.author._id) {
+  if (!message) {
     return ctx.throw('Unauthorized')
   }
 
-  if (message.author._id == user.id) {
+  if (message.author == user.id) {
     ctx.state.message = message
 
     return next()
