@@ -1,10 +1,10 @@
 import * as request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
-import { app } from '@/app'
 import { dropMongo, setupDotenv, startKoa, stopServer } from './testUtils'
 import { runMongo, stopMongo } from '@/models/index'
 import MockAdapter from 'axios-mock-adapter'
+import app from '@/app'
 import axios from 'axios'
 import testingGoogleMock from '@/helpers/testingGoogleMock'
 
