@@ -4,18 +4,14 @@ import { app } from '@/app'
 dotenv.config({ path: '.env' })
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
-import { UserModel } from '@/models/user'
 import { runMongo, stopMongo } from '@/models/index'
 import { setupDotenv, startKoa, stopServer } from './testUtils'
-import MockAdapter from 'axios-mock-adapter'
-import axios from 'axios'
 
 describe('Test messages endpoints', () => {
-  const axiosMock = new MockAdapter(axios)
-
   let server: Server
   let msgId: string
   let token: string
+
   beforeAll(async () => {
     setupDotenv()
     const mongoServer = await MongoMemoryServer.create()
