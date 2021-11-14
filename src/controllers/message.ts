@@ -20,9 +20,8 @@ export default class MessageController {
   }
 
   @Get('/')
-  async getMessages(): Promise<any> {
-    const messages = await crudMessage.getMessages()
-    return messages
+  async getMessages(): Promise<void> {
+    await crudMessage.getMessages()
   }
 
   @Delete('/')

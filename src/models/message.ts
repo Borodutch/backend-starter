@@ -24,9 +24,8 @@ class CrudMessage {
     )
   }
 
-  async getMessages(): Promise<any> {
-    const messages = await MessageModel.find({})
-    return messages
+  async getMessages(): Promise<void> {
+    await MessageModel.find({})
   }
 
   async deleteMessage(id: string): Promise<void> {
