@@ -1,26 +1,32 @@
-import { Controller, Delete, Get, Patch, Post, Body } from "amala";
-import { crudMessage } from "@/models/message";
+import { Body, Controller, Delete, Get, Patch, Post } from 'amala'
+import { crudMessage } from '@/models/message'
 
 @Controller('/message')
 export default class MessageController {
-    @Post('/')
-    async addMessage(@Body('text') text: string, @Body('time') time:string): Promise<void>{
-        await crudMessage.createMessage( text, time )
-    }
-    
-    @Patch('/')
-    async updateMessage(@Body('id') id: string, @Body('text') newText: string): Promise<void>{
-        await crudMessage.updateMessage(id, newText)
-    }
+  @Post('/')
+  async addMessage(
+    @Body('text') text: string,
+    @Body('time') time: string
+  ): Promise<void> {
+    await crudMessage.createMessage(text, time)
+  }
 
-    @Get('/')
-    async getMessages(): Promise<any> {
-       const messages = await crudMessage.getMessages()
-       return messages
-    }
+  @Patch('/')
+  async updateMessage(
+    @Body('id') id: string,
+    @Body('text') newText: string
+  ): Promise<void> {
+    await crudMessage.updateMessage(id, newText)
+  }
 
-    @Delete('/')
-    async deleteMessage(@Body('id') id: string): Promise<void> {
-        await crudMessage.deleteMessage(id)
-    }
+  @Get('/')
+  async getMessages(): Promise<any> {
+    const messages = await crudMessage.getMessages()
+    return messages
+  }
+
+  @Delete('/')
+  async deleteMessage(@Body('id') id: string): Promise<void> {
+    await crudMessage.deleteMessage(id)
+  }
 }
