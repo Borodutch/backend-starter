@@ -1,14 +1,16 @@
 import { Body, Controller, Delete, Get, Patch, Post } from 'amala'
-import { crudMessage } from '@/models/message'
+import {
+  createMessage,
+  deleteMessage,
+  getMessages,
+  updateMessage,
+} from '@/models/message'
 
 @Controller('/message')
 export default class MessageController {
   @Post('/')
-  async addMessage(
-    @Body('text') text: string,
-    @Body('time') time: string
-  ): Promise<void> {
-    await crudMessage.createMessage(text, time)
+  async addMessage(@Body('text') text: string): Promise<void> {
+    await createMessage(text)
   }
 
   @Patch('/')
@@ -16,16 +18,16 @@ export default class MessageController {
     @Body('id') id: string,
     @Body('text') newText: string
   ): Promise<void> {
-    await crudMessage.updateMessage(id, newText)
+    await updateMessage(id, newText)
   }
 
   @Get('/')
   async getMessages(): Promise<void> {
-    await crudMessage.getMessages()
+    await getMessages()
   }
 
   @Delete('/')
   async deleteMessage(@Body('id') id: string): Promise<void> {
-    await crudMessage.deleteMessage(id)
+    await deleteMessage(id)
   }
 }

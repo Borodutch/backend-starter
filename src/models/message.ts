@@ -3,34 +3,33 @@ import { getModelForClass, prop } from '@typegoose/typegoose'
 export class Message {
   @prop({ required: true })
   text: string
-  @prop({ required: true })
-  time: string
 }
 
-export const MessageModel = getModelForClass(Message)
+export const MessageModel = getModelForClass(Message, {
+  schemaOptions: { timestamps: true },
+})
 
-class CrudMessage {
-  async createMessage(text: string, time: string): Promise<void> {
-    await new MessageModel({ text, time }).save()
-  }
-
-  async updateMessage(id: string, newText: string): Promise<void> {
-    await MessageModel.findOneAndUpdate(
-      { _id: id },
-      { text: newText },
-      {
-        new: true,
-      }
-    )
-  }
-
-  async getMessages(): Promise<void> {
-    await MessageModel.find({})
-  }
-
-  async deleteMessage(id: string): Promise<void> {
-    await MessageModel.deleteOne({ id: id }).exec()
-  }
+export const createMessage = async (text: string): Promise<void> => {
+  await new MessageModel({ text }).save()
 }
 
-export const crudMessage = new CrudMessage()
+export const updateMessage = async (
+  id: string,
+  newText: string
+): Promise<void> => {
+  await MessageModel.findOneAndUpdate(
+    { _id: id },
+    { text: newText },
+    {
+      new: true,
+    }
+  )
+}
+
+export const getMessages = async (): Promise<void> => {
+  await MessageModel.find({})
+}
+
+export const deleteMessage = async (id: string): Promise<void> => {
+  await MessageModel.deleteOne({ id: id }).exec()
+}
