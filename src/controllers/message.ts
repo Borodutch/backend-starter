@@ -10,7 +10,11 @@ import {
 export default class MessageController {
   @Post('/')
   async addMessage(@Body('text') text: string): Promise<void> {
-    await createMessage(text)
+    try {
+      await createMessage(text)
+    } catch (e) {
+      console.log(`Adding message failed: ${e.message}`)
+    }
   }
 
   @Patch('/')
@@ -18,16 +22,28 @@ export default class MessageController {
     @Body('id') id: string,
     @Body('text') newText: string
   ): Promise<void> {
-    await updateMessage(id, newText)
+    try {
+      await updateMessage(id, newText)
+    } catch (e) {
+      console.log(`Update message failed: ${e.message}`)
+    }
   }
 
   @Get('/')
   async getMessages(): Promise<void> {
-    await getMessages()
+    try {
+      await getMessages()
+    } catch (e) {
+      console.log(`Receiving messages failed: ${e.message}`)
+    }
   }
 
   @Delete('/')
   async deleteMessage(@Body('id') id: string): Promise<void> {
-    await deleteMessage(id)
+    try {
+      await deleteMessage(id)
+    } catch (e) {
+      console.log(`Message deletion failed: ${e.message}`)
+    }
   }
 }
