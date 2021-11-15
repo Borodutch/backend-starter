@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post } from 'amala'
+import { Body, Controller, Delete, Get, IsString, Patch, Post } from 'amala'
 import {
   createMessage,
   deleteMessage,
@@ -8,42 +8,24 @@ import {
 
 @Controller('/message')
 export default class MessageController {
+  @IsString()
   @Post('/')
-  async addMessage(@Body('text') text: string): Promise<void> {
-    try {
-      await createMessage(text)
-    } catch (e) {
-      console.log(`Adding message failed: ${e.message}`)
-    }
+  async addMessage(@Body('text') text: string) {
+    await createMessage(text)
   }
-
+  @IsString()
   @Patch('/')
-  async updateMessage(
-    @Body('id') id: string,
-    @Body('text') newText: string
-  ): Promise<void> {
-    try {
-      await updateMessage(id, newText)
-    } catch (e) {
-      console.log(`Update message failed: ${e.message}`)
-    }
+  async updateMessage(@Body('id') id: string, @Body('text') newText: string) {
+    await updateMessage(id, newText)
   }
-
+  @IsString()
   @Get('/')
-  async getMessages(): Promise<void> {
-    try {
-      await getMessages()
-    } catch (e) {
-      console.log(`Receiving messages failed: ${e.message}`)
-    }
+  async getMessages() {
+    await getMessages()
   }
-
+  @IsString()
   @Delete('/')
-  async deleteMessage(@Body('id') id: string): Promise<void> {
-    try {
-      await deleteMessage(id)
-    } catch (e) {
-      console.log(`Message deletion failed: ${e.message}`)
-    }
+  async deleteMessage(@Body('id') id: string) {
+    await deleteMessage(id)
   }
 }
