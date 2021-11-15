@@ -19,7 +19,7 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class messageController {
   @Post('/')
-  @Flow(checkUser)
+  // @Flow(checkUser)  если это тут поставить, будет ошибка 404
   async createMessage(@Body('text') text: string, @CurrentUser() author: User) {
     return MessageModel.create({ text, author })
   }
