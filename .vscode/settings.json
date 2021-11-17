@@ -8,5 +8,11 @@
     "javascriptreact",
     "typescript",
     "typescriptreact"
-  ]
+  ],
+  "prettier.jsxSingleQuote": true,
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.configPath": "prettierrc.json",
+  "prettier.useEditorConfig": false,
+  "prettier.insertPragma": true
 }
