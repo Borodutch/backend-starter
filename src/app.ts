@@ -1,8 +1,10 @@
 import 'reflect-metadata'
 import * as Koa from 'koa'
-// import * as Router from 'koa-router'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as Router from 'koa-router'
 import * as bodyParser from 'koa-bodyparser'
 import * as cors from '@koa/cors'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Ctx, bootstrapControllers } from 'amala'
 import router from './routes/todoRoutes'
 

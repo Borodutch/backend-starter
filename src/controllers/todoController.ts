@@ -28,7 +28,8 @@ export const todoAdd = async (ctx) => {
 
 export const todoDelete = async (ctx) => {
   await TodoModel.findByIdAndDelete(ctx.params.id)
-    .then((result) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .then(() => {
       ctx.status = 303
       ctx.redirect('/todos')
     })
@@ -41,7 +42,7 @@ export const todoUpdate = async (ctx) => {
   await TodoModel.findByIdAndUpdate(ctx.params.id, ctx.request.body, {
     new: true,
   })
-    .then((result) => {
+    .then(() => {
       ctx.status = 303
       ctx.redirect('/todos')
     })
