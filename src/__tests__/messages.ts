@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 import * as request from 'supertest'
-import { app } from '@/app'
+import app from '@/app'
 dotenv.config({ path: '.env' })
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'

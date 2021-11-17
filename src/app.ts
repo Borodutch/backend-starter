@@ -5,7 +5,7 @@ import * as bodyParser from 'koa-bodyparser'
 import * as cors from '@koa/cors'
 import { bootstrapControllers } from 'amala'
 
-export const app = new Koa()
+const app = new Koa()
 void (async () => {
   try {
     const router = new Router()
@@ -24,3 +24,5 @@ void (async () => {
     console.log('Koa app starting error: ', err)
   }
 })()
+
+export default app
