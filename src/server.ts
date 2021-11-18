@@ -8,8 +8,8 @@ setGlobalOptions({
 import 'module-alias/register'
 import * as dotenv from 'dotenv'
 dotenv.config({ path: `${__dirname}/../.env` })
-import { app } from '@/app'
 import { runMongo } from '@/models/index'
+import app from '@/app'
 
 // Run mongo
 void runMongo().then(() => {
