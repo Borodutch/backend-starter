@@ -1,21 +1,15 @@
-import { Schema, model } from 'mongoose'
+import { getModelForClass, prop } from '@typegoose/typegoose'
 
-interface Todo {
-  title: string
-  body: string
+class Todo {
+  @prop({ required: true })
+  public title: string
+
+  @prop({ required: true })
+  public body: string
 }
 
-const schema = new Schema<Todo>({
-  title: {
-    type: String,
-    required: true,
-  },
-  body: {
-    type: String,
-    required: true,
-  },
+const TodoModel = getModelForClass(Todo, {
+  schemaOptions: { timestamps: true },
 })
-
-const TodoModel = model<Todo>('Todo', schema)
 
 export default TodoModel

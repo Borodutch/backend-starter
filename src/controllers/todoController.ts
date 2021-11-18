@@ -1,52 +1,26 @@
-import TodoModel from '../models/todo'
+import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
+import TodoModel from '@/models/todo'
+import TodoType from '@/validators/TodoType'
 
-export const todosGet = async (ctx) => {
-  await TodoModel.find()
-    .then((result) => {
-      ctx.body = result
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
+@Controller('/todos')
+export default class TodosController {
+  @Get('/')
+  getTodos() {
+    return TodoModel.find({})
+  }
 
-export const todoGet = async (ctx) => {
-  await TodoModel.findById(ctx.params.id)
-    .then((result) => {
-      ctx.body = result
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
+  @Post('/add')
+  async addTodo(@Body({ required: true }) body: TodoType) {
+    await new TodoModel(body).save()
+  }
 
-export const todoAdd = async (ctx) => {
-  const todo = new TodoModel(ctx.request.body)
-  await todo.save()
-  ctx.redirect('/todos')
-}
+  @Delete('/delete/:id')
+  async deleteTodo(@Params('id') id) {
+    await TodoModel.findByIdAndDelete(id)
+  }
 
-export const todoDelete = async (ctx) => {
-  await TodoModel.findByIdAndDelete(ctx.params.id)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .then(() => {
-      ctx.status = 303
-      ctx.redirect('/todos')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-export const todoUpdate = async (ctx) => {
-  await TodoModel.findByIdAndUpdate(ctx.params.id, ctx.request.body, {
-    new: true,
-  })
-    .then(() => {
-      ctx.status = 303
-      ctx.redirect('/todos')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  @Put('/update/:id')
+  async updateTodo(@Params('id') id, @Body({ required: true }) body) {
+    await TodoModel.findByIdAndUpdate(id, body)
+  }
 }
