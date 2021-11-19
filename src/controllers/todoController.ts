@@ -1,33 +1,51 @@
-import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
-import {
-  ValidatorForBodyAdd,
-  ValidatorForBodyPut,
-  ValidatorForId,
-} from '@/validators/Todo'
+import { Body, Controller, Delete, Flow, Get, Params, Post, Put } from 'amala'
+import { ValidatorForBody, ValidatorForId } from '@/validators/Todo'
 import TodoModel from '@/models/todo'
 
-@Controller('/todos')
+let path: string
+
+const middlewareRedirect = async (ctx, next) => {
+  await next()
+  ctx.status = 303
+  ctx.redirect(path)
+}
+
+@Controller('/')
 export default class TodosController {
   @Get('/')
   getTodos() {
     return TodoModel.find({})
   }
 
-  @Post('/add')
-  async addTodo(@Body({ required: true }) body: ValidatorForBodyAdd) {
-    return await new TodoModel(body).save()
+  @Get('/:id')
+  async getTodo(@Params() params: ValidatorForId) {
+    const todo = await TodoModel.findById(params.id)
+    return todo
   }
 
-  @Delete('/delete/:id')
+  @Post('/')
+  @Flow([middlewareRedirect])
+  async addTodo(@Body({ required: true }) body: ValidatorForBody) {
+    const todo = await new TodoModel(body).save()
+    path = `/${todo._id}`
+  }
+
+  @Delete('/:id')
+  @Flow([middlewareRedirect])
   async deleteTodo(@Params() params: ValidatorForId) {
-    return await TodoModel.findByIdAndDelete(params.id)
+    await TodoModel.findByIdAndDelete(params.id)
+    path = '/'
   }
 
-  @Put('/update/:id')
+  @Put('/:id')
+  @Flow([middlewareRedirect])
   async updateTodo(
     @Params() params: ValidatorForId,
-    @Body({ required: true }) body: ValidatorForBodyPut
+    @Body({ required: true }) body: ValidatorForBody
   ) {
-    return await TodoModel.findByIdAndUpdate(params.id, body, { new: true })
+    const todo = await TodoModel.findByIdAndUpdate(params.id, body, {
+      new: true,
+    })
+    path = `/${todo._id}`
   }
 }

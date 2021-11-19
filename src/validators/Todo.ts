@@ -1,7 +1,7 @@
-import { IsMongoId, IsOptional } from 'class-validator'
+import { IsMongoId } from 'class-validator'
 import { IsString } from 'amala'
 
-export class ValidatorForBodyAdd {
+export class ValidatorForBody {
   @IsString()
   title: string
   @IsString()
@@ -11,13 +11,4 @@ export class ValidatorForBodyAdd {
 export class ValidatorForId {
   @IsMongoId()
   id: string
-}
-
-export class ValidatorForBodyPut {
-  @IsOptional()
-  @IsString()
-  title?: string
-  @IsOptional()
-  @IsString()
-  body?: string
 }
