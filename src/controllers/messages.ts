@@ -20,13 +20,13 @@ import MongoMessage from '@/validators/MongoMessage'
 @Flow(userAuth)
 export default class MessageController {
   @Get('/')
-  async showMessages(@CurrentUser() author: User) {
-    return await MessageModel.find({ author })
+  showMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 
   @Post('/')
-  async addMessage(@CurrentUser() author: User, @Body('text') text: string) {
-    return await new MessageModel({ author, text }).save()
+  addMessage(@CurrentUser() author: User, @Body('text') text: string) {
+    return new MessageModel({ author, text }).save()
   }
 
   @Put('/:id')
