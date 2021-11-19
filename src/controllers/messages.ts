@@ -14,6 +14,7 @@ import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
 import { User } from '@/models/user'
 import userAuth from '@/middleware/auth'
+import MongoMessage from '@/validators/MongoMessage'
 
 @Controller('/message')
 @Flow(userAuth)
@@ -32,13 +33,13 @@ export default class MessageController {
   async editMessage(
     @Ctx() ctx: Context,
     @Body('text') text: string,
-    @Params('id') id: string
+    @Params('id') _id: MongoMessage
   ) {
-    return await MessageModel.updateOne({ _id: id }, { text: text })
+    return await MessageModel.updateOne({ _id: _id }, { text: text })
   }
 
   @Delete('/:id')
-  async deleteMessage(@Ctx() ctx: Context, @Params('id') id: string) {
-    return await MessageModel.deleteOne({ _id: id })
+  async deleteMessage(@Ctx() ctx: Context, @Params('id') _id: MongoMessage) {
+    return await MessageModel.deleteOne({ _id: _id })
   }
 }
