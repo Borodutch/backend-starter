@@ -13,8 +13,8 @@ import {
 import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
 import { User } from '@/models/user'
-import userAuth from '@/middleware/auth'
 import MongoMessage from '@/validators/MongoMessage'
+import userAuth from '@/middleware/auth'
 
 @Controller('/message')
 @Flow(userAuth)
