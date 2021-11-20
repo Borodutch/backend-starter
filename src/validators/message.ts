@@ -3,9 +3,7 @@ import { IsString } from 'amala'
 
 export class ValidatorForBody {
   @IsString()
-  title: string
-  @IsString()
-  body: string
+  text: string
 }
 
 export class ValidatorForId {
