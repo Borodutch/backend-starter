@@ -1,4 +1,3 @@
-/* eslint-disable require-await */
 import {
   Body,
   Controller,
@@ -10,8 +9,9 @@ import {
   Put,
   State,
 } from 'amala'
-import { Message, MessageModel } from '@/models/message'
+import { MessageModel } from '@/models/message'
 import { User } from '@/models/user'
+import MessageValidator from '@/validators/Message'
 import auth from '@/middleware/auth'
 import checkUser from '@/middleware/checkUser'
 
@@ -19,37 +19,32 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class messageController {
   @Post('/')
-  // @Flow(checkUser)  если это тут поставить, будет ошибка 404
-  async createMessage(@Body('text') text: string, @CurrentUser() author: User) {
+  @Flow(checkUser)
+  async createMessage(
+    @Body({ required: true }) { text }: MessageValidator,
+    @CurrentUser() author: User
+  ) {
     return MessageModel.create({ text, author })
   }
 
   @Get('/:id')
   @Flow(checkUser)
-  async getMessages(@State('message') message: Message) {
-    return message
+  async getMessages(@State('message') { text }: MessageValidator) {
+    return text
   }
 
   @Put('/:id')
   @Flow(checkUser)
   async updateMessage(
-    @Body('text') text: string,
-    @State('message')
-    message: Message & {
-      _id: string
-    }
+    @Body({ required: true }) { text }: MessageValidator,
+    @State('message') { _id }: MessageValidator
   ) {
-    return MessageModel.findByIdAndUpdate(message._id, { text })
+    return MessageModel.findByIdAndUpdate(_id, { text })
   }
 
   @Delete('/:id')
   @Flow(checkUser)
-  async deleteMessage(
-    @State('message')
-    message: Message & {
-      _id: string
-    }
-  ) {
-    return MessageModel.findByIdAndDelete(message._id)
+  async deleteMessage(@State('message') { _id }: MessageValidator) {
+    return MessageModel.findByIdAndDelete(_id)
   }
 }
