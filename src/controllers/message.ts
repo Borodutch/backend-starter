@@ -1,31 +1,58 @@
-import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
+import {
+  Body,
+  Controller,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Params,
+  Post,
+  Put,
+} from 'amala'
 import { MessageModel } from '@/models/message'
-import { ValidatorForBody, ValidatorForId } from '@/validators/message'
+import {
+  ValidatorForBody,
+  ValidatorForId,
+  ValidatorForUser,
+} from '@/validators/message'
+import auth from '@/middleware/auth'
 
 @Controller('/')
-export default class MessageController {
+@Flow(auth)
+export default class {
   @Get('/')
-  getMessages() {
-    return MessageModel.find({})
+  getMessages(@CurrentUser() { name }: ValidatorForUser) {
+    return MessageModel.find({ author: name })
   }
 
   @Post('/')
-  addMessage(@Body({ required: true }) body: ValidatorForBody) {
-    return new MessageModel(body).save()
+  addMessage(
+    @Body({ required: true }) { text }: ValidatorForBody,
+    @CurrentUser() { name }: ValidatorForUser
+  ) {
+    return new MessageModel({ author: name, text }).save()
   }
 
   @Delete('/:id')
-  deleteMessage(@Params() params: ValidatorForId) {
-    return MessageModel.findByIdAndDelete(params.id)
+  async deleteMessage(
+    @CurrentUser() { name }: ValidatorForUser,
+    @Params() params: ValidatorForId
+  ) {
+    await MessageModel.findOneAndDelete({ author: name, _id: params.id })
   }
 
   @Put('/:id')
   updateMessage(
+    @CurrentUser() { name }: ValidatorForUser,
     @Params() params: ValidatorForId,
     @Body({ required: true }) body: ValidatorForBody
   ) {
-    return MessageModel.findByIdAndUpdate(params.id, body, {
-      new: true,
-    })
+    return MessageModel.findOneAndUpdate(
+      { author: name, _id: params.id },
+      body,
+      {
+        new: true,
+      }
+    )
   }
 }
