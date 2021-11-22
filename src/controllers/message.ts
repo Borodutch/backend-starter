@@ -20,7 +20,7 @@ import checkUser from '@/middleware/checkUser'
 export default class messageController {
   @Post('/')
   @Flow(checkUser)
-  async createMessage(
+  createMessage(
     @Body({ required: true }) { text }: MessageValidator,
     @CurrentUser() author: User
   ) {
@@ -29,13 +29,13 @@ export default class messageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  async getMessages(@State('message') { text }: MessageValidator) {
+  getMessages(@State('message') { text }: MessageValidator) {
     return text
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async updateMessage(
+  updateMessage(
     @Body({ required: true }) { text }: MessageValidator,
     @State('message') { _id }: MessageValidator
   ) {
@@ -44,7 +44,7 @@ export default class messageController {
 
   @Delete('/:id')
   @Flow(checkUser)
-  async deleteMessage(@State('message') { _id }: MessageValidator) {
+  deleteMessage(@State('message') { _id }: MessageValidator) {
     return MessageModel.findByIdAndDelete(_id)
   }
 }
