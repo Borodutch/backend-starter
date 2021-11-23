@@ -1,5 +1,6 @@
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
+import { UserModel } from '@/models/user'
 import { forbidden } from '@hapi/boom'
 import { getOrCreateUser } from '@/models/user'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
@@ -12,13 +13,19 @@ import getGoogleUser from '@/helpers/getGoogleUser'
 
 @Controller('/login')
 export default class LoginController {
-  @Post('/')
+  @Post('/email')
   async email(@Body({ required: true }) { name, email }: EmailLogin) {
-    const user = await getOrCreateUser({
-      name,
-      email,
-    })
-    return user.strippedAndFilled({ withExtra: true })
+    const checkEmail = await UserModel.findOne({ email })
+
+    if (!checkEmail) {
+      const user = await getOrCreateUser({
+        name,
+        email,
+      })
+      return user.strippedAndFilled({ withExtra: true })
+    } else {
+      return 'Пользователь с таким email уже зарегистрирован'
+    }
   }
 
   @Post('/facebook')
