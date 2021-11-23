@@ -2,11 +2,11 @@ import { IsNumber, IsOptional, IsString } from 'amala'
 
 export default class TelegramLogin {
   @IsNumber()
-  id: number
+  id!: number
   @IsString()
-  hash: string
+  hash!: string
   @IsString()
-  auth_date: string
+  auth_date!: string
   @IsOptional()
   @IsString()
   first_name?: string

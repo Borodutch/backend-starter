@@ -881,6 +881,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookiejar@npm:*":
+  version: 2.1.2
+  resolution: "@types/cookiejar@npm:2.1.2"
+  checksum: f6e1903454007f86edd6c3520cbb4d553e1d4e17eaf1f77f6f75e3270f48cc828d74397a113a36942f5fe52f9fa71067bcfa738f53ad468fcca0bc52cb1cbd28
+  languageName: node
+  linkType: hard
+
 "@types/cookies@npm:*":
   version: 0.7.7
   resolution: "@types/cookies@npm:0.7.7"
@@ -1031,6 +1038,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/koa-router@npm:^7.4.4":
+  version: 7.4.4
+  resolution: "@types/koa-router@npm:7.4.4"
+  dependencies:
+    "@types/koa": "*"
+  checksum: 23ff5b725daa1427dc822602f5d4fdcecca5f990595af48879e41338a9c71819ae312326028eef4645beb6ea32ea852416e2f0761a2abd5bf80c2575a3301837
+  languageName: node
+  linkType: hard
+
 "@types/koa@npm:*, @types/koa@npm:^2.13.4":
   version: 2.13.4
   resolution: "@types/koa@npm:2.13.4"
@@ -1044,6 +1060,15 @@ __metadata:
     "@types/koa-compose": "*"
     "@types/node": "*"
   checksum: 35a54e68944f74d6763537d55d01f8ed870d0ef816b5f27fce97a317b237540b7c249dc4a54abab44ad0afd0ce010b335122c9efb490b9589affe7929201d707
+  languageName: node
+  linkType: hard
+
+"@types/koa__cors@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@types/koa__cors@npm:3.0.3"
+  dependencies:
+    "@types/koa": "*"
+  checksum: 692d72f9580afa102517f3726cc517aa705b080cb64d8370f5f2f55c6bd0b7955a17498e1ecb72629da81be7e5466862e0345910f4214ab5ad32da517cfed1fe
   languageName: node
   linkType: hard
 
@@ -1110,6 +1135,25 @@ __metadata:
   version: 2.0.1
   resolution: "@types/stack-utils@npm:2.0.1"
   checksum: 205fdbe3326b7046d7eaf5e494d8084f2659086a266f3f9cf00bccc549c8e36e407f88168ad4383c8b07099957ad669f75f2532ed4bc70be2b037330f7bae019
+  languageName: node
+  linkType: hard
+
+"@types/superagent@npm:*":
+  version: 4.1.13
+  resolution: "@types/superagent@npm:4.1.13"
+  dependencies:
+    "@types/cookiejar": "*"
+    "@types/node": "*"
+  checksum: dffbfd1d3e5b9ed3f44d00e388ce9617407f5a3333241ffcfcf9056b446643794e62a09b817df83611e2f6e8a5bf6a50ba6cfe5abb1afb0f2c4771cdf5b68136
+  languageName: node
+  linkType: hard
+
+"@types/supertest@npm:^2.0.11":
+  version: 2.0.11
+  resolution: "@types/supertest@npm:2.0.11"
+  dependencies:
+    "@types/superagent": "*"
+  checksum: 291abc0d37abe833d517fcfd0c22d51e7d5ffea85ce990603a0d058afa7fe2465b1251d50642ddfd640f66d047029af512793215b612c39adbee72fae5b2ef4f
   languageName: node
   linkType: hard
 
@@ -1640,8 +1684,11 @@ __metadata:
     "@types/jsonwebtoken": ^8.5.5
     "@types/koa": ^2.13.4
     "@types/koa-bodyparser": ^4.3.4
+    "@types/koa-router": ^7.4.4
+    "@types/koa__cors": ^3.0.3
     "@types/lodash": ^4.14.176
     "@types/node": ^16.11.6
+    "@types/supertest": ^2.0.11
     "@typescript-eslint/eslint-plugin": ^5.3.0
     "@typescript-eslint/parser": ^5.3.0
     amala: ^7.0.0
@@ -1651,6 +1698,7 @@ __metadata:
     eslint: ^7.32.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.2
+    eslint-plugin-no-relative-import-paths: ^1.0.8
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-sort-imports-es6-autofix: ^0.6.0
     facebook-node-sdk: ^0.2.0
@@ -1663,6 +1711,7 @@ __metadata:
     module-alias: ^2.2.2
     mongodb-memory-server: ^8.0.0
     mongoose: 6.0.12
+    mongoose-findorcreate: ^3.0.0
     prettier: ^2.4.1
     supertest: ^6.1.6
     ts-jest: ^27.0.7
@@ -2596,6 +2645,13 @@ __metadata:
   peerDependencies:
     eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
   checksum: 4ca36e37faf72fb1ed25361ea8a6abbcc9daa65f3a9ac1dc0a660029000456e8c8b98a87b8cc2316541b13c6e5915df41d2dc4a1d7fe0729d9b72b9a3bd5b909
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-no-relative-import-paths@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "eslint-plugin-no-relative-import-paths@npm:1.0.8"
+  checksum: 8d31a5bb8d7bdc43bf33653c27bf74eb0912527d2ce7bfbf4aa7bb50ecd18a1ad107eaee362b2b1d821ac7ad4503462bf0b4d7ff76af5771d5b5dd46109fc620
   languageName: node
   linkType: hard
 
@@ -5061,6 +5117,13 @@ __metadata:
     saslprep:
       optional: true
   checksum: 528fa310d3209ca35f94f081af6e1b3e4bd8582e761dfd140c4f0599e2d4d7632688b6e145b014e36bc9a11fb6ff605d936c886530858a40c32230499d4ec374
+  languageName: node
+  linkType: hard
+
+"mongoose-findorcreate@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "mongoose-findorcreate@npm:3.0.0"
+  checksum: d4c28ffb2b176cdfe705281a8815df22ce35a44e2e77a770edf49891fb146226d659d6b85532086f7fe0c9b79d0c4237980ec31d4cb85b30e130f3e0be68b93c
   languageName: node
   linkType: hard
 
