@@ -1,8 +1,7 @@
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
-import { UserModel } from '@/models/user'
+import { findOrCreateUser } from '@/models/user'
 import { forbidden } from '@hapi/boom'
-import { getOrCreateUser } from '@/models/user'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import EmailLogin from '@/validators/EmailLogin'
 import FacebookLogin from '@/validators/FacebookLogin'
@@ -15,28 +14,22 @@ import getGoogleUser from '@/helpers/getGoogleUser'
 export default class LoginController {
   @Post('/email')
   async email(@Body({ required: true }) { name, email }: EmailLogin) {
-    const checkEmail = await UserModel.findOne({ email })
-
-    if (!checkEmail) {
-      const user = await getOrCreateUser({
-        name,
-        email,
-      })
-      return user.strippedAndFilled({ withExtra: true })
-    } else {
-      return 'Пользователь с таким email уже зарегистрирован'
-    }
+    const { doc } = await findOrCreateUser({
+      name,
+      email,
+    })
+    return doc.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/facebook')
   async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
     const { name, email, id } = await getFBUser(accessToken)
-    const user = await getOrCreateUser({
+    const { doc } = await findOrCreateUser({
       name,
       email,
       facebookId: id,
     })
-    return user.strippedAndFilled({ withExtra: true })
+    return doc.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/telegram')
@@ -48,20 +41,20 @@ export default class LoginController {
     if (!verifyTelegramPayload(body)) {
       return ctx.throw(forbidden())
     }
-    const user = await getOrCreateUser({
+    const { doc } = await findOrCreateUser({
       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
       telegramId: id,
     })
-    return user.strippedAndFilled({ withExtra: true })
+    return doc.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/google')
   async google(@Body({ required: true }) { accessToken }: GoogleLogin) {
     const userData = await getGoogleUser(accessToken)
-    const user = await getOrCreateUser({
+    const { doc } = await findOrCreateUser({
       name: userData.name,
       email: userData.email,
     })
-    return user.strippedAndFilled({ withExtra: true })
+    return doc.strippedAndFilled({ withExtra: true })
   }
 }

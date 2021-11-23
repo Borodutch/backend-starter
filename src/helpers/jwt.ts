@@ -1,11 +1,22 @@
 import * as jwt from 'jsonwebtoken'
 
-const getSecret = () => process.env.JWT
+const secret = process.env.JWT
+
+function getSecret() {
+  if (!secret) {
+    throw new Error('JWT is not defined')
+  }
+  return secret
+}
 
 export function sign(payload: Record<string, unknown>) {
-  return new Promise((res, rej) => {
-    jwt.sign(payload, getSecret(), undefined, (err, token) => {
-      return err ? rej(err) : res(token)
+  return new Promise<string>((res, rej) => {
+    jwt.sign(payload, getSecret(), (err, token) => {
+      return err
+        ? rej(err)
+        : token
+        ? res(token)
+        : rej(new Error('No token was created'))
     })
   })
 }
