@@ -1,4 +1,4 @@
-name: Backend starter
+name: Compile and lint code
 
 on:
   pull_request:
