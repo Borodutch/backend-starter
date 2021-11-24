@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
@@ -10,8 +9,8 @@ import {
   Post,
   Put,
 } from 'amala'
-import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
+import { User } from '@/models/user'
 import MongoIdMessage from '@/validators/MongoIdMessage'
 import TextMessage from '@/validators/TextMessage'
 import auth from '@/middleware/auth'
@@ -21,38 +20,39 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class MessageController {
   @Get('/')
-  getMessages(@CurrentUser() user) {
+  getMessages(@CurrentUser() user: User) {
     return MessageModel.find({ author: user })
   }
 
   @Post('/')
   addMessage(
     @Body({ required: true }) { text }: TextMessage,
-    @CurrentUser() user
+    @CurrentUser() { name }: User
   ) {
-    return new MessageModel({ author: user, text }).save()
+    return new MessageModel({ author: name, text }).save()
   }
 
   @Delete('/:id')
   @Flow([checkUser])
   async deleteMessage(
-    @CurrentUser() user,
     @Params() params: MongoIdMessage,
-    @Ctx() ctx: Context
+    @CurrentUser() { name }: User
   ) {
-    await MessageModel.findOneAndDelete({ author: user, _id: params.id })
-    return (ctx.body = 'Сообщение удалено')
+    await MessageModel.findOneAndDelete({ author: name, _id: params.id })
+    return {
+      message: 'message deleted',
+    }
   }
 
   @Put('/:id')
   @Flow([checkUser])
   updateMessage(
-    @CurrentUser() user,
     @Params() params: MongoIdMessage,
-    @Body({ required: true }) body: TextMessage
+    @Body({ required: true }) body: TextMessage,
+    @CurrentUser() { name }: User
   ) {
     return MessageModel.findOneAndUpdate(
-      { author: user, _id: params.id },
+      { author: name, _id: params.id },
       body,
       {
         new: true,

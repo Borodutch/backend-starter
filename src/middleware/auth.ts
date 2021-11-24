@@ -3,28 +3,27 @@ import { UserModel } from '@/models/user'
 import { verify } from '@/helpers/jwt'
 
 interface JWTObject {
-  name: string
-  email: string
+  id: string
   iat: number
 }
 
 const auth = async (ctx: Context, next: Next) => {
   const token = ctx.headers.token as string
-
   try {
-    const { email } = (await verify(token)) as JWTObject
-
+    const { id } = (await verify(token)) as JWTObject
     try {
-      const { name } = await UserModel.findOne({ email })
-      ctx.state.user = name
+      const user = await UserModel.findById(id)
+      ctx.state.user = user
       return next()
     } catch (err) {
-      ctx.status = 200
-      ctx.message = 'Пользователь не найден'
+      ctx.status = 404
+      ctx.body = {
+        message: 'user not found',
+      }
     }
   } catch (err) {
-    ctx.status = 200
-    ctx.message = err.message
+    ctx.status = 401
+    ctx.body = err
   }
 }
 

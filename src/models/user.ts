@@ -18,7 +18,7 @@ export class User extends FindOrCreate {
   @prop({ required: true, index: true })
   name!: string
 
-  @prop({ required: true, index: true, unique: true })
+  @prop({ required: true, index: true, unique: true, default: 'token' })
   token!: string
 
   strippedAndFilled({
