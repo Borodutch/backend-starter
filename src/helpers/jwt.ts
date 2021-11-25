@@ -1,8 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 
-const secret = process.env.JWT
-
 function getSecret() {
+  const secret = process.env.JWT
   if (!secret) {
     throw new Error('JWT is not defined')
   }
