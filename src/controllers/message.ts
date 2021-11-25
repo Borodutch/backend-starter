@@ -20,8 +20,8 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class MessageController {
   @Get('/')
-  getMessages(@CurrentUser() user: User) {
-    return MessageModel.find({ author: user })
+  getMessages(@CurrentUser() { name }: User) {
+    return MessageModel.find({ author: name })
   }
 
   @Post('/')
