@@ -20,40 +20,36 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class MessageController {
   @Get('/')
-  getMessages(@CurrentUser() user: User) {
-    return MessageModel.find({ author: user })
+  getMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 
   @Post('/')
   addMessage(
     @Body({ required: true }) { text }: TextMessage,
-    @CurrentUser() user: User
+    @CurrentUser() author: User
   ) {
-    return new MessageModel({ author: user, text }).save()
+    return new MessageModel({ author, text }).save()
   }
 
   @Delete('/:id')
   @Flow([checkUser])
   async deleteMessage(
-    @Params() params: MongoIdMessage,
-    @CurrentUser() user: User
+    @Params() { id }: MongoIdMessage,
+    @CurrentUser() author: User
   ) {
-    await MessageModel.findOneAndDelete({ author: user, _id: params.id })
+    await MessageModel.findOneAndDelete({ id, author })
   }
 
   @Put('/:id')
   @Flow([checkUser])
   updateMessage(
-    @Params() params: MongoIdMessage,
+    @Params() { id }: MongoIdMessage,
     @Body({ required: true }) body: TextMessage,
-    @CurrentUser() user: User
+    @CurrentUser() author: User
   ) {
-    return MessageModel.findOneAndUpdate(
-      { _id: params.id, author: user },
-      body,
-      {
-        new: true,
-      }
-    )
+    return MessageModel.findOneAndUpdate({ id, author }, body, {
+      new: true,
+    })
   }
 }
