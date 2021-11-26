@@ -1,25 +1,36 @@
+import { Boom, forbidden } from '@hapi/boom'
 import { Context, Next } from 'koa'
 import { Message, MessageModel } from '@/models/message'
+import { isDocument } from '@typegoose/typegoose'
+import { isMongoId } from 'class-validator'
+import { notFound } from '@hapi/boom'
 
 const checkUser = async (ctx: Context, next: Next) => {
-  const id: number = ctx.params.id
+  const id: string = ctx.params.id
 
-  if (id) {
-    try {
-      const { author } = (await MessageModel.findById(id)) as Message
-      if (author === ctx.state.user.name) {
+  if (!isMongoId(id)) {
+    ctx.throw(notFound('invalid parameter name'))
+  }
+
+  try {
+    const { author } = (await MessageModel.findById(id)
+      .populate('author', '_id')
+      .exec()) as Message
+
+    if (isDocument(author)) {
+      if (author._id.toString() === ctx.state.user._id.toString()) {
         return next()
       } else {
-        ctx.status = 403
-        ctx.body = {
-          message: 'access denied',
-        }
+        ctx.throw(forbidden('access denied'))
       }
-    } catch (err) {
-      ctx.status = 404
-      ctx.body = {
-        message: 'message not found',
-      }
+    }
+  } catch (err) {
+    if (err instanceof TypeError) {
+      ctx.throw(notFound('message not found'))
+    }
+
+    if (err instanceof Boom) {
+      ctx.throw(err)
     }
   }
 }

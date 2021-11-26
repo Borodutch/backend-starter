@@ -20,28 +20,25 @@ import checkUser from '@/middleware/checkUser'
 @Flow(auth)
 export default class MessageController {
   @Get('/')
-  getMessages(@CurrentUser() { name }: User) {
-    return MessageModel.find({ author: name })
+  getMessages(@CurrentUser() user: User) {
+    return MessageModel.find({ author: user })
   }
 
   @Post('/')
   addMessage(
     @Body({ required: true }) { text }: TextMessage,
-    @CurrentUser() { name }: User
+    @CurrentUser() user: User
   ) {
-    return new MessageModel({ author: name, text }).save()
+    return new MessageModel({ author: user, text }).save()
   }
 
   @Delete('/:id')
   @Flow([checkUser])
   async deleteMessage(
     @Params() params: MongoIdMessage,
-    @CurrentUser() { name }: User
+    @CurrentUser() user: User
   ) {
-    await MessageModel.findOneAndDelete({ author: name, _id: params.id })
-    return {
-      message: 'message deleted',
-    }
+    await MessageModel.findOneAndDelete({ author: user, _id: params.id })
   }
 
   @Put('/:id')
@@ -49,10 +46,10 @@ export default class MessageController {
   updateMessage(
     @Params() params: MongoIdMessage,
     @Body({ required: true }) body: TextMessage,
-    @CurrentUser() { name }: User
+    @CurrentUser() user: User
   ) {
     return MessageModel.findOneAndUpdate(
-      { author: name, _id: params.id },
+      { _id: params.id, author: user },
       body,
       {
         new: true,
