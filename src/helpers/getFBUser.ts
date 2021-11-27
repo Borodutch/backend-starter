@@ -8,7 +8,7 @@ export default function getFBUser(accessToken: string): Promise<FBUser> {
       secret: process.env.FACEBOOK_APP_SECRET,
     })
     fb.setAccessToken(accessToken)
-    fb.api('/me?fields=name,email,id', (err, user) => {
+    fb.api('/me?fields=name,email,id', (err: Error, user: FBUser) => {
       return err ? rej(err) : res(user)
     })
   })
