@@ -4,7 +4,7 @@ import { Message } from '@/models/message'
 export default class MessageValidator {
   @IsString()
   @IsNotEmpty()
-  text: string
+  text!: string
   @IsObject()
   @IsOptional()
   message?: Message
