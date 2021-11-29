@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "distribute": "yarn build-ts && node dist/server.js",
-    "develop": "tsc-watch --skipLibCheck --onSuccess \"node dist/server.js\"",
+    "develop": "tsc-watch --skipLibCheck --onSuccess 'node dist/server.js'",
     "build-ts": "tsc --skipLibCheck",
     "test": "yarn jest --forceExit",
     "pretty": "prettier --check src",
