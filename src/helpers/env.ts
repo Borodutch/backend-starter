@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv'
 import { cleanEnv, num, str } from 'envalid'
+
 dotenv.config({ path: `${__dirname}/../../.env` })
 
 // eslint-disable-next-line node/no-process-env
