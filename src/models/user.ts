@@ -1,6 +1,12 @@
 import * as findorcreate from 'mongoose-findorcreate'
 import { FindOrCreate } from '@typegoose/typegoose/lib/defaultClasses'
-import { getModelForClass, plugin, pre, prop } from '@typegoose/typegoose'
+import {
+  getModelForClass,
+  modelOptions,
+  plugin,
+  pre,
+  prop,
+} from '@typegoose/typegoose'
 import { omit } from 'lodash'
 import { sign } from '@/helpers/jwt'
 
@@ -8,6 +14,7 @@ import { sign } from '@/helpers/jwt'
 @pre<User>('save', async function () {
   this.token = await sign({ id: this.id })
 })
+@modelOptions({ schemaOptions: { timestamps: true } })
 export class User extends FindOrCreate {
   @prop({ index: true, lowercase: true })
   email?: string
@@ -39,9 +46,7 @@ export class User extends FindOrCreate {
   }
 }
 
-export const UserModel = getModelForClass(User, {
-  schemaOptions: { timestamps: true },
-})
+export const UserModel = getModelForClass(User)
 
 export function findOrCreateUser(loginOptions: {
   name: string
