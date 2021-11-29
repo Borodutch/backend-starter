@@ -46,7 +46,7 @@ export default class messageController {
 
   @Delete('/:id')
   @Flow(checkUser)
-  deleteMessage(@State({ required: true }) { text }: MessageValidator) {
-    return MessageModel.findOneAndDelete({ text })
+  deleteMessage(@State('message') message: Message) {
+    return MessageModel.findOneAndDelete(message)
   }
 }
