@@ -14,7 +14,9 @@ export default async (ctx: Context, next: Next) => {
 
   ctx.state.user = await UserModel.findOne({ token })
 
-  if (!ctx.state.user) return ctx.throw(notFound())
+  if (!ctx.state.user) {
+    return ctx.throw(notFound())
+  }
 
   return next()
 }
