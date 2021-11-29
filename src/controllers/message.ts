@@ -11,7 +11,7 @@ import {
   State,
 } from 'amala'
 import { Context } from 'koa'
-import { MessageModel } from '@/models/message'
+import { Message, MessageModel } from '@/models/message'
 import { User } from '@/models/user'
 import MessageValidator from '@/validators/MessageValidator'
 import auth from '@/middleware/auth'
@@ -30,8 +30,8 @@ export default class messageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  getMessages(@State({ required: true }) { text }: MessageValidator) {
-    return text
+  getMessages(@State('message') message: Message) {
+    return message
   }
 
   @Put('/:id')
