@@ -4,13 +4,13 @@ import * as dotenv from 'dotenv'
 dotenv.config({ path: `${__dirname}/../.env` })
 import { runMongo } from '@/helpers/mongo'
 import app from '@/app'
+import env from '@/helpers/env'
 
 // Run mongo
 void runMongo().then(() => {
   console.log('Mongo connected')
 })
 // Start rest
-const port = process.env.PORT || 1337
-app.listen(port).on('listening', () => {
-  console.log(`HTTP is listening on ${port}`)
+app.listen(env.PORT).on('listening', () => {
+  console.log(`HTTP is listening on ${env.PORT}`)
 })

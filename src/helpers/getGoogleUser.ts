@@ -1,5 +1,5 @@
 import axios from 'axios'
-import isTesting from '@/helpers/isTesting'
+import env from '@/helpers/env'
 import testingGoogleMock from '@/helpers/testingGoogleMock'
 
 interface GoogleResponse {
@@ -10,7 +10,7 @@ interface GoogleResponse {
 export default async function getGoogleUser(
   accessToken: string
 ): Promise<GoogleResponse> {
-  return isTesting()
+  return env.isTest
     ? testingGoogleMock
     : (
         await axios(

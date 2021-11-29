@@ -19,6 +19,7 @@
     "@koa/cors": "^3.1.0",
     "amala": "^7.0.0",
     "axios": "^0.24.0",
+    "envalid": "^7.2.2",
     "facebook-node-sdk": "^0.2.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",

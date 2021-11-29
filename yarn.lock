@@ -1721,6 +1721,7 @@ __metadata:
     axios: ^0.24.0
     axios-mock-adapter: ^1.20.0
     dotenv: ^10.0.0
+    envalid: ^7.2.2
     eslint: ^8.3.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.3
@@ -2533,6 +2534,15 @@ __metadata:
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
   checksum: 65b5df55a8bab92229ab2b40dad3b387fad24613263d103a97f91c9fe43ceb21965cd3392b1ccb5d77088021e525c4e0481adb309625d0cb94ade1d1fb8dc17e
+  languageName: node
+  linkType: hard
+
+"envalid@npm:^7.2.2":
+  version: 7.2.2
+  resolution: "envalid@npm:7.2.2"
+  dependencies:
+    tslib: 2.3.1
+  checksum: 9ab00b9ab99f9248b5a9863228c293c575242326fcae66effca3a9338cca9cf037e013439cdfe9f883319775736a8188b94956aacd2fe4439a7b567abe6f716a
   languageName: node
   linkType: hard
 
@@ -6579,17 +6589,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.3.1, tslib@npm:^2.3.0, tslib@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "tslib@npm:2.3.1"
+  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.3.0, tslib@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "tslib@npm:2.3.1"
-  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
   languageName: node
   linkType: hard
 

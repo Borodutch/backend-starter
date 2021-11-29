@@ -1,17 +1,10 @@
 import * as jwt from 'jsonwebtoken'
-
-function getSecret() {
-  const secret = process.env.JWT
-  if (!secret) {
-    throw new Error('JWT is not defined')
-  }
-  return secret
-}
+import env from '@/helpers/env'
 
 export function sign(payload: Record<string, unknown>) {
   return new Promise<string>((res, rej) => {
     try {
-      jwt.sign(payload, getSecret(), (err, token) => {
+      jwt.sign(payload, env.JWT, (err, token) => {
         return err
           ? rej(err)
           : token
@@ -27,7 +20,7 @@ export function sign(payload: Record<string, unknown>) {
 export function verify(token: string) {
   return new Promise((res, rej) => {
     try {
-      jwt.verify(token, getSecret(), undefined, (err, payload) => {
+      jwt.verify(token, env.JWT, undefined, (err, payload) => {
         return err ? rej(err) : res(payload)
       })
     } catch (error) {

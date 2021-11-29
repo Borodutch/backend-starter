@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+import env from '@/helpers/env'
 
 export interface TelegramLoginPayload {
   id: number
@@ -11,7 +12,7 @@ export interface TelegramLoginPayload {
 }
 
 export function verifyTelegramPayload(payload: TelegramLoginPayload) {
-  const telegramToken = process.env.TELEGRAM_LOGIN_TOKEN
+  const telegramToken = env.TELEGRAM_LOGIN_TOKEN
   if (!telegramToken) {
     throw new Error('TELEGRAM_LOGIN_TOKEN is not defined')
   }
