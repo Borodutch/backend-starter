@@ -1,12 +1,7 @@
 import * as request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
-import {
-  dropMongo,
-  setupDotenv,
-  startKoa,
-  stopServer,
-} from '@/__tests__/testUtils'
+import { dropMongo, startKoa, stopServer } from '@/__tests__/testUtils'
 import { runMongo, stopMongo } from '@/helpers/mongo'
 import MockAdapter from 'axios-mock-adapter'
 import app from '@/app'
@@ -18,7 +13,6 @@ describe('Login endpoint', () => {
   let server: Server
 
   beforeAll(async () => {
-    setupDotenv()
     const mongoServer = await MongoMemoryServer.create()
     await runMongo(await mongoServer.getUri())
     server = await startKoa(app)

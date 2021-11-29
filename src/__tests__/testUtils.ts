@@ -1,11 +1,6 @@
 import * as Koa from 'koa'
-import * as dotenv from 'dotenv'
 import * as mongoose from 'mongoose'
 import { Server } from 'http'
-
-export function setupDotenv() {
-  dotenv.config({ path: `${__dirname}/../../.env` })
-}
 
 export function dropMongo() {
   return Promise.all(

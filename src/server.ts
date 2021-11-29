@@ -1,7 +1,5 @@
 import 'module-alias/register'
 import 'source-map-support/register'
-import * as dotenv from 'dotenv'
-dotenv.config({ path: `${__dirname}/../.env` })
 import { runMongo } from '@/helpers/mongo'
 import app from '@/app'
 import env from '@/helpers/env'
