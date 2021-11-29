@@ -7,7 +7,8 @@ import { notFound, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 const auth = async (ctx: Context, next: Next) => {
-  const token = ctx.headers.token as string
+  let token = ctx.header.authorization as string
+  token = token.replace('Bearer ', '')
 
   if (!token) {
     return ctx.throw(unauthorized('token not found'))

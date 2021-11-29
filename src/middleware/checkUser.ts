@@ -14,8 +14,12 @@ const checkUser = async (ctx: Context, next: Next) => {
 
   const message = await MessageModel.findById(id).populate('author')
 
-  if (!message?.author) {
+  if (!message) {
     return ctx.throw(notFound('message not found'))
+  }
+
+  if (!message?.author) {
+    return ctx.throw(notFound('author not found'))
   }
 
   if (!isDocument(message?.author)) {

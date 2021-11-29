@@ -32,6 +32,12 @@ export default class MessageController {
     return new MessageModel({ author, text }).save()
   }
 
+  @Get('/:id')
+  @Flow([checkUser])
+  getMessage(@Params() { id }: MongoIdMessage, @CurrentUser() author: User) {
+    return MessageModel.findOne({ id, author })
+  }
+
   @Delete('/:id')
   @Flow([checkUser])
   async deleteMessage(
