@@ -10,20 +10,28 @@ function getSecret() {
 
 export function sign(payload: Record<string, unknown>) {
   return new Promise<string>((res, rej) => {
-    jwt.sign(payload, getSecret(), (err, token) => {
-      return err
-        ? rej(err)
-        : token
-        ? res(token)
-        : rej(new Error('No token was created'))
-    })
+    try {
+      jwt.sign(payload, getSecret(), (err, token) => {
+        return err
+          ? rej(err)
+          : token
+          ? res(token)
+          : rej(new Error('No token was created'))
+      })
+    } catch (error) {
+      rej(error)
+    }
   })
 }
 
 export function verify(token: string) {
   return new Promise((res, rej) => {
-    jwt.verify(token, getSecret(), undefined, (err, payload) => {
-      return err ? rej(err) : res(payload)
-    })
+    try {
+      jwt.verify(token, getSecret(), undefined, (err, payload) => {
+        return err ? rej(err) : res(payload)
+      })
+    } catch (error) {
+      rej(error)
+    }
   })
 }
