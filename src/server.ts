@@ -1,5 +1,4 @@
 import 'source-map-support/register'
-
 // Setup typegoose
 import { Severity, setGlobalOptions } from '@typegoose/typegoose'
 setGlobalOptions({
