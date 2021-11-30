@@ -1,17 +1,17 @@
-import { Ref, getModelForClass, prop } from '@/typegoose/typegoose'
+import { Ref, getModelForClass, prop } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
 export class Message {
-  @prop(
+  @prop({
     required: true,
     index: true,
     ref: () => User,
-  )
+  })
   username!: Ref<User>
-  @prop(
+  @prop({
     required: true,
     index: true,
-  )
+  })
   message!: string
 }
 
