@@ -1,14 +1,11 @@
 import 'module-alias/register'
 import 'source-map-support/register'
-import { runMongo } from '@/helpers/mongo'
-import app from '@/app'
-import env from '@/helpers/env'
 
-// Run mongo
-void runMongo().then(() => {
+import runApp from '@/helpers/runApp'
+import runMongo from '@/helpers/mongo'
+
+void (async () => {
+  await runMongo()
   console.log('Mongo connected')
-})
-// Start rest
-app.listen(env.PORT).on('listening', () => {
-  console.log(`HTTP is listening on ${env.PORT}`)
-})
+  await runApp()
+})()

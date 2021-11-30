@@ -13,9 +13,6 @@ export interface TelegramLoginPayload {
 
 export function verifyTelegramPayload(payload: TelegramLoginPayload) {
   const telegramToken = env.TELEGRAM_LOGIN_TOKEN
-  if (!telegramToken) {
-    throw new Error('TELEGRAM_LOGIN_TOKEN is not defined')
-  }
   const secret = crypto.createHash('sha256').update(telegramToken).digest()
   const hash = payload.hash
   delete payload.hash
