@@ -5,11 +5,14 @@ import {
   Delete,
   Flow,
   Get,
+  Params,
   Post,
   Put,
 } from 'amala'
 import { MessageModel } from '@/models/message'
 import { User } from '@/models/user'
+import Message from '@/validators/Message'
+import MongoId from '@/validators/MongoId'
 import auth from '@/middlewares/auth'
 import checkUser from '@/middlewares/checkUser'
 
@@ -18,30 +21,31 @@ import checkUser from '@/middlewares/checkUser'
 export default class messageController {
   @Post('/')
   async postMessage(
-    @Body('message') message: string,
-    @CurrentUser() username: User
+    @Body({ required: true }) { message }: Message,
+    @CurrentUser() user: User
   ) {
-    return await new MessageModel({ message, username }).save()
+    return await new MessageModel({ message, user }).save()
   }
 
   @Get('/:id')
   @Flow(checkUser)
   async getMessage(
-    @Body('message') message: string,
-    @CurrentUser() username: User
+    @Params() { id }: MongoId,
+    @Body({ required: true }) { message }: Message,
+    @CurrentUser() user: User
   ) {
-    return await MessageModel.find({ message, username })
+    return await MessageModel.find({ id, message, user })
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async editMessage(@Body('id') id: string) {
+  async editMessage(@Params() { id }: MongoId) {
     return await MessageModel.updateOne({ id })
   }
 
   @Delete('/:id')
   @Flow(checkUser)
-  async deleteMessage(@Body('id') id: string) {
+  async deleteMessage(@Params() { id }: MongoId) {
     await MessageModel.findByIdAndDelete({ id })
     return { success: true }
   }
