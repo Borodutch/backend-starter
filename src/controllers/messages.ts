@@ -21,26 +21,32 @@ import checkUser from '@/middlewares/checkUser'
 export default class messageController {
   @Post('/')
   async postMessage(
-    @Body({ required: true }) { message }: Message,
+    @Body({ required: true }) { text }: Message,
     @CurrentUser() user: User
   ) {
-    return await new MessageModel({ message, user }).save()
+    return await new MessageModel({ text, user }).save()
   }
 
   @Get('/:id')
   @Flow(checkUser)
   async getMessage(
     @Params() { id }: MongoId,
-    @Body({ required: true }) { message }: Message,
+    @Body({ required: true }) { text }: Message,
     @CurrentUser() user: User
   ) {
-    return await MessageModel.find({ id, message, user })
+    return await MessageModel.find({ id, text, user })
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async editMessage(@Params() { id }: MongoId) {
-    return await MessageModel.updateOne({ id })
+  async editMessage(
+    @Params() { id }: MongoId,
+    @Body({ required: true }) body: Message,
+    @CurrentUser() user: User
+  ) {
+    return await MessageModel.findOneAndUpdate({ id, user }, body, {
+      new: true,
+    })
   }
 
   @Delete('/:id')

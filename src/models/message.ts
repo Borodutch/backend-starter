@@ -12,7 +12,7 @@ export class Message {
   @prop({
     required: true,
   })
-  message!: string
+  text!: string
 }
 
 export const MessageModel = getModelForClass(Message)
