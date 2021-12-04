@@ -51,8 +51,8 @@ export default class messageController {
 
   @Delete('/:id')
   @Flow(checkUser)
-  async deleteMessage(@Params() { id }: MongoId) {
-    await MessageModel.findByIdAndDelete({ id })
+  async deleteMessage(@Params() { id }: MongoId, @CurrentUser() user: User) {
+    await MessageModel.findByIdAndDelete({ _id: id, user: user })
     return { success: true }
   }
 }
