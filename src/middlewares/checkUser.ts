@@ -10,7 +10,7 @@ const checkUser = async (ctx: Context, next: Next) => {
   if (!message) {
     return ctx.throw(notFound())
   }
-  if (!(message.user === user._id)) {
+  if (message.user !== user._id) {
     return ctx.throw(notFound())
   }
   ctx.state.message = message
