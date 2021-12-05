@@ -1,20 +1,13 @@
 import { Context, Next } from 'koa'
-import { UserModel } from '@/models/user'
 import { notFound } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 const auth = async (ctx: Context, next: Next) => {
-  const token = await verify(ctx.headers.token as string)
+  const token = ctx.headers.authorization
   if (!token) {
-    return ctx.throw(notFound('Token is not valid'))
+    return ctx.throw(notFound())
   }
-
-  const user = await UserModel.findOne({ filter: token })
-  if (!user) {
-    return ctx.throw(notFound('User not found'))
-  }
-
-  ctx.state.user = user
+  ctx.state.user = await verify(token)
 
   return next()
 }

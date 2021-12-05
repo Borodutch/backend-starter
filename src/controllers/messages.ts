@@ -24,36 +24,19 @@ export default class messageController {
     @Body({ required: true }) { text }: Message,
     @CurrentUser() user: User
   ) {
-    const newMessage = await new MessageModel({ text, user }).save()
-    return newMessage
+    return new MessageModel({ text, user }).save()
   }
 
   @Get('/:id')
   @Flow(checkUser)
-  async getMessage(
-    @Params() { id }: MongoId,
-    @Body({ required: true }) { text }: Message,
-    @CurrentUser() user: User
-  ) {
-    const foundMessage = await MessageModel.find({ id, text, user })
-    return foundMessage
+  async getMessage(@Params() { id }: MongoId) {
+    return MessageModel.find({ id })
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async editMessage(
-    @Params() { id }: MongoId,
-    @Body({ required: true }) body: Message,
-    @CurrentUser() user: User
-  ) {
-    const editedMessage = await MessageModel.findOneAndUpdate(
-      { id, user },
-      body,
-      {
-        new: true,
-      }
-    )
-    return editedMessage
+  async editMessage(@Params() { id }: MongoId) {
+    return MessageModel.updateOne({ _id: id })
   }
 
   @Delete('/:id')
