@@ -24,7 +24,8 @@ export default class messageController {
     @Body({ required: true }) { text }: Message,
     @CurrentUser() user: User
   ) {
-    return await new MessageModel({ text, user }).save()
+    const newMessage = await new MessageModel({ text, user }).save()
+    return newMessage
   }
 
   @Get('/:id')
@@ -34,7 +35,8 @@ export default class messageController {
     @Body({ required: true }) { text }: Message,
     @CurrentUser() user: User
   ) {
-    return await MessageModel.find({ id, text, user })
+    const foundMessage = await MessageModel.find({ id, text, user })
+    return foundMessage
   }
 
   @Put('/:id')
@@ -44,9 +46,14 @@ export default class messageController {
     @Body({ required: true }) body: Message,
     @CurrentUser() user: User
   ) {
-    return await MessageModel.findOneAndUpdate({ id, user }, body, {
-      new: true,
-    })
+    const editedMessage = await MessageModel.findOneAndUpdate(
+      { id, user },
+      body,
+      {
+        new: true,
+      }
+    )
+    return editedMessage
   }
 
   @Delete('/:id')
