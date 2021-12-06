@@ -1,3 +1,4 @@
+import { Context } from 'koa'
 import {
   Body,
   Controller,
@@ -10,7 +11,6 @@ import {
   Put,
   State,
 } from 'amala'
-import { Context } from 'koa'
 import { Message, MessageModel } from '@/models/message'
 import { User } from '@/models/user'
 import MessageValidator from '@/validators/MessageValidator'
@@ -38,9 +38,10 @@ export default class messageController {
   @Flow(checkUser)
   updateMessage(
     @Ctx() ctx: Context,
-    @Body({ required: true }) { text }: MessageValidator
+    @State({ required: true }) { text }: MessageValidator,
+    @Body({ required: true }) { text: newText }: MessageValidator
   ) {
-    ctx.state.message.text = text
+    text = newText
     return ctx.state.message.save()
   }
 

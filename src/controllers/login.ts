@@ -51,7 +51,7 @@ export default class LoginController {
 
   @Post('/email')
   async email(@Body({ required: true }) { name, email }: EmailLogin) {
-    const user = await findOrCreateUser({ name, email })
-    return user.doc.strippedAndFilled({ withExtra: true })
+    const { doc: user } = await findOrCreateUser({ name, email })
+    return user.strippedAndFilled({ withExtra: true })
   }
 }
