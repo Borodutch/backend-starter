@@ -10,7 +10,7 @@
     "distribute": "yarn build-ts && node dist/server.js",
     "develop": "tsc-watch --skipLibCheck --onSuccess 'node dist/server.js'",
     "build-ts": "tsc --skipLibCheck",
-    "test": "yarn test",
+    "test": "yarn jest --forceExit",
     "pretty": "prettier --check src",
     "lint": "yarn pretty && eslint --max-warnings 0 --ext ts,tsx,json src"
   },
