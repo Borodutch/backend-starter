@@ -20,7 +20,7 @@ import checkUser from '@/middlewares/checkUser'
 @Flow(auth)
 export default class messageController {
   @Post('/')
-  async postMessage(
+  postMessage(
     @Body({ required: true }) { text }: Message,
     @CurrentUser() user: User
   ) {
@@ -29,13 +29,13 @@ export default class messageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  async getMessage(@Params() { id }: MongoId) {
+  getMessage(@Params() { id }: MongoId) {
     return MessageModel.find({ id })
   }
 
   @Put('/:id')
   @Flow(checkUser)
-  async editMessage(@Params() { id }: MongoId) {
+  editMessage(@Params() { id }: MongoId) {
     return MessageModel.updateOne({ _id: id })
   }
 
