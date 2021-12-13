@@ -40,7 +40,7 @@ describe('CRUD for messages', () => {
   it('Post message', async () => {
     const response = await request(server)
       .post('/message')
-      .set({ authorization: token })
+      .set('Authorization', token)
       .send({ user: 'Test User', text: 'Test text' })
     console.log(response.error)
     id = response.body._id
@@ -50,7 +50,7 @@ describe('CRUD for messages', () => {
   it('Get message', async () => {
     const response = await request(server)
       .get(`/message/${id}`)
-      .set({ authorization: token })
+      .set('Authorization', token)
       .send()
     console.log(response.error)
     expect(response.statusCode).toBe(200)
@@ -59,7 +59,7 @@ describe('CRUD for messages', () => {
   it('Put message', async () => {
     const response = await request(server)
       .put(`/message/${id}`)
-      .set({ authorization: token })
+      .set('Authorization', token)
       .send({ text: 'Updated test text' })
     console.log(response.error)
     expect(response.statusCode).toBe(200)
@@ -68,7 +68,7 @@ describe('CRUD for messages', () => {
   it('Delete message', async () => {
     const response = await request(server)
       .put(`/message/${id}`)
-      .set({ authorization: token })
+      .set('Authorization', token)
       .send()
     console.log(response.error)
     expect(response.statusCode).toBe(200)
