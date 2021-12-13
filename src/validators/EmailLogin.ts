@@ -1,6 +1,6 @@
 import { IsEmail, IsString } from 'class-validator'
 
-export default class Email {
+export default class EmailLogin {
   @IsEmail()
   email!: string
   @IsString()

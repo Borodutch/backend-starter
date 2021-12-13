@@ -26,12 +26,28 @@ describe('CRUD for messages', () => {
   afterAll(async () => {
     await shutdown(server)
     await mongoServer.stop()
+    return new Promise<void>((resolve, reject) => {
+      server.close((err) => {
+        err ? reject(err) : resolve()
+      })
+    })
   })
 
+  const mockUser = {
+    name: 'John Doe',
+    email: 'john@doe.com',
+  }
+
+  const mockMessage = {
+    text: 'Is is a test message',
+  }
+
+  const mockUpdatedMessage = {
+    text: 'It is an updated message',
+  }
+
   it('Sign in', async () => {
-    const response = await request(server)
-      .post('/login/email')
-      .send({ name: 'Test User', email: 'testing@google.com' })
+    const response = await request(server).post('/login/email').send(mockUser)
     token = response.body.token
     console.log(response.error)
     expect(response.statusCode).toBe(200)
@@ -41,7 +57,7 @@ describe('CRUD for messages', () => {
     const response = await request(server)
       .post('/message')
       .set('Authorization', token)
-      .send({ user: 'Test User', text: 'Test text' })
+      .send(mockMessage)
     console.log(response.error)
     id = response.body._id
     expect(response.statusCode).toBe(200)
@@ -51,7 +67,6 @@ describe('CRUD for messages', () => {
     const response = await request(server)
       .get(`/message/${id}`)
       .set('Authorization', token)
-      .send()
     console.log(response.error)
     expect(response.statusCode).toBe(200)
   })
@@ -60,7 +75,7 @@ describe('CRUD for messages', () => {
     const response = await request(server)
       .put(`/message/${id}`)
       .set('Authorization', token)
-      .send({ text: 'Updated test text' })
+      .send(mockUpdatedMessage)
     console.log(response.error)
     expect(response.statusCode).toBe(200)
   })
@@ -69,7 +84,6 @@ describe('CRUD for messages', () => {
     const response = await request(server)
       .put(`/message/${id}`)
       .set('Authorization', token)
-      .send()
     console.log(response.error)
     expect(response.statusCode).toBe(200)
   })
