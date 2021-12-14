@@ -3,6 +3,7 @@ import * as shutdown from 'http-graceful-shutdown'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
+import { User } from '@/models/user'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
@@ -10,21 +11,25 @@ describe('CRUD for messages', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
+  let user: User
   let token: string
-  let id: string
+  let messageId: string
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
     mongoose = await runMongo(await mongoServer.getUri())
     server = await runApp()
-  })
 
-  beforeEach(async () => {
-    await mongoose.connection.db.dropDatabase()
+    const mockUser = await request(server)
+      .post('/login/email')
+      .send({ email: 'john@doe.com', name: 'John Doe' })
+    user = mockUser.body
+    token = mockUser.body.token
   })
 
   afterAll(async () => {
     await shutdown(server)
+    await mongoose.connection.db.dropDatabase()
     await mongoServer.stop()
     return new Promise<void>((resolve, reject) => {
       server.close((err) => {
@@ -33,57 +38,46 @@ describe('CRUD for messages', () => {
     })
   })
 
-  const mockUser = {
-    name: 'John Doe',
-    email: 'john@doe.com',
-  }
-
-  const mockMessage = {
-    text: 'Is is a test message',
-  }
-
-  const mockUpdatedMessage = {
-    text: 'It is an updated message',
-  }
-
-  it('Sign in', async () => {
-    const response = await request(server).post('/login/email').send(mockUser)
-    token = response.body.token
-    console.log(response.error)
-    expect(response.statusCode).toBe(200)
-  })
-
   it('Post message', async () => {
     const response = await request(server)
-      .post('/message')
+      .post('/message/')
       .set('Authorization', token)
-      .send(mockMessage)
+      .send({ text: 'Test text', user })
+    messageId = response.body._id
+    console.log(messageId)
+    console.log(token)
+    console.log(user)
     console.log(response.error)
-    id = response.body._id
     expect(response.statusCode).toBe(200)
   })
 
   it('Get message', async () => {
     const response = await request(server)
-      .get(`/message/${id}`)
+      .get(`/message/${messageId}`)
       .set('Authorization', token)
+    console.log(messageId)
+    console.log(token)
     console.log(response.error)
     expect(response.statusCode).toBe(200)
   })
 
   it('Put message', async () => {
     const response = await request(server)
-      .put(`/message/${id}`)
+      .put(`/message/${messageId}`)
       .set('Authorization', token)
-      .send(mockUpdatedMessage)
+      .send({ text: 'It is an updated text' })
+    console.log(messageId)
+    console.log(token)
     console.log(response.error)
     expect(response.statusCode).toBe(200)
   })
 
   it('Delete message', async () => {
     const response = await request(server)
-      .put(`/message/${id}`)
+      .delete(`/message/${messageId}`)
       .set('Authorization', token)
+    console.log(messageId)
+    console.log(token)
     console.log(response.error)
     expect(response.statusCode).toBe(200)
   })
