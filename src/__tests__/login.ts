@@ -28,6 +28,11 @@ describe('Login endpoint', () => {
   afterAll(async () => {
     await shutdown(server)
     await mongoServer.stop()
+    return new Promise<void>((resolve, reject) => {
+      server.close((err) => {
+        err ? reject(err) : resolve()
+      })
+    })
   })
 
   it('should return user for valid /google request', async () => {
