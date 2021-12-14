@@ -16,6 +16,7 @@ import { User } from '@/models/user'
 import MessageValidator from '@/validators/MessageValidator'
 import auth from '@/middleware/auth'
 import checkUser from '@/middleware/checkUser'
+import { DocumentType } from '@typegoose/typegoose'
 
 @Controller('/message')
 @Flow(auth)
@@ -30,7 +31,7 @@ export default class messageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  getMessages(@State('message') message: Message) {
+  getMessages(@State('message') message: DocumentType<Message>) {
     return message
   }
 
@@ -38,16 +39,16 @@ export default class messageController {
   @Flow(checkUser)
   updateMessage(
     @Ctx() ctx: Context,
-    @State({ required: true }) { text }: MessageValidator,
-    @Body({ required: true }) { text: newText }: MessageValidator
+    @State('message') message: DocumentType<Message>,
+    @Body({ required: true }) { text }: MessageValidator
   ) {
-    text = newText
-    return ctx.state.message.save()
+    message.text = text
+    return message.save()
   }
 
   @Delete('/:id')
   @Flow(checkUser)
-  deleteMessage(@State('message') message: Message) {
-    return MessageModel.findOneAndDelete(message)
+  deleteMessage(@State('message') message: DocumentType<Message>) {
+    return message.deleteOne()
   }
 }
