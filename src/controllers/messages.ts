@@ -39,7 +39,7 @@ export default class messageController {
   @Flow(checkUser)
   editMessage(@Ctx() ctx: Context, @Body() { text }: Message) {
     ctx.state.message.text = text
-    return ctx.state.message.update()
+    return ctx.state.message.updateOne()
   }
 
   @Delete('/:id')
