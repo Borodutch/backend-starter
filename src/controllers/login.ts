@@ -32,12 +32,12 @@ export default class LoginController {
   @Post('/facebook')
   async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
     const { name, email, id } = await getFBUser(accessToken)
-    const { doc } = await findOrCreateUser({
+    const { doc: user } = await findOrCreateUser({
       name,
       email,
       facebookId: id,
     })
-    return doc.strippedAndFilled({ withExtra: true })
+    return user.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/telegram')
@@ -49,20 +49,20 @@ export default class LoginController {
     if (!verifyTelegramPayload(body)) {
       return ctx.throw(forbidden())
     }
-    const { doc } = await findOrCreateUser({
+    const { doc: user } = await findOrCreateUser({
       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
       telegramId: id,
     })
-    return doc.strippedAndFilled({ withExtra: true })
+    return user.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/google')
   async google(@Body({ required: true }) { accessToken }: GoogleLogin) {
     const userData = await getGoogleUser(accessToken)
-    const { doc } = await findOrCreateUser({
+    const { doc: user } = await findOrCreateUser({
       name: userData.name,
       email: userData.email,
     })
-    return doc.strippedAndFilled({ withExtra: true })
+    return user.strippedAndFilled({ withExtra: true })
   }
 }
