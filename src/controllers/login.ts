@@ -21,16 +21,13 @@ export default class LoginController {
   async email(@Ctx() ctx:Context,
     @Body({required : true}) body: EmailLogin ,
     @Body({required: true}) {name, email} : EmailLogin){ 
-      //(@Body({required: true }) ) {
     console.log("EMAIL")
     const {doc} = await findOrCreateUser({
-      name: ctx.request.body.author.name,
-      email: ctx.request.body.author.email
+      name: ctx.request.body.name,
+      email: ctx.request.body.email
     })
     ctx.cookies.set('jwt', doc.token)
-    console.log(doc)
     return doc.strippedAndFilled({withExtra:true})
-    //doc instead of user
   }
   @Post('/facebook')
   async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
