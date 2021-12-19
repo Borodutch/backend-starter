@@ -3,11 +3,9 @@ import { Message } from '@/models/message'
 import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 
-export default class MessageApi {
+export default class MessageBody {
   @IsString()
-  name?: Ref<User>
+  author?: Ref<User>
   @IsString()
-  content!: string
-  @IsString()
-  id?: Ref<Message>
+  text!: string
 }

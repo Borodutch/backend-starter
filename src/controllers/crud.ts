@@ -1,30 +1,27 @@
 import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
 import { MessageModel, findOrCreateMessage } from '@/models/message'
-import MessageApi from '@/validators/MessageApi'
+import MessageBody from '@/validators/MessageBody'
 
 @Controller('/message')
 export default class MessageController {
-  @Post('/post')
-  async postMessage(@Body({ required: true }) { name, content }: MessageApi) {
-    const { doc } = await findOrCreateMessage({
-      name,
-      content,
-    })
+  @Post('/')
+  async postMessage(@Body({ required: true }) { author, text }: MessageBody) {
+    const { doc } = await findOrCreateMessage(author, text)
     return doc
   }
-  @Get('/get')
+  @Get('/')
   async getMessage() {
-    return await MessageModel.find()
+    return MessageModel.find()
   }
   @Put('/put/:id')
   async updateMessage(
     @Params('id') _id: string,
-    @Body('content') content: string
+    @Body('content') text: string
   ) {
-    return await MessageModel.findByIdAndUpdate({ _id }, { content })
+    return MessageModel.findByIdAndUpdate({ _id }, { text })
   }
   @Delete('/delete/:id')
   async deleteMessage(@Params('id') _id: string) {
-    return await MessageModel.findByIdAndDelete({ _id })
+    return MessageModel.findByIdAndDelete({ _id })
   }
 }

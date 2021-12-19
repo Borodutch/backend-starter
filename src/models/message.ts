@@ -5,36 +5,21 @@ import {
   getModelForClass,
   modelOptions,
   plugin,
-  pre,
   prop,
 } from '@typegoose/typegoose'
 import { User } from '@/models/user'
-import { sign } from '@/helpers/jwt'
 
 @plugin(findorcreate)
-@pre<Message>('save', async function () {
-  this.token = await sign({ id: this.id })
-})
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message extends FindOrCreate {
-  @prop({ index: true })
-  content!: string
+  @prop({ required: true })
+  text!: string
   @prop({ required: true, index: true })
-  name!: Ref<User>
-
-  @prop()
-  id?: Ref<Message>
-  @prop({ index: true, unique: true })
-  token?: string
+  author!: Ref<User>
 }
 
-export const MessageModel = getModelForClass(Message, {
-  schemaOptions: { timestamps: true },
-})
+export const MessageModel = getModelForClass(Message)
 
-export function findOrCreateMessage(messageOptions: {
-  name: Ref<User>
-  content: string
-}) {
-  return MessageModel.findOrCreate(messageOptions)
+export function findOrCreateMessage(author: Ref<User>, text: string) {
+  return MessageModel.findOrCreate(author, text)
 }

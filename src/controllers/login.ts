@@ -14,11 +14,11 @@ import getGoogleUser from '@/helpers/getGoogleUser'
 export default class LoginController {
   @Post('/email')
   async email(@Body({ required: true }) { name, email }: EmailLogin) {
-    const { doc } = await findOrCreateUser({
+    const { doc: user } = await findOrCreateUser({
       name,
       email,
     })
-    return doc.strippedAndFilled({ withExtra: true })
+    return user.strippedAndFilled({ withExtra: true })
   }
   @Post('/facebook')
   async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
