@@ -3,11 +3,7 @@ import { Ref } from '@typegoose/typegoose'
 import { IsString } from 'amala'
 import { Message } from '@/models/message'
 
-export default class MessageApi {
+export default class ParamsOptions {
   @IsString()
-  name?: Ref<User>
-  @IsString()
-  content!: string
-  @IsString()
-  id?: Ref<Message>
+  _id?: string
 }
