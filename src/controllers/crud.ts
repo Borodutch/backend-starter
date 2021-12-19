@@ -1,10 +1,13 @@
-import { Body, Controller, Ctx, Delete, Get, Post, Put } from 'amala'
+import { Body, Controller, Ctx, Delete, Get, Params, Post, Put } from 'amala'
 import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/user'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import { findOrCreateMessage, Message, MessageModel } from '@/models/message'
 import MessageApi from '@/validators/MessageApi'
+import PutUpdateMessage from '@/validators/PutMessageApi'
+import { Ref } from '@typegoose/typegoose'
+import ParamsOptions from '@/validators/Param'
 
 @Controller('/message')
 export default class MessageController {
@@ -26,6 +29,17 @@ export default class MessageController {
   async getMessage(@Ctx() ctx: Context) {
     //const { doc } = await MessageModel.find({})
     return MessageModel.find() //doc
+  }
+  //@Put('/put')
+  @Put('/put/:id')
+  async updateMessage(
+    //@Params({ required: true }) { id }: Ref<Message>,
+    //@Params({ required: true }) { id }: object,
+    @Params('id') _id: string, //ParamsOptions,
+    @Body('content') content: string
+    //{ content }: PutUpdateMessage //MessageApi //@Body({ required: true }) //body: PutUpdateMessage
+  ) {
+    return MessageModel.findByIdAndUpdate({ _id }, { content })
   }
   //   @Get('/get')
   //   async get(@Body({ required: true }) { accessToken }: FacebookLogin) {
