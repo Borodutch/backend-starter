@@ -14,12 +14,12 @@ import { User } from '@/models/user'
 export class Message extends FindOrCreate {
   @prop({ required: true })
   text!: string
-  @prop({ required: true, index: true })
+  @prop({ required: true })
   author!: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message)
 
-export function findOrCreateMessage(author: Ref<User>, text: string) {
-  return MessageModel.findOrCreate(author, text)
+export function findOrCreateMessage(author: Ref<User>, text?: string) {
+  return MessageModel.findOrCreate({ author, text })
 }

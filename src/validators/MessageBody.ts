@@ -5,7 +5,7 @@ import { User } from '@/models/user'
 
 export default class MessageBody {
   @IsString()
-  author?: Ref<User>
+  author!: Ref<User>
   @IsString()
-  text!: string
+  text?: string
 }
