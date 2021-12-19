@@ -19,62 +19,22 @@ export default class MessageController {
     })
     return doc
   }
-  //get id message - return list all
-  //   @Put('/put/:id')
-  //   async updateMessage(@Body({ required: true }) { id, content }: MessageApi) {
-  //     const { doc } = await findOrCreateMessage({ id })
-  //     return
-  //   }
   @Get('/get')
   async getMessage(@Ctx() ctx: Context) {
-    //const { doc } = await MessageModel.find({})
-    return MessageModel.find() //doc
+    return MessageModel.find()
   }
-  //@Put('/put')
   @Put('/put/:id')
   async updateMessage(
-    //@Params({ required: true }) { id }: Ref<Message>,
-    //@Params({ required: true }) { id }: object,
-    @Params('id') _id: string, //ParamsOptions,
+    @Params('id') _id: string,
     @Body('content') content: string
-    //{ content }: PutUpdateMessage //MessageApi //@Body({ required: true }) //body: PutUpdateMessage
   ) {
     return MessageModel.findByIdAndUpdate({ _id }, { content })
   }
-  //   @Get('/get')
-  //   async get(@Body({ required: true }) { accessToken }: FacebookLogin) {
-  //     const { name, email, id } = await getFBUser(accessToken)
-  //     const { doc: user } = await findOrCreateUser({
-  //       name,
-  //       email,
-  //       facebookId: id,
-  //     })
-  //     return doc //user.strippedAndFilled({ withExtra: true })
-  //   }
-
-  //   @Put('/put')
-  //   async updateMessage(
-  //     @Ctx() ctx: Context,
-  //     @Body({ required: true }) body: TelegramLogin,
-  //     @Body({ required: true }) { first_name, last_name, id }: TelegramLogin
-  //   ) {
-  //     if (!verifyTelegramPayload(body)) {
-  //       return ctx.throw(forbidden())
-  //     }
-  //     const { doc: user } = await findOrCreateUser({
-  //       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
-  //       telegramId: id,
-  //     })
-  //     return user.strippedAndFilled({ withExtra: true })
-  //   }
-
-  //   @Delete('/delete')
-  //   async deleteMessage(@Body({ required: true }) { accessToken }: GoogleLogin) {
-  //     const userData = await getGoogleUser(accessToken)
-  //     const { doc: user } = await findOrCreateUser({
-  //       name: userData.name,
-  //       email: userData.email,
-  //     })
-  //     return user.strippedAndFilled({ withExtra: true })
-  //   }
+  @Delete('/delete/:id')
+  async deleteMessage(
+    @Params('id') _id: string
+    //@Body('content') content: string// postdel not found
+  ) {
+    return MessageModel.findByIdAndDelete({ _id })
+  }
 }
