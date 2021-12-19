@@ -1,13 +1,6 @@
-import { Body, Controller, Ctx, Delete, Get, Params, Post, Put } from 'amala'
-import { Context } from 'koa'
-import { findOrCreateUser } from '@/models/user'
-import { forbidden } from '@hapi/boom'
-import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
-import { findOrCreateMessage, Message, MessageModel } from '@/models/message'
+import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
+import { MessageModel, findOrCreateMessage } from '@/models/message'
 import MessageApi from '@/validators/MessageApi'
-import PutUpdateMessage from '@/validators/PutMessageApi'
-import { Ref } from '@typegoose/typegoose'
-import ParamsOptions from '@/validators/Param'
 
 @Controller('/message')
 export default class MessageController {
@@ -20,21 +13,18 @@ export default class MessageController {
     return doc
   }
   @Get('/get')
-  async getMessage(@Ctx() ctx: Context) {
-    return MessageModel.find()
+  async getMessage() {
+    return await MessageModel.find()
   }
   @Put('/put/:id')
   async updateMessage(
     @Params('id') _id: string,
     @Body('content') content: string
   ) {
-    return MessageModel.findByIdAndUpdate({ _id }, { content })
+    return await MessageModel.findByIdAndUpdate({ _id }, { content })
   }
   @Delete('/delete/:id')
-  async deleteMessage(
-    @Params('id') _id: string
-    //@Body('content') content: string// postdel not found
-  ) {
-    return MessageModel.findByIdAndDelete({ _id })
+  async deleteMessage(@Params('id') _id: string) {
+    return await MessageModel.findByIdAndDelete({ _id })
   }
 }
