@@ -1,5 +1,4 @@
 import { IsString } from 'amala'
-import { Message } from '@/models/message'
 import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/user'
 

@@ -11,17 +11,20 @@ export default class MessageController {
   }
   @Get('/')
   async getMessage() {
-    return MessageModel.find()
+    const doc = await MessageModel.find()
+    return doc
   }
   @Put('/put/:id')
   async updateMessage(
     @Params('id') _id: string,
     @Body('content') text: string
   ) {
-    return MessageModel.findByIdAndUpdate({ _id }, { text })
+    const doc = await MessageModel.findByIdAndUpdate({ _id }, { text })
+    return doc
   }
   @Delete('/delete/:id')
   async deleteMessage(@Params('id') _id: string) {
-    return MessageModel.findByIdAndDelete({ _id })
+    const doc = await MessageModel.findByIdAndDelete({ _id })
+    return doc
   }
 }
