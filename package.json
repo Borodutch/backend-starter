@@ -27,8 +27,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
     "lodash": "^4.17.21",
-    "mongoose": "^6.0.14",
-    "mongoose-findorcreate": "^3.0.0"
+    "mongoose": "^6.0.14"
   },
   "devDependencies": {
     "@typegoose/typegoose": "^9.2.0",
