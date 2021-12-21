@@ -45,10 +45,14 @@ export async function findOrCreateUser(loginOptions: {
   facebookId?: string
   telegramId?: number
 }) {
-  const user = await UserModel.findOneAndUpdate(loginOptions, undefined, {
-    upsert: true,
-    new: true,
-  })
+  const user = await UserModel.findOneAndUpdate(
+    loginOptions,
+    {},
+    {
+      upsert: true,
+      new: true,
+    }
+  )
   if (!user) {
     throw new Error('User not found')
   }
