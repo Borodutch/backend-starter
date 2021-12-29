@@ -5,6 +5,7 @@ import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
+import ManualLogin from '@/validators/ManualLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
@@ -46,5 +47,13 @@ export default class LoginController {
       email: userData.email,
     })
     return user.strippedAndFilled({ withExtra: true })
+  }
+
+  @Post('/manual')
+  async findOrCreateUserManually(@Body({ required: true }) { name }: ManualLogin) {
+    const user = await findOrCreateUser({
+      name
+    })
+    return user.strippedAndFilled({withExtra: false, withToken: false})
   }
 }
