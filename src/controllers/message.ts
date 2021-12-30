@@ -1,6 +1,5 @@
 import { Body, Controller, Post, Get, Delete, Params, Header, Res } from 'amala'
 import { MessageModel } from '@/models/message'
-import { Boom } from '@hapi/boom'
 import { UserModel } from '@/models/user'
 import createBoomError from '@/helpers/createBoomError'
 import { mongoose } from '@typegoose/typegoose'
@@ -40,23 +39,23 @@ export default class MessageController {
   @Post('/')
   async postMessage(
     @Body({ required: true }) { text } : { text: string }, 
-    @Header('author') author : string 
+    @Header('user_id') user_id : string 
     ) {
       try { 
-        if(!mongoose.Types.ObjectId.isValid(author)) throw createBoomError(
+        if(!mongoose.Types.ObjectId.isValid(user_id)) throw createBoomError(
           401, 
-          "Author MUST BE ObjectId type", 
+          "User_id MUST BE ObjectId type", 
           "Use existing user id"
         )
 
-        const userExists = await UserModel.exists({ _id: author }) 
+        const userExists = await UserModel.exists({ _id: user_id }) 
         if(!userExists) throw createBoomError(
           401, 
           "This user doesn't exist", 
           "Use existing user id"
         )
 
-        const message = await MessageModel.create({ author, text })
+        const message = await MessageModel.create({ user_id, text })
         return message
       }
       catch(err) {
@@ -67,7 +66,7 @@ export default class MessageController {
   @Post('/:id')
   async updateMessage(
     @Params('id') id: string, 
-    @Header('author') author : string, 
+    @Header('user_id') user_id : string, 
     @Body({ required: true }) { new_message_text } : { new_message_text : string } 
     ) {
       try { 
@@ -83,10 +82,10 @@ export default class MessageController {
           "This message doesn't exist", 
           "Use existing message id"
         )
-        if(message?.author != author) throw createBoomError(
+        if(message?.user_id != user_id) throw createBoomError(
           401, 
           "You have no access to this message", 
-          "You can edit or delete only your own messages"
+          "Users can edit or delete only your own messages"
         )
         if(!new_message_text) throw createBoomError(
           401, 
@@ -107,7 +106,7 @@ export default class MessageController {
   @Delete('/:id')
   async deleteMsg(
     @Params('id') id: string, 
-    @Header('author') author : string
+    @Header('user_id') user_id : string
     ) {
       try { 
         if(!mongoose.Types.ObjectId.isValid(id)) throw createBoomError(
@@ -123,10 +122,10 @@ export default class MessageController {
           "This message doesn't exist", 
           "Use existing message id"
         )
-        if(message?.author != author) throw createBoomError(
+        if(message?.user_id != user_id) throw createBoomError(
           401, 
           "You have no access to this message", 
-          "You can edit or delete only your own messages"
+          "Users can edit or delete only your own messages"
         )
 
         await MessageModel.findByIdAndRemove(id)
