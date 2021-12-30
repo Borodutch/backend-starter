@@ -2,8 +2,8 @@ import { Body, Controller, Post, Get, Delete, Params, Header, Res } from 'amala'
 import { MessageModel } from '@/models/message'
 import { Boom } from '@hapi/boom'
 import { UserModel } from '@/models/user'
-// import { Context } from 'koa'
-// // import { findOrCreateUser } from '@/models/user'
+import createBoomError from '@/helpers/createBoomError'
+import { mongoose } from '@typegoose/typegoose'
 
 @Controller('/messages')
 export default class MessageController {
@@ -15,19 +15,26 @@ export default class MessageController {
 
   @Get('/:id')
   async getMessage(@Params('id') id: string) {
-    try { await MessageModel.exists({ _id: id }) }
-    catch {
-      const err = new Boom
-      err.output.payload = {
-        statusCode: 401,
-        error: "This message doesn't exist",
-        message: "Use existing message id"
-      }
-      err.output.statusCode = 401
+    try { 
+      if(!mongoose.Types.ObjectId.isValid(id)) throw createBoomError(
+        401, 
+        "Message id MUST BE ObjectId type", 
+        "Use existing message id"
+      )
+
+      const message = await MessageModel.findById(id)
+
+      if(!message) throw createBoomError(
+        401, 
+        "Message with this id doesn't exist", 
+        "Use existing message id"
+      )
+
+      return message
+    }
+    catch(err) {
       throw err
     }
-    const message = MessageModel.findById(id)
-    return message
   }
 
   @Post('/')
@@ -35,89 +42,97 @@ export default class MessageController {
     @Body({ required: true }) { text } : { text: string }, 
     @Header('author') author : string 
     ) {
-      try { await UserModel.exists({ _id: author }) }
-      catch {
-        const err = new Boom
-        err.output.payload = {
-          statusCode: 401,
-          error: "This user doesn't exist",
-          message: "Use existing user id"
-        }
-        err.output.statusCode = 401
+      try { 
+        if(!mongoose.Types.ObjectId.isValid(author)) throw createBoomError(
+          401, 
+          "Author MUST BE ObjectId type", 
+          "Use existing user id"
+        )
+
+        const userExists = await UserModel.exists({ _id: author }) 
+        if(!userExists) throw createBoomError(
+          401, 
+          "This user doesn't exist", 
+          "Use existing user id"
+        )
+
+        const message = await MessageModel.create({ author, text })
+        return message
+      }
+      catch(err) {
         throw err
       }
-      const message = MessageModel.create({
-        author,
-        text
-      })
-      return message
   }
 
   @Post('/:id')
   async updateMessage(
     @Params('id') id: string, 
     @Header('author') author : string, 
-    @Body({ required: true }) { new_message_text } : { new_message_text: string } 
+    @Body({ required: true }) { new_message_text } : { new_message_text : string } 
     ) {
-      try { await MessageModel.exists({ _id: id }) }
-      catch {
-        const err = new Boom
-        err.output.payload = {
-          statusCode: 401,
-          error: "This message doesn't exist",
-          message: "Use existing message id"
-        }
-        err.output.statusCode = 401
-        throw err
-      }
+      try { 
+        if(!mongoose.Types.ObjectId.isValid(id)) throw createBoomError(
+          401, 
+          "Message id MUST BE ObjectId type"
+        )
+        
+        const message = await MessageModel.findById(id)
 
-      const message = MessageModel.findById(id)
-      if(message.author == author) {
+        if(!message) throw createBoomError(
+          401, 
+          "This message doesn't exist", 
+          "Use existing message id"
+        )
+        if(message?.author != author) throw createBoomError(
+          401, 
+          "You have no access to this message", 
+          "You can edit or delete only your own messages"
+        )
+        if(!new_message_text) throw createBoomError(
+          401, 
+          "You NEED TO provide a new message text", 
+          "Use 'new_message_text' key to provide a new message text"
+        )
+        
         message.text = new_message_text
-        message.save()
-      } 
-      else {
-        const err = new Boom
-        err.output.payload = {
-          statusCode: 401,
-          error: "You have no access to this message",
-          message: "You can edit only your own messages"
-        }
-        err.output.statusCode = 401
-        throw err
+        await message.save()
+        return message
       }
+      catch(err) {
+        throw err
+      }      
   }
   
 
   @Delete('/:id')
   async deleteMsg(
     @Params('id') id: string, 
-    @Header('author') author : string, 
-    @Body({ required: true }) { new_message_text } : { new_message_text: string } 
+    @Header('author') author : string
     ) {
-      try { await MessageModel.exists({ _id: id }) }
-      catch {
-        const err = new Boom
-        err.output.payload = {
-          statusCode: 401,
-          error: "This message doesn't exist",
-          message: "Use existing message id"
-        }
-        err.output.statusCode = 401
-        throw err
+      try { 
+        if(!mongoose.Types.ObjectId.isValid(id)) throw createBoomError(
+          401, 
+          "Message id MUST BE ObjectId type",
+          "Use existing message id"
+        )
+
+        const message = await MessageModel.findById(id)
+
+        if(!message) throw createBoomError(
+          401, 
+          "This message doesn't exist", 
+          "Use existing message id"
+        )
+        if(message?.author != author) throw createBoomError(
+          401, 
+          "You have no access to this message", 
+          "You can edit or delete only your own messages"
+        )
+
+        await MessageModel.findByIdAndRemove(id)
+        return `You've deleted message ${id}`
       }
-      const message = MessageModel.findById(id)
-      if(message.author == author) {
-        MessageModel.findByIdAndRemove(id)
-      } 
-      else {
-        const err = new Boom
-        err.output.payload = {
-          statusCode: 401,
-          error: "You have no access to this message",
-          message: "You can edit only your own messages"
-        }
-        err.output.statusCode = 401
+      catch(err) {
         throw err
       }
   }
