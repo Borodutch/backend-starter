@@ -1,6 +1,6 @@
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
-import { findOrCreateUser, UserModel } from '@/models/user'
+import { UserModel, findOrCreateUser } from '@/models/user'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
@@ -51,11 +51,12 @@ export default class LoginController {
 
   @Post('/manual')
   async createUserManually(
-    @Body({ required: true }) { name, email }: ManualLogin ) {
-      const user = await UserModel.create({
-        name,
-        email
-      })
+    @Body({ required: true }) { name, email }: ManualLogin
+  ) {
+    const user = await UserModel.create({
+      name,
+      email,
+    })
     return user.strippedAndFilled()
   }
 }
