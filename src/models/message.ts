@@ -1,9 +1,16 @@
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import {
+  Ref,
+  getModelForClass,
+  modelOptions,
+  mongoose,
+  prop,
+} from '@typegoose/typegoose'
+import { User } from '@/models/user'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message {
-  @prop({ required: true })
-  user_id!: string
+  @prop({ required: true, type: mongoose.Schema.Types.ObjectId })
+  userId!: Ref<User>
   @prop({ required: true })
   text!: string
 }

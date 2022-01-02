@@ -3,9 +3,9 @@ import { Context } from 'koa'
 import { UserModel, findOrCreateUser } from '@/models/user'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import EmailLogin from '@/validators/EmailLogin'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
-import ManualLogin from '@/validators/ManualLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
@@ -49,10 +49,8 @@ export default class LoginController {
     return user.strippedAndFilled({ withExtra: true })
   }
 
-  @Post('/manual')
-  async createUserManually(
-    @Body({ required: true }) { name, email }: ManualLogin
-  ) {
+  @Post('/email')
+  async email(@Body({ required: true }) { name, email }: EmailLogin) {
     const user = await UserModel.create({
       name,
       email,
