@@ -9,7 +9,7 @@ import { User } from '@/models/user'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message {
-  @prop({ required: true, type: mongoose.Schema.Types.ObjectId })
+  @prop({ required: true, ref: mongoose.Schema.Types.ObjectId })
   userId!: Ref<User>
   @prop({ required: true })
   text!: string
