@@ -1,9 +1,8 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'amala'
-import { ObjectId } from 'mongoose'
 
 export class MessageId {
   @IsMongoId()
-  id!: ObjectId
+  id!: string
 }
 
 export class MessageText {
