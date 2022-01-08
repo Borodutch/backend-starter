@@ -11,5 +11,5 @@ export default async function authorize(ctx: Context, next: Next) {
     return ctx.throw(forbidden("User with this token doesn't exist"))
   }
   ctx.state.user = user
-  return await next()
+  return next()
 }
