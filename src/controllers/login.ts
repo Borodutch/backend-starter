@@ -26,8 +26,7 @@ export default class LoginController {
   async telegram(
     @Ctx() ctx: Context,
     @Body({ required: true }) body: TelegramLogin,
-    @Body({ required: true }) { first_name, last_name, id }: TelegramLogin
-    ) {
+    @Body({ required: true }) { first_name, last_name, id }: TelegramLogin) {
     if (!verifyTelegramPayload(body)) {
       return ctx.throw(forbidden())
     }
