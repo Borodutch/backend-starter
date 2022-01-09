@@ -30,6 +30,10 @@ export default class LoginController {
       if (!verifyTelegramPayload(body)) {
         return ctx.throw(forbidden())
       }
+    if (!verifyTelegramPayload(body)) {
+      return ctx.throw(forbidden())
+    }
+
     const user = await findOrCreateUser({
       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
       telegramId: id,
