@@ -26,11 +26,10 @@ export default class LoginController {
   async telegram(
     @Ctx() ctx: Context,
     @Body({ required: true }) body: TelegramLogin,
-    @Body({ required: true }) { first_name, last_name, id }: TelegramLogin
-    ) {
-    if (!verifyTelegramPayload(body)) {
-      return ctx.throw(forbidden())
-    }
+    @Body({ required: true }) { first_name, last_name, id }: TelegramLogin) {
+      if (!verifyTelegramPayload(body)) {
+        return ctx.throw(forbidden())
+      }
     const user = await findOrCreateUser({
       name: `${first_name}${last_name ? ` ${last_name}` : ''}`,
       telegramId: id,
