@@ -23,9 +23,7 @@ export default async function () {
   app.use(router.routes())
   app.use(router.allowedMethods())
   return new Promise<Server>((resolve, reject) => {
-    const connection = app
-    .listen(env.PORT)
-    .on('listening', () => {
+    const connection = app.listen(env.PORT).on('listening', () => {
       console.log(`HTTP is listening on ${env.PORT}`)
       resolve(connection)
     })
