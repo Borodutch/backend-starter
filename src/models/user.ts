@@ -52,7 +52,7 @@ export async function findOrCreateUser(loginOptions: {
       upsert: true,
       new: true,
     }
-    )
+  )
   if (!user) {
     throw new Error('User not found')
   }
