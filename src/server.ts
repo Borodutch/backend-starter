@@ -6,13 +6,13 @@ import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
 setGlobalOptions({
-	options: {
-		allowMixed: Severity.ALLOW,
-	},
+  options: {
+    allowMixed: Severity.ALLOW
+  }
 })
 
 void (async () => {
-	await runMongo()
-	console.log('Mongo connected')
-	await runApp()
+  await runMongo()
+  console.log('Mongo connected')
+  await runApp()
 })()
