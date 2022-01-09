@@ -41,11 +41,11 @@ describe('Login endpoint', () => {
       email: 'john@doe.com',
     }
     axiosMock
-    .onGet('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=test')
-    .reply(200, testingGoogleMock)
+      .onGet('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=test')
+      .reply(200, testingGoogleMock)
     const response = await request(server)
-    .post('/login/google')
-    .send({ accessToken: 'test' })
+      .post('/login/google')
+      .send({ accessToken: 'test' })
     console.log(response.error)
     expect(response.body.name).toBe(testingGoogleMock.name)
     expect(response.body.email).toBe(testingGoogleMock.email)
