@@ -30,5 +30,5 @@ export default async function () {
       resolve(connection)
     })
     .on('error', reject)
-  })
+    })
 }
