@@ -1,6 +1,6 @@
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
-import { UserModel, findOrCreateUser } from '@/models/user'
+import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import EmailLogin from '@/validators/EmailLogin'
@@ -51,7 +51,7 @@ export default class LoginController {
 
   @Post('/email')
   async email(@Body({ required: true }) { name, email }: EmailLogin) {
-    const user = await UserModel.create({
+    const user = await findOrCreateUser({
       name,
       email,
     })

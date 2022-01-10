@@ -1,21 +1,17 @@
 import { Context, Next } from 'koa'
-import { MessageModel } from '@/models/message'
+import { MessageModel } from '@/models/Message'
 import { badRequest, notFound } from '@hapi/boom'
 import { isValidObjectId } from 'mongoose'
 
 export default async function findUserMsg(ctx: Context, next: Next) {
-  if (isValidObjectId(ctx.params.id)) {
-    const msg = await MessageModel.findById(ctx.params.id)
-    if (
-      !msg ||
-      // ctx.state.user._id.toString() != msg?.author?.toString()
-      ctx.state.user.id != msg?.author
-    ) {
-      return ctx.throw(notFound("Can't find message with this id"))
-    }
-    ctx.state.msg = msg
-    return next()
-  } else {
+  if (!isValidObjectId(ctx.params.id)) {
     ctx.throw(badRequest('MessageId must be mongoose ObjectId type'))
   }
+
+  const message = await MessageModel.findById(ctx.params.id)
+  if (!message || ctx.state.user.id != message?.author) {
+    return ctx.throw(notFound("Can't find message with this id"))
+  }
+  ctx.state.message = message
+  return next()
 }

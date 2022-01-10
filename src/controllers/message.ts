@@ -9,7 +9,7 @@ import {
   Post,
 } from 'amala'
 import { Context } from 'koa'
-import { MessageModel } from '@/models/message'
+import { MessageModel } from '@/models/Message'
 import { MessageText } from '@/validators/Message'
 import { User } from '@/models/user'
 import authorize from '@/middleware/authorize'
@@ -19,26 +19,25 @@ import findUserMsg from '@/middleware/findUserMsg'
 @Flow(authorize)
 export default class MessageController {
   @Get('/')
-  getAllMessages(@CurrentUser() user: User) {
-    return MessageModel.find({ author: user })
+  getAllMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 
   @Post('/')
-  async postMessage(
-    @CurrentUser() user: User,
+  postMessage(
+    @CurrentUser() author: User,
     @Body({ required: true }) { text }: MessageText
   ) {
-    const message = await MessageModel.create({
-      author: user,
+    return MessageModel.create({
+      author,
       text,
     })
-    return message
   }
 
   @Get('/:id')
   @Flow(findUserMsg)
   getMessage(@Ctx() ctx: Context) {
-    return ctx.state.msg
+    return ctx.state.message
   }
 
   @Post('/:id')
@@ -47,15 +46,15 @@ export default class MessageController {
     @Ctx() ctx: Context,
     @Body({ required: true }) { text }: MessageText
   ) {
-    ctx.state.msg.text = text
-    await ctx.state.msg.save()
-    return ctx.state.msg
+    ctx.state.message.text = text
+    await ctx.state.message.save()
+    return ctx.state.message
   }
 
   @Delete('/:id')
   @Flow(findUserMsg)
   async deleteMsg(@Ctx() ctx: Context) {
-    await MessageModel.findByIdAndRemove(ctx.state.msg)
-    return `You've deleted message ${ctx.state.msg}`
+    await MessageModel.findByIdAndRemove(ctx.state.message)
+    return { success: true }
   }
 }
