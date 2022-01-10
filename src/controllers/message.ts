@@ -31,7 +31,7 @@ export default class MessageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  getMessages(@State('message') message: DocumentType<Message>) {
+  getMessage(@State('message') message: DocumentType<Message>) {
     return message
   }
 
