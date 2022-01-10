@@ -20,7 +20,7 @@ import { DocumentType } from '@typegoose/typegoose'
 
 @Controller('/message')
 @Flow(auth)
-export default class messageController {
+export default class MessageController {
   @Post('/')
   createMessage(
     @Body({ required: true }) { text }: MessageValidator,
