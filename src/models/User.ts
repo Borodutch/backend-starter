@@ -1,10 +1,7 @@
-import { getModelForClass, modelOptions, pre, prop } from '@typegoose/typegoose'
+import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 import { omit } from 'lodash'
 import { sign } from '@/helpers/jwt'
 
-@pre<User>('save', async function () {
-  this.token = await sign({ id: this.id })
-})
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class User {
   @prop({ index: true, lowercase: true })
@@ -55,6 +52,10 @@ export async function findOrCreateUser(loginOptions: {
   )
   if (!user) {
     throw new Error('User not found')
+  }
+  if (!user.token) {
+    user.token = await sign({ id: user.id })
+    await user.save()
   }
   return user
 }
