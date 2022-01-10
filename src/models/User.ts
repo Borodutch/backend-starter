@@ -1,21 +1,9 @@
-import * as findorcreate from 'mongoose-findorcreate'
-import { FindOrCreate } from '@typegoose/typegoose/lib/defaultClasses'
-import {
-  getModelForClass,
-  modelOptions,
-  plugin,
-  pre,
-  prop,
-} from '@typegoose/typegoose'
+import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 import { omit } from 'lodash'
 import { sign } from '@/helpers/jwt'
 
-@plugin(findorcreate)
-@pre<User>('save', async function () {
-  this.token = await sign({ id: this.id })
-})
 @modelOptions({ schemaOptions: { timestamps: true } })
-export class User extends FindOrCreate {
+export class User {
   @prop({ index: true, lowercase: true })
   email?: string
   @prop({ index: true, lowercase: true })
@@ -48,11 +36,26 @@ export class User extends FindOrCreate {
 
 export const UserModel = getModelForClass(User)
 
-export function findOrCreateUser(loginOptions: {
+export async function findOrCreateUser(loginOptions: {
   name: string
   email?: string
   facebookId?: string
   telegramId?: number
 }) {
-  return UserModel.findOrCreate(loginOptions)
+  const user = await UserModel.findOneAndUpdate(
+    loginOptions,
+    {},
+    {
+      upsert: true,
+      new: true,
+    }
+  )
+  if (!user) {
+    throw new Error('User not found')
+  }
+  if (!user.token) {
+    user.token = await sign({ id: user.id })
+    await user.save()
+  }
+  return user
 }
