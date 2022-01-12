@@ -23,6 +23,7 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "eslint-no-use-before-defining": false,
     "node/no-process-env": "error",
     "no-relative-import-paths/no-relative-import-paths": "error",
     "@typescript-eslint/no-floating-promises": "error",
