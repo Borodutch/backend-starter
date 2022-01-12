@@ -1,25 +1,25 @@
-import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose'
+import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 class Message {
-	@prop({ required: true })
-	text!: string
+  @prop({ required: true })
+  text!: string
 }
 
 const MessageModel = getModelForClass(Message)
 
 export const getMessages = async () => {
-	await MessageModel.find({})
+  await MessageModel.find({})
 }
 
 export const createMessage = async (text: string) => {
-	await new MessageModel({ text }).save()
+  await new MessageModel({ text }).save()
 }
 
 export const deleteMessage = async (id: string) => {
-	await MessageModel.deleteOne({ _id: id }).exec()
+  await MessageModel.deleteOne({ _id: id }).exec()
 }
 
 export const updateMessage = async (id: string, updatedText: string) => {
-	await MessageModel.findOneAndUpdate({ _id: id }, { text: updatedText })
+  await MessageModel.findOneAndUpdate({ _id: id }, { text: updatedText })
 }

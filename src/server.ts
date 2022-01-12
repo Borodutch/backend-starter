@@ -7,8 +7,8 @@ import runMongo from '@/helpers/mongo'
 
 setGlobalOptions({
   options: {
-    allowMixed: Severity.ALLOW
-  }
+    allowMixed: Severity.ALLOW,
+  },
 })
 
 void (async () => {
