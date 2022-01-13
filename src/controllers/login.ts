@@ -1,6 +1,6 @@
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
-import { findOrCreateUser } from '@/models/user'
+import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
