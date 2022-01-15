@@ -10,7 +10,7 @@ import {
 export default class MessageControler {
   @Post('/')
   async addMessage(@Body('text') text: string, @Body('time') time: string) {
-    return createMessage(text, time)
+    return createMessage(text)
   }
   @Patch('/')
   async updateMessage(@Body('id') id: string, @Body('text') newText: string) {
