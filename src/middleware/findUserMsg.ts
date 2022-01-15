@@ -5,11 +5,11 @@ import { isValidObjectId } from 'mongoose'
 
 export default async function findUserMsg(ctx: Context, next: Next) {
   if (!isValidObjectId(ctx.params.id)) {
-    ctx.throw(badRequest('MessageId must be mongoose ObjectId type'))
+    return ctx.throw(badRequest('MessageId must be mongoose ObjectId type'))
   }
 
   const message = await MessageModel.findById(ctx.params.id)
-  if (!message || ctx.state.user.id != message?.author) {
+  if (!message || ctx.state.user.id !== message?.author) {
     return ctx.throw(notFound("Can't find message with this id"))
   }
   ctx.state.message = message
