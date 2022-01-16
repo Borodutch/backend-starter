@@ -50,4 +50,19 @@ describe('Login endpoint', () => {
     expect(response.body.name).toBe(testingGoogleMock.name)
     expect(response.body.email).toBe(testingGoogleMock.email)
   })
+  it('should create user for /email request', async () => {
+    const testingEmailMock = {
+      name: 'John Doe',
+      email: 'john@doe.com',
+    }
+    const response = await request(server)
+      .post('/login/email')
+      .send({
+        ...testingEmailMock,
+      })
+    console.log(response.error)
+
+    expect(response.body.name).toBe(testingEmailMock.name)
+    expect(response.body.email).toBe(testingEmailMock.email)
+  })
 })

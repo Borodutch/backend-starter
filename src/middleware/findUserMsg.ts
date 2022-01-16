@@ -9,7 +9,7 @@ export default async function findUserMsg(ctx: Context, next: Next) {
   }
 
   const message = await MessageModel.findById(ctx.params.id)
-  if (!message || ctx.state.user.id !== message?.author) {
+  if (!message || ctx.state.user.id !== message?.author?.toString()) {
     return ctx.throw(notFound("Can't find message with this id"))
   }
   ctx.state.message = message
