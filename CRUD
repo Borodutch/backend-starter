@@ -1,6 +1,0 @@
-const mongoose = require('mongoose');
-
-const dbURI = 'mongodb+srv://Vildaan:Vildan13@cluster0.8vgid.mongodb.net/Vildan?retryWrites=true&w=majority';
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true})
-    .then((result) => ad.listen(3000)) 
-    .catch((err) => console.log(err));
