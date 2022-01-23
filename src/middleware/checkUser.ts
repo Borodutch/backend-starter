@@ -1,8 +1,8 @@
 import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/message'
 import { Types } from 'mongoose'
-import { isRefType } from '@typegoose/typegoose'
 import { badData, notFound } from '@hapi/boom'
+import { isRefType } from '@typegoose/typegoose'
 
 export default async (ctx: Context, next: Next) => {
   const message = await MessageModel.findById(ctx.params.id)

@@ -8,6 +8,7 @@ import axios from 'axios'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
+jest.setTimeout(18000000)
 describe('Login endpoint', () => {
   const axiosMock = new MockAdapter(axios)
 
