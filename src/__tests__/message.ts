@@ -27,7 +27,7 @@ describe('message test', () => {
     })
   })
 
-  it('reg user', async () => {
+  it('registers user', async () => {
     const response = await request(server)
       .post('/login/email')
       .send({ name: 'Semion', email: 'babaksemion@gmail.com' })
@@ -38,7 +38,7 @@ describe('message test', () => {
     token = response.body.token
   })
 
-  it('Create message', async () => {
+  it('creates message', async () => {
     const response = await request(server)
       .post('/message')
       .set('token', token)
@@ -49,7 +49,7 @@ describe('message test', () => {
     messageId = response.body._id
   })
 
-  it('Get message', async () => {
+  it('gets message', async () => {
     const response = await request(server)
       .get('/message/' + messageId)
       .set('token', token)
@@ -59,7 +59,7 @@ describe('message test', () => {
     expect(response.body.text).toBe('New text')
   })
 
-  it('Put message', async () => {
+  it('puts message', async () => {
     const response = await request(server)
       .put('/message/' + messageId)
       .set('token', token)
@@ -69,7 +69,7 @@ describe('message test', () => {
     expect(response.body.text).toBe('Very new text 2')
   })
 
-  it('Del message', async () => {
+  it('deletes message', async () => {
     const response = await request(server)
       .delete('/message/' + messageId)
       .set('token', token)
