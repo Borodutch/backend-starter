@@ -16,6 +16,18 @@ describe('message test', () => {
     mongoServer = await MongoMemoryServer.create()
     await runMongo(await mongoServer.getUri())
     server = await runApp()
+
+    let response = await request(server)
+      .post('/login/email')
+      .send({ name: 'Semion', email: 'babaksemion@gmail.com' })
+
+    token1 = response.body.token
+
+    response = await request(server)
+      .post('/login/email')
+      .send({ name: 'Sempai', email: 'babasempai@gmail.com' })
+
+    token2 = response.body.token
   })
 
   afterAll(async () => {
@@ -26,28 +38,6 @@ describe('message test', () => {
         err ? reject(err) : resolve()
       })
     })
-  })
-
-  it('registers first user', async () => {
-    const response = await request(server)
-      .post('/login/email')
-      .send({ name: 'Semion', email: 'babaksemion@gmail.com' })
-
-    expect(response.body.token).toBeTruthy()
-    expect(response.status).toBe(200)
-
-    token1 = response.body.token
-  })
-
-  it('registers second user', async () => {
-    const response = await request(server)
-      .post('/login/email')
-      .send({ name: 'Sempai', email: 'babasempai@gmail.com' })
-
-    expect(response.body.token).toBeTruthy()
-    expect(response.status).toBe(200)
-
-    token2 = response.body.token
   })
 
   it('creates message for first user', async () => {
