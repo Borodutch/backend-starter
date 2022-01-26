@@ -1,4 +1,5 @@
 import { ReturnModelType, getModelForClass, prop } from '@typegoose/typegoose'
+import exp from 'constants'
 
 export class Message {
   @prop({ required: true })
@@ -27,4 +28,13 @@ export async function getMessages(user: string) {
 
 export async function deleteMessage(id: string) {
   return await MessageModel.findOneAndDelete({ _id: id })
+}
+
+export async function updateMessage(id: string, updatedText: string) {
+  return await MessageModel.findOneAndUpdate({
+    _id: id,
+    text: updatedText,
+    new: true,
+    returnOriginal: false,
+  })
 }
