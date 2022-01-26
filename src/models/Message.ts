@@ -24,3 +24,7 @@ export async function createMessage(user: string, text: string) {
 export async function getMessages(user: string) {
   return await MessageModel.findByUser(user)
 }
+
+export async function deleteMessage(id: string) {
+  return await MessageModel.findOneAndDelete({ _id: id })
+}

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Header, Post } from 'amala'
-import { createMessage, getMessages } from '@/models/Message'
+import { Controller, Delete, Get, Header, Post } from 'amala'
+import { createMessage, deleteMessage, getMessages } from '@/models/Message'
 
 @Controller('/message')
 export default class MessageController {
@@ -10,5 +10,9 @@ export default class MessageController {
   @Get('/')
   async getMessages(@Header('user') user: string) {
     return await getMessages(user)
+  }
+  @Delete('/')
+  async deleteMessage(@Header('id') id: string) {
+    return await deleteMessage(id)
   }
 }
