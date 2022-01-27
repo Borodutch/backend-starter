@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Header, Patch, Post } from 'amala'
+import { Controller, Delete, Get, Patch, Post, Query } from 'amala'
 import {
   createMessage,
   deleteMessage,
@@ -9,21 +9,21 @@ import {
 @Controller('/message')
 export default class MessageController {
   @Post('/')
-  async addMessage(@Header('user') user: string, @Header('text') text: string) {
+  async addMessage(@Query('user') user: string, @Query('text') text: string) {
     return await createMessage(user, text)
   }
   @Get('/')
-  async getMessages(@Header('user') user: string) {
+  async getMessages(@Query('user') user: string) {
     return await getMessages(user)
   }
   @Delete('/')
-  async deleteMessage(@Header('id') id: string) {
+  async deleteMessage(@Query('id') id: string) {
     return await deleteMessage(id)
   }
   @Patch('/')
   async updateMessages(
-    @Header('text') updatedText: string,
-    @Header('id') id: string
+    @Query('text') updatedText: string,
+    @Query('id') id: string
   ) {
     return await updateMessage(id, updatedText)
   }

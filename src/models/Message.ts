@@ -1,5 +1,4 @@
-import { ReturnModelType, getModelForClass, prop } from '@typegoose/typegoose'
-import exp from 'constants'
+import { getModelForClass, prop } from '@typegoose/typegoose'
 
 export class Message {
   @prop({ required: true })
@@ -7,31 +6,24 @@ export class Message {
 
   @prop({ required: true })
   text!: string
-
-  public static findByUser(
-    this: ReturnModelType<typeof Message>,
-    user: string
-  ) {
-    return this.find({ user }).exec()
-  }
 }
 
 const MessageModel = getModelForClass(Message)
 
-export async function createMessage(user: string, text: string) {
-  return await new MessageModel({ user, text }).save()
+export function createMessage(user: string, text: string) {
+  return new MessageModel({ user, text }).save()
 }
 
-export async function getMessages(user: string) {
-  return await MessageModel.findByUser(user)
+export function getMessages(user: string) {
+  return MessageModel.find({ user }).exec()
 }
 
-export async function deleteMessage(id: string) {
-  return await MessageModel.findOneAndDelete({ _id: id })
+export function deleteMessage(id: string) {
+  return MessageModel.findOneAndDelete({ _id: id })
 }
 
-export async function updateMessage(id: string, updatedText: string) {
-  return await MessageModel.findOneAndUpdate({
+export function updateMessage(id: string, updatedText: string) {
+  return MessageModel.findOneAndUpdate({
     _id: id,
     text: updatedText,
     new: true,
