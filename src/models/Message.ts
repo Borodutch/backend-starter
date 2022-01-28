@@ -1,8 +1,9 @@
-import { getModelForClass, prop } from '@typegoose/typegoose'
+import { Ref, getModelForClass, prop } from '@typegoose/typegoose'
+import { User } from '@/models/User'
 
 export class Message {
-  @prop({ required: true })
-  user!: string
+  @prop({ ref: () => User, required: true })
+  public author!: Ref<User>
 
   @prop({ required: true })
   text!: string
@@ -10,12 +11,12 @@ export class Message {
 
 const MessageModel = getModelForClass(Message)
 
-export function createMessage(user: string, text: string) {
-  return new MessageModel({ user, text }).save()
+export function createMessage(author: Ref<User>, text: string) {
+  return new MessageModel({ author, text }).save()
 }
 
-export function getMessages(user: string) {
-  return MessageModel.find({ user }).exec()
+export function getMessages(author: Ref<User>) {
+  return MessageModel.find({ author }).exec()
 }
 
 export function deleteMessage(id: string) {
