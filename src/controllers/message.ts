@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query } from 'amala'
+import { Controller, Delete, Get, Patch, Post, Query } from 'amala'
 import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/User'
 import {
@@ -12,22 +12,19 @@ import MessageBody from '@/validators/MessageBody'
 @Controller('/message')
 export default class MessageController {
   @Post('/')
-  async addMessage(@Query({ required: true }) { author, text }: MessageBody) {
-    return await createMessage(author, text)
+  addMessage(@Query({ required: true }) { author, text }: MessageBody) {
+    return createMessage(author, text)
   }
   @Get('/')
-  async getMessages(@Query('author') author: Ref<User>) {
-    return await getMessages(author)
+  getMessages(@Query('author') author: Ref<User>) {
+    return getMessages(author)
   }
   @Delete('/')
-  async deleteMessage(@Query('id') id: string) {
-    return await deleteMessage(id)
+  deleteMessage(@Query('id') id: string) {
+    return deleteMessage(id)
   }
   @Patch('/')
-  async updateMessages(
-    @Query('text') updatedText: string,
-    @Query('id') id: string
-  ) {
-    return await updateMessage(id, updatedText)
+  updateMessages(@Query('text') updatedText: string, @Query('id') id: string) {
+    return updateMessage(id, updatedText)
   }
 }
