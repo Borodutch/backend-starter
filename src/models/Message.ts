@@ -16,7 +16,7 @@ export function createMessage(author: Ref<User>, text: string) {
 }
 
 export function getMessages(author: Ref<User>) {
-  return MessageModel.find({ author }).exec()
+  return MessageModel.find({ author })
 }
 
 export function deleteMessage(id: string) {
