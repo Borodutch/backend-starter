@@ -47,4 +47,14 @@ export default class LoginController {
     })
     return user.strippedAndFilled({ withExtra: true })
   }
+
+  @Post('/email')
+  async email(
+    @Body('email') userEmail: string,
+    @Body('name') userName: string
+  ) {
+    const user = await findOrCreateUser({ name: userName, email: userEmail })
+    console.log(user)
+    return user.strippedAndFilled({ withExtra: true })
+  }
 }
