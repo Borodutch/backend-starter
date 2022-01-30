@@ -9,10 +9,10 @@ export class Message {
   text!: string
 }
 
-const MessageModel = getModelForClass(Message)
+export const MessageModel = getModelForClass(Message)
 
 export function createMessage(author: Ref<User>, text: string) {
-  return new MessageModel({ author, text }).save()
+  return MessageModel.create({ author, text })
 }
 
 export function getMessages(author: Ref<User>) {
@@ -25,7 +25,7 @@ export function deleteMessage(id: string) {
 
 export function updateMessage(id: string, updatedText: string) {
   return MessageModel.findOneAndUpdate({
-    _id: id,
+    id: id,
     text: updatedText,
     new: true,
     returnOriginal: false,

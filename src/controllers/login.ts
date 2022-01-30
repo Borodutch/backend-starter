@@ -1,4 +1,4 @@
-import { Body, Controller, Ctx, Post, Query } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
@@ -50,7 +50,7 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async email(@Query({ required: true }) { name, email }: EmailLogin) {
+  async email(@Body({ required: true }) { name, email }: EmailLogin) {
     const user = await findOrCreateUser({ name, email })
     return user.strippedAndFilled({ withExtra: true })
   }

@@ -1,12 +1,13 @@
 import {
+  Body,
   Controller,
   CurrentUser,
   Delete,
   Flow,
   Get,
+  Params,
   Patch,
   Post,
-  Query,
 } from 'amala'
 import { User } from '@/models/User'
 import {
@@ -16,12 +17,13 @@ import {
   updateMessage,
 } from '@/models/Message'
 import auth from '@/middleware/auth'
+import checkAuthor from '@/middleware/checkAuthor'
 
 @Controller('/message')
 @Flow(auth)
 export default class MessageController {
   @Post('/')
-  addMessage(@Query('text') text: string, @CurrentUser() author: User) {
+  addMessage(@Body('text') text: string, @CurrentUser() author: User) {
     return createMessage(author, text)
   }
   @Get('/')
@@ -29,13 +31,16 @@ export default class MessageController {
     return getMessages(author)
   }
 
-  @Delete('/')
-  deleteMessage(@Query('id') id: string) {
+  @Delete('/:id')
+  @Flow(checkAuthor)
+  deleteMessage(@Params('id') id: string) {
+    console.log(id)
     return deleteMessage(id)
   }
 
-  @Patch('/')
-  updateMessages(@Query('text') newText: string, @Query('id') id: string) {
-    return updateMessage(id, newText)
+  @Patch('/:id')
+  @Flow(checkAuthor)
+  updateMessages(@Params('id') id: string, @Body('text') updatedText: string) {
+    return updateMessage(id, updatedText)
   }
 }
