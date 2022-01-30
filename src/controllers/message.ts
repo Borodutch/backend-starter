@@ -1,5 +1,13 @@
-import { Controller, Delete, Get, Patch, Post, Query } from 'amala'
-import { Ref } from '@typegoose/typegoose'
+import {
+  Controller,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Patch,
+  Post,
+  Query,
+} from 'amala'
 import { User } from '@/models/User'
 import {
   createMessage,
@@ -7,24 +15,27 @@ import {
   getMessages,
   updateMessage,
 } from '@/models/Message'
-import MessageBody from '@/validators/MessageBody'
+import auth from '@/middleware/auth'
 
 @Controller('/message')
+@Flow(auth)
 export default class MessageController {
   @Post('/')
-  addMessage(@Query({ required: true }) { author, text }: MessageBody) {
+  addMessage(@Query('text') text: string, @CurrentUser() author: User) {
     return createMessage(author, text)
   }
   @Get('/')
-  getMessages(@Query('author') author: Ref<User>) {
+  getMessages(@CurrentUser() author: User) {
     return getMessages(author)
   }
+
   @Delete('/')
   deleteMessage(@Query('id') id: string) {
     return deleteMessage(id)
   }
+
   @Patch('/')
-  updateMessages(@Query('text') updatedText: string, @Query('id') id: string) {
-    return updateMessage(id, updatedText)
+  updateMessages(@Query('text') newText: string, @Query('id') id: string) {
+    return updateMessage(id, newText)
   }
 }
