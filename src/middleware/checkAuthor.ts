@@ -5,7 +5,8 @@ import { notFound } from '@hapi/boom'
 export default async function checkAuthor(ctx: Context, next: Next) {
   const message = await MessageModel.findById(ctx.params.id)
   const user = ctx.state.user
-  if (message && message.author == user.id) {
+  if (message?.author?.toString() === user.id.toString()) {
+    ctx.state.message = message
     return next()
   }
   return ctx.throw(notFound())

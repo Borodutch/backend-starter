@@ -16,6 +16,8 @@ import {
   getMessages,
   updateMessage,
 } from '@/models/Message'
+import MessageBody from '@/validators/MessageBody'
+import MessageId from '@/validators/MessageId'
 import auth from '@/middleware/auth'
 import checkAuthor from '@/middleware/checkAuthor'
 
@@ -23,9 +25,13 @@ import checkAuthor from '@/middleware/checkAuthor'
 @Flow(auth)
 export default class MessageController {
   @Post('/')
-  addMessage(@Body('text') text: string, @CurrentUser() author: User) {
+  addMessage(
+    @Body({ required: true }) { text }: MessageBody,
+    @CurrentUser() author: User
+  ) {
     return createMessage(author, text)
   }
+
   @Get('/')
   getMessages(@CurrentUser() author: User) {
     return getMessages(author)
@@ -33,14 +39,16 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow(checkAuthor)
-  deleteMessage(@Params('id') id: string) {
-    console.log(id)
+  deleteMessage(@Params() { id }: MessageId) {
     return deleteMessage(id)
   }
 
   @Patch('/:id')
   @Flow(checkAuthor)
-  updateMessages(@Params('id') id: string, @Body('text') updatedText: string) {
-    return updateMessage(id, updatedText)
+  updateMessages(
+    @Params() { id }: MessageId,
+    @Body({ required: true }) { text }: MessageBody
+  ) {
+    return updateMessage(id, text)
   }
 }

@@ -25,7 +25,7 @@ export function deleteMessage(id: string) {
 
 export function updateMessage(id: string, updatedText: string) {
   return MessageModel.findOneAndUpdate({
-    id: id,
+    _id: id,
     text: updatedText,
     new: true,
     returnOriginal: false,
