@@ -5,19 +5,14 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Patch,
   Post,
+  State,
 } from 'amala'
+import { DocumentType } from '@typegoose/typegoose'
+import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-import {
-  createMessage,
-  deleteMessage,
-  getMessages,
-  updateMessage,
-} from '@/models/Message'
 import MessageBody from '@/validators/MessageBody'
-import MessageId from '@/validators/MessageId'
 import auth from '@/middleware/auth'
 import checkAuthor from '@/middleware/checkAuthor'
 
@@ -29,26 +24,27 @@ export default class MessageController {
     @Body({ required: true }) { text }: MessageBody,
     @CurrentUser() author: User
   ) {
-    return createMessage(author, text)
+    return MessageModel.create({ author, text })
   }
 
   @Get('/')
   getMessages(@CurrentUser() author: User) {
-    return getMessages(author)
+    return MessageModel.find({ author })
   }
 
   @Delete('/:id')
   @Flow(checkAuthor)
-  deleteMessage(@Params() { id }: MessageId) {
-    return deleteMessage(id)
+  deleteMessage(@State('message') message: DocumentType<Message>) {
+    return message.deleteOne()
   }
 
   @Patch('/:id')
   @Flow(checkAuthor)
   updateMessages(
-    @Params() { id }: MessageId,
-    @Body({ required: true }) { text }: MessageBody
+    @Body({ required: true }) { text }: MessageBody,
+    @State('message') message: DocumentType<Message>
   ) {
-    return updateMessage(id, text)
+    message.text = text
+    return message.save()
   }
 }
