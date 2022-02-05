@@ -11,6 +11,7 @@ describe('CRUD messages', () => {
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
   let token: string
+  let messageId: string
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -42,12 +43,19 @@ describe('CRUD messages', () => {
       .post('/message/')
       .set('token', token)
       .send({ text: 'Test text' })
+    messageId = response.body._id
     expect(response.statusCode).toBe(200)
-    console.log(response.body)
   })
+
   it('Get message', async () => {
     const response = await request(server).get(`/message/`).set('token', token)
-    console.log(response.body)
+    expect(response.statusCode).toBe(200)
+  })
+
+  it('Delete message', async () => {
+    const response = await request(server)
+      .delete(`/message/${messageId}`)
+      .set('token', token)
     expect(response.statusCode).toBe(200)
   })
 })
