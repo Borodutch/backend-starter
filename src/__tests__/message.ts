@@ -52,6 +52,14 @@ describe('CRUD messages', () => {
     expect(response.statusCode).toBe(200)
   })
 
+  it('Patch message', async () => {
+    const response = await request(server)
+      .patch(`/message/${messageId}`)
+      .set('token', token)
+      .send({ text: 'Updated text' })
+    expect(response.statusCode).toBe(200)
+  })
+
   it('Delete message', async () => {
     const response = await request(server)
       .delete(`/message/${messageId}`)
