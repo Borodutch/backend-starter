@@ -45,4 +45,9 @@ describe('CRUD messages', () => {
     expect(response.statusCode).toBe(200)
     console.log(response.body)
   })
+  it('Get message', async () => {
+    const response = await request(server).get(`/message/`).set('token', token)
+    console.log(response.body)
+    expect(response.statusCode).toBe(200)
+  })
 })
