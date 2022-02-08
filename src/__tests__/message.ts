@@ -10,8 +10,6 @@ describe('CRUD messages', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
-  let token: string
-  let messageId: string
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -30,40 +28,59 @@ describe('CRUD messages', () => {
     })
   })
 
+  const userData = {
+    name: 'John Galt',
+    email: 'johngalt@mail.com',
+    token: '',
+  }
+  const messageData = {
+    text: 'Test text',
+    updatedText: 'Updated text',
+    messageId: '',
+  }
+
   it('Log in', async () => {
     const user = await request(server)
       .post('/login/email')
-      .send({ email: 'johngalt@gmail.com', name: 'John' })
-    token = user.body.token
+      .send({ email: userData.email, name: userData.name })
+    userData.token = user.body.token
     expect(user.statusCode).toBe(200)
+    expect(user.body.name).toBe(userData.name)
+    expect(user.body.email).toBe(userData.email)
   })
 
   it('Post message', async () => {
     const response = await request(server)
       .post('/message/')
-      .set('token', token)
-      .send({ text: 'Test text' })
-    messageId = response.body._id
+      .set('token', userData.token)
+      .send({ text: messageData.text })
+    messageData.messageId = response.body._id
     expect(response.statusCode).toBe(200)
+    expect(response.body.text).toBe(messageData.text)
   })
 
   it('Get message', async () => {
-    const response = await request(server).get(`/message/`).set('token', token)
+    const response = await request(server)
+      .get(`/message/`)
+      .set('token', userData.token)
     expect(response.statusCode).toBe(200)
+    expect(response.body[0].text).toBe(messageData.text)
   })
 
   it('Patch message', async () => {
     const response = await request(server)
-      .patch(`/message/${messageId}`)
-      .set('token', token)
-      .send({ text: 'Updated text' })
+      .patch(`/message/${messageData.messageId}`)
+      .set('token', userData.token)
+      .send({ text: messageData.updatedText })
     expect(response.statusCode).toBe(200)
+    expect(response.body.text).toBe(messageData.updatedText)
   })
 
   it('Delete message', async () => {
     const response = await request(server)
-      .delete(`/message/${messageId}`)
-      .set('token', token)
+      .delete(`/message/${messageData.messageId}`)
+      .set('token', userData.token)
     expect(response.statusCode).toBe(200)
+    expect(response.body.text).toBe(messageData.updatedText)
   })
 })
