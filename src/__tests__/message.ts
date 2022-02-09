@@ -3,7 +3,6 @@ import * as shutdown from 'http-graceful-shutdown'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
-import { plainToClass } from 'amala'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
