@@ -39,7 +39,7 @@ describe('CRUD messages', () => {
     messageId: '',
   }
 
-  it('Log in', async () => {
+  it('handles correct login', async () => {
     const user = await request(server)
       .post('/login/email')
       .send({ email: userData.email, name: userData.name })
@@ -49,54 +49,99 @@ describe('CRUD messages', () => {
     expect(user.body.email).toBe(userData.email)
   })
 
-  it('Post message', async () => {
+  it('handles correct post message', async () => {
     const response = await request(server)
       .post('/message/')
       .set('token', userData.token)
       .send({ text: messageData.text })
-    try {
-      messageData.messageId = response.body._id
-      expect(response.statusCode).toBe(200)
-      expect(response.body.text).toBe(messageData.text)
-    } catch (error) {
-      expect(response.statusCode).toBe(403)
-    }
+    messageData.messageId = response.body._id
+    expect(response.statusCode).toBe(200)
+    expect(response.body.text).toBe(messageData.text)
   })
 
-  it('Get message', async () => {
+  it('handles post message with incorrect user token', async () => {
+    const response = await request(server)
+      .post('/message/')
+      .set('token', '12f3')
+      .send({ text: messageData.text })
+    expect(response.statusCode).toBe(403)
+  })
+
+  it('handles post message with incorrect text format', async () => {
+    const response = await request(server)
+      .post('/message')
+      .set('token', userData.token)
+      .send({ text: 3214 })
+    expect(response.statusCode).toBe(422)
+  })
+
+  it('handles correct get message', async () => {
     const response = await request(server)
       .get(`/message/`)
       .set('token', userData.token)
-    try {
-      expect(response.statusCode).toBe(200)
-      expect(response.body[0].text).toBe(messageData.text)
-    } catch (error) {
-      expect(response.statusCode).toBe(403)
-    }
+    expect(response.statusCode).toBe(200)
+    expect(response.body[0].text).toBe(messageData.text)
   })
 
-  it('Patch message', async () => {
+  it('handles get message with incorrect user token', async () => {
+    const response = await request(server)
+      .get('/message/')
+      .set('token', '231t4')
+    expect(response.statusCode).toBe(403)
+  })
+
+  it('handles correct patch message', async () => {
     const response = await request(server)
       .patch(`/message/${messageData.messageId}`)
       .set('token', userData.token)
       .send({ text: messageData.updatedText })
-    try {
-      expect(response.statusCode).toBe(200)
-      expect(response.body.text).toBe(messageData.updatedText)
-    } catch (error) {
-      expect(response.statusCode).toBe(404)
-    }
+    expect(response.statusCode).toBe(200)
+    expect(response.body.text).toBe(messageData.updatedText)
   })
 
-  it('Delete message', async () => {
+  it('handles patch message with incorrect message id', async () => {
+    const response = await request(server)
+      .patch('/message/2143drfe9')
+      .set('token', userData.token)
+      .send({ text: messageData.updatedText })
+    expect(response.statusCode).toBe(404)
+  })
+
+  it('handles patch message with incorrect user token', async () => {
+    const response = await request(server)
+      .patch(`/message/${messageData.messageId}`)
+      .set('token', '2143e3')
+      .send({ text: messageData.updatedText })
+    expect(response.statusCode).toBe(403)
+  })
+
+  it('handles patch message with incorrect text format', async () => {
+    const response = await request(server)
+      .patch(`/message/${messageData.messageId}`)
+      .set('token', userData.token)
+      .send({ text: 121353 })
+    expect(response.statusCode).toBe(422)
+  })
+
+  it('handles correct delete message', async () => {
     const response = await request(server)
       .delete(`/message/${messageData.messageId}`)
       .set('token', userData.token)
-    try {
-      expect(response.statusCode).toBe(200)
-      expect(response.body.text).toBe(messageData.updatedText)
-    } catch (error) {
-      expect(response.statusCode).toBe(404)
-    }
+    expect(response.statusCode).toBe(200)
+    expect(response.body.text).toBe(messageData.updatedText)
+  })
+
+  it('handles delete message with incorrect message id', async () => {
+    const response = await request(server)
+      .delete('/message/21e5r3')
+      .set('token', userData.token)
+    expect(response.statusCode).toBe(404)
+  })
+
+  it('handles delete message with incorrect user token', async () => {
+    const response = await request(server)
+      .delete(`/message/${messageData.messageId}`)
+      .set('token', 'u1423')
+    expect(response.statusCode).toBe(403)
   })
 })
