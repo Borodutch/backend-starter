@@ -1,4 +1,4 @@
-import { Body, Controller, Ctx, Post, Get } from 'amala'
+import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
