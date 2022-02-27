@@ -2,8 +2,6 @@ import { IsNumber, IsOptional, IsString } from 'amala'
 
 export default class Message {
   @IsNumber()
-  id!: number
-  @IsNumber()
   user_id!: number
   @IsString()
   data!: string

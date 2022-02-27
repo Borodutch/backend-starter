@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post } from 'amala'
+import { Body, Controller, Delete, Get, Params, Patch, Post } from 'amala'
 import {
   createNewMessage,
   findAndDeleteMessage,
@@ -6,50 +6,44 @@ import {
   findMessage,
 } from '@/models/Message'
 import Message from '@/validators/Message'
+// import MessageId from '@/validators/MessageId'
 
 @Controller('/message')
 export default class MessageController {
-  @Get('/')
-  async getMessage(@Body({ required: true }) { id, user_id }: Message) {
-    const message = await findMessage({
-      messageId: id,
-      user_id: user_id ? user_id : undefined,
-    })
-    return message.messageData
+  @Get('/:id')
+  async getMessage(@Params('id') _id: string) {
+    // TODO: { _id }: MessageId ?
+    // console.log(_id)
+    const message = await findMessage({ _id })
+    return message
   }
 
   @Post('/')
-  async createMessage(
-    @Body({ required: true }) { id, data, user_id }: Message
-  ) {
+  async createMessage(@Body({ required: true }) { data, user_id }: Message) {
     const message = await createNewMessage({
       messageData: data,
       user_id: user_id,
-      messageId: id ? id : undefined,
     })
-    return message.messageData
+    return message
   }
 
-  @Patch('/')
+  @Patch('/:id')
   async updateMessage(
-    @Body({ required: true }) { id, data, user_id }: Message
+    @Params('id') _id: string, // TODO: { _id }: MessageId ?
+    @Body({ required: true }) { data, user_id }: Message
   ) {
-    const message = await findAndUpdateMessage({
-      messageId: id,
-      messageData: data ? data : undefined,
+    // console.log(_id + ' ' + data + ' ' + user_id)
+    const msg = await findAndUpdateMessage({
+      messageData: data,
+      _id: _id,
       user_id: user_id ? user_id : undefined,
     })
-    return message.messageData
+    const new_msg = await findMessage({ _id: msg._id })
+    return new_msg
   }
 
-  @Delete('/')
-  async deleteMessage(
-    @Body({ required: true }) { id, data, user_id }: Message
-  ) {
-    return await findAndDeleteMessage({
-      messageId: id,
-      messageData: data ? data : undefined,
-      user_id: user_id ? user_id : undefined,
-    })
+  @Delete('/:id')
+  deleteMessage(@Params('id') _id: string) {
+    return findAndDeleteMessage({ _id })
   }
 }
