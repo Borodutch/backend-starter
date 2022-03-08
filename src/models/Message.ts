@@ -1,4 +1,3 @@
-// import * as msg from '@/validators/Message'
 import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 
 @modelOptions({ schemaOptions: { timestamps: true } })

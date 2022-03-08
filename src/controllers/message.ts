@@ -6,14 +6,11 @@ import {
   findMessage,
 } from '@/models/Message'
 import Message from '@/validators/Message'
-// import MessageId from '@/validators/MessageId'
 
 @Controller('/message')
 export default class MessageController {
   @Get('/:id')
   async getMessage(@Params('id') _id: string) {
-    // TODO: { _id }: MessageId ?
-    // console.log(_id)
     const message = await findMessage({ _id })
     return message
   }
@@ -29,10 +26,9 @@ export default class MessageController {
 
   @Patch('/:id')
   async updateMessage(
-    @Params('id') _id: string, // TODO: { _id }: MessageId ?
+    @Params('id') _id: string,
     @Body({ required: true }) { data, user_id }: Message
   ) {
-    // console.log(_id + ' ' + data + ' ' + user_id)
     const msg = await findAndUpdateMessage({
       messageData: data,
       _id: _id,
