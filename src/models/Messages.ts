@@ -6,7 +6,7 @@ export class Message {
   @prop({ required: true, ref: () => User })
   public user!: Ref<User>
   @prop({ required: true })
-  textMessage!: string
+  text!: string
 }
 
 export const MessageModel = getModelForClass(Message)

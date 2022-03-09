@@ -1,57 +1,48 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Delete,
-  Put,
-  Get,
-  CurrentUser,
-  Params,
-} from 'amala'
-import { User } from '@/models/User'
+import { Body, Controller, Post, Delete, Put, Get, Params } from 'amala'
+import { UserModel, User } from '@/models/User'
 import { MessageModel } from '@/models/Messages'
-import MessageValidator from '@/validators/Messages'
+import { MessageValidator, MessageIdValidator } from '@/validators/Messages'
 
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
-  createMessage(
-    @Body({ required: true }) { textMessage }: MessageValidator,
-    @CurrentUser() user: User
+  async createMessage(
+    @Body({ required: true }) { text }: MessageValidator,
+    @Body('userId') userId: String
   ) {
-    MessageModel.create({
-      user,
-      textMessage: textMessage,
-    })
-      .then((result) => result)
-      .catch((err) => err.message)
+    const user = await UserModel.findById(userId)
+    if (user) {
+      return MessageModel.create({
+        user,
+        text,
+      })
+    } else {
+      return { error: 'User not found' }
+    }
   }
 
-  @Get('/:id')
-  getMessage(@Params('id') id: string) {
-    MessageModel.findById(id)
-      .then((result) => result)
-      .catch((err) => err.message)
+  @Get('/')
+  async getMessages() {
+    return MessageModel.find()
   }
 
-  @Put('/:id')
-  editMessage(
-    @Body({ required: true }) { textMessage }: MessageValidator,
-    @CurrentUser() user: User,
-    @Params('id') id: string
+  @Get('/:message_id')
+  async getMessage(@Params('message_id') message_id: MessageIdValidator) {
+    return MessageModel.findById(message_id)
+  }
+
+  @Put('/:message_id')
+  async editMessage(
+    @Body({ required: true }) { text }: MessageValidator,
+    @Params('message_id') message_id: MessageIdValidator
   ) {
-    MessageModel.findByIdAndUpdate(id, {
-      user,
-      textMessage: textMessage,
+    return MessageModel.findByIdAndUpdate(message_id, {
+      text,
     })
-      .then((result) => result)
-      .catch((err) => err.message)
   }
 
-  @Delete('/:id')
-  deleteMessage(@Params('id') id: string) {
-    MessageModel.findByIdAndDelete(id)
-      .then((result) => result)
-      .catch((err) => err.message)
+  @Delete('/:message_id')
+  async deleteMessage(@Params('message_id') message_id: MessageIdValidator) {
+    return MessageModel.findByIdAndDelete(message_id)
   }
 }
