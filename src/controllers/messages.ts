@@ -1,24 +1,30 @@
-import { Body, Controller, Post, Delete, Put, Get, Params } from 'amala'
-import { UserModel, User } from '@/models/User'
+import { Body, Controller, Post, Delete, Put, Get, Params, Ctx } from 'amala'
+import { UserModel } from '@/models/User'
 import { MessageModel } from '@/models/Messages'
-import { MessageValidator, MessageIdValidator } from '@/validators/Messages'
+import {
+  MessageUserIdTextValidator,
+  MessageIdValidator,
+  MessageTextValidator,
+} from '@/validators/Messages'
+import { notFound } from '@hapi/boom'
+import { Context } from 'koa'
 
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
   async createMessage(
-    @Body({ required: true }) { text }: MessageValidator,
-    @Body('userId') userId: String
+    @Ctx() ctx: Context,
+    @Body({ required: true })
+    { userId, text }: MessageUserIdTextValidator
   ) {
     const user = await UserModel.findById(userId)
-    if (user) {
+    if (user)
       return MessageModel.create({
         user,
         text,
       })
-    } else {
-      return { error: 'User not found' }
-    }
+
+    return ctx.throw(notFound('User not found'))
   }
 
   @Get('/')
@@ -26,23 +32,36 @@ export default class MessageController {
     return MessageModel.find()
   }
 
-  @Get('/:message_id')
-  async getMessage(@Params('message_id') message_id: MessageIdValidator) {
-    return MessageModel.findById(message_id)
+  @Get('/:messageId')
+  async getMessage(
+    @Ctx() ctx: Context,
+    @Params() { messageId }: MessageIdValidator
+  ) {
+    const message = await MessageModel.findById(messageId)
+    if (!message) ctx.throw(notFound('messageId not found'))
+    return message
   }
 
-  @Put('/:message_id')
+  @Put('/:messageId')
   async editMessage(
-    @Body({ required: true }) { text }: MessageValidator,
-    @Params('message_id') message_id: MessageIdValidator
+    @Ctx() ctx: Context,
+    @Params() { messageId }: MessageIdValidator,
+    @Body({ required: true }) { text }: MessageTextValidator
   ) {
-    return MessageModel.findByIdAndUpdate(message_id, {
+    const message = await MessageModel.findByIdAndUpdate(messageId, {
       text,
     })
+    if (!message) ctx.throw(notFound('messageId not found'))
+    return message
   }
 
-  @Delete('/:message_id')
-  async deleteMessage(@Params('message_id') message_id: MessageIdValidator) {
-    return MessageModel.findByIdAndDelete(message_id)
+  @Delete('/:messageId')
+  async deleteMessage(
+    @Ctx() ctx: Context,
+    @Params() { messageId }: MessageIdValidator
+  ) {
+    const message = await MessageModel.findByIdAndDelete(messageId)
+    if (!message) ctx.throw(notFound('messageId not found'))
+    return message
   }
 }
