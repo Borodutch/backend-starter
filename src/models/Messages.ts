@@ -1,5 +1,4 @@
 import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
-
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message {
   @prop()
@@ -7,6 +6,7 @@ export class Message {
 }
 
 export const MessageModel = getModelForClass(Message)
+
 export async function findOrCreateMessage(messageOptions: { message: string }) {
   const message = await MessageModel.findOneAndUpdate(
     messageOptions,

@@ -6,20 +6,22 @@ import {
   getById,
   removeById,
 } from '@/models/Messages'
+import MessageValid from '@/validators/MessageValid'
 
-@Controller('/')
+@Controller('/messages')
 export default class StatusController {
-  @Post('messages')
-  async add(@Body() body: { message: string }) {
+  @Post('')
+  async add(@Body() { message }: MessageValid) {
     try {
-      const message = await findOrCreateMessage({
-        message: body.message,
+      const messages = await findOrCreateMessage({
+        message: message,
       })
-      return message
+      return messages
     } catch (err) {
       console.log(err)
     }
   }
+
   @Get('messages')
   async getAllMessages() {
     try {
@@ -41,10 +43,11 @@ export default class StatusController {
   }
 
   @Delete('messages/:id')
-  async delete(@Params('id') id: string) {
+  async deleteMessage(@Params('id') id: string) {
     const messages = await removeById(id)
     return messages
   }
+
   @Post('messages/:id')
   async editMessage(
     @Params('id') id: string,
