@@ -1,4 +1,14 @@
-import { Body, Controller, Post, Delete, Put, Get, Params, Ctx } from 'amala'
+import {
+  Body,
+  Controller,
+  Post,
+  Delete,
+  Put,
+  Get,
+  Params,
+  Ctx,
+  Flow,
+} from 'amala'
 import { UserModel } from '@/models/User'
 import { MessageModel } from '@/models/Messages'
 import {
@@ -6,10 +16,12 @@ import {
   MessageIdValidator,
   MessageTextValidator,
 } from '@/validators/Messages'
+import checkUser from '@/middleware/authMiddleware'
 import { notFound } from '@hapi/boom'
 import { Context } from 'koa'
 
 @Controller('/messages')
+@Flow([checkUser])
 export default class MessageController {
   @Post('/')
   async createMessage(

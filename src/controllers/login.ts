@@ -6,11 +6,21 @@ import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
+import EmailLogin from '@/validators/EmailLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
 
 @Controller('/login')
 export default class LoginController {
+  @Post('/email')
+  async email(@Body({ required: true }) { email, name }: EmailLogin) {
+    const user = await findOrCreateUser({
+      name,
+      email,
+    })
+    return user.strippedAndFilled({ withExtra: true })
+  }
+
   @Post('/facebook')
   async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
     const { name, email, id } = await getFBUser(accessToken)
