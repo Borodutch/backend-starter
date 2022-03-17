@@ -4,21 +4,20 @@ import { forbidden } from '@hapi/boom'
 import { Context } from 'koa'
 
 export default async function checkUser(ctx: Context, next: Function) {
-  const token = ctx.headers.token
+  const { token } = ctx.headers
 
-  if (!(typeof token === 'string')) {
-    ctx.throw(forbidden())
+  if (typeof token !== 'string') {
+    return ctx.throw(forbidden())
   }
 
   const { id } = verify(token)
   if (!id) {
-    ctx.throw(forbidden())
+    return ctx.throw(forbidden())
   }
 
-  const user = await UserModel.findById(id)
-
+  const user = await UserModel.findOne({ token })
   if (!user) {
-    ctx.throw(forbidden())
+    return ctx.throw(forbidden())
   }
 
   ctx.state.user = user

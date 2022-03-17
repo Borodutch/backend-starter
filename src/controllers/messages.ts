@@ -5,13 +5,12 @@ import {
   Delete,
   Put,
   Get,
-  Ctx,
   Flow,
   CurrentUser,
+  State,
 } from 'amala'
-import { Context } from 'koa'
 import { User } from '@/models/User'
-import { MessageModel } from '@/models/Messages'
+import { Message, MessageModel } from '@/models/Messages'
 import { MessageTextValidator } from '@/validators/Messages'
 import checkUser from '@/middleware/authMiddleware'
 import checkMessage from '@/middleware/messageMiddleware'
@@ -37,24 +36,22 @@ export default class MessageController {
 
   @Get('/:messageId')
   @Flow([checkMessage])
-  async getMessage(@Ctx() ctx: Context) {
-    return ctx.state.message
+  async getMessage(@State('message') message: Message) {
+    return message
   }
 
   @Put('/:messageId')
   @Flow([checkMessage])
   async editMessage(
-    @Ctx() ctx: Context,
+    @State('message') message: Message,
     @Body({ required: true }) { text }: MessageTextValidator
   ) {
-    const message = ctx.state.message
     return MessageModel.findByIdAndUpdate(message._id, { text })
   }
 
   @Delete('/:messageId')
   @Flow([checkMessage])
-  async deleteMessage(@Ctx() ctx: Context) {
-    const message = ctx.state.message
+  async deleteMessage(@State('message') message: Message) {
     return MessageModel.findByIdAndDelete(message._id)
   }
 }
