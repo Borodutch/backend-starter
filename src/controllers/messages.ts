@@ -8,30 +8,26 @@ import {
   Ctx,
   Flow,
   CurrentUser,
-  Params,
 } from 'amala'
+import { Context } from 'koa'
 import { User } from '@/models/User'
 import { MessageModel } from '@/models/Messages'
-import { MessageTextValidator, MessageIdValidator } from '@/validators/Messages'
-import { checkUser, checkMessage } from '@/middleware/authMiddleware'
-import { notFound } from '@hapi/boom'
-import { Context } from 'koa'
+import { MessageTextValidator } from '@/validators/Messages'
+import checkUser from '@/middleware/authMiddleware'
+import checkMessage from '@/middleware/messageMiddleware'
 
 @Controller('/messages')
 @Flow([checkUser])
 export default class MessageController {
   @Post('/')
   async createMessage(
-    @Ctx() ctx: Context,
     @Body({ required: true }) { text }: MessageTextValidator,
     @CurrentUser() user: User
   ) {
-    if (user)
-      return MessageModel.create({
-        user,
-        text,
-      })
-    return ctx.throw(notFound('User not found'))
+    return MessageModel.create({
+      user,
+      text,
+    })
   }
 
   @Get('/')
@@ -41,10 +37,7 @@ export default class MessageController {
 
   @Get('/:messageId')
   @Flow([checkMessage])
-  async getMessage(
-    @Ctx() ctx: Context,
-    @Params() { messageId }: MessageIdValidator
-  ) {
+  async getMessage(@Ctx() ctx: Context) {
     return ctx.state.message
   }
 
@@ -52,8 +45,7 @@ export default class MessageController {
   @Flow([checkMessage])
   async editMessage(
     @Ctx() ctx: Context,
-    @Body({ required: true }) { text }: MessageTextValidator,
-    @Params() { messageId }: MessageIdValidator
+    @Body({ required: true }) { text }: MessageTextValidator
   ) {
     const message = ctx.state.message
     return MessageModel.findByIdAndUpdate(message._id, { text })
@@ -61,10 +53,7 @@ export default class MessageController {
 
   @Delete('/:messageId')
   @Flow([checkMessage])
-  async deleteMessage(
-    @Ctx() ctx: Context,
-    @Params() { messageId }: MessageIdValidator
-  ) {
+  async deleteMessage(@Ctx() ctx: Context) {
     const message = ctx.state.message
     return MessageModel.findByIdAndDelete(message._id)
   }
