@@ -6,7 +6,6 @@ import {
   Ref,
 } from '@typegoose/typegoose'
 import { User } from '@/models/User'
-import _ = require('lodash')
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message {
