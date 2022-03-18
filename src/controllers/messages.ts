@@ -46,12 +46,12 @@ export default class MessageController {
     @State('message') message: Message,
     @Body({ required: true }) { text }: MessageTextValidator
   ) {
-    return MessageModel.findByIdAndUpdate(message._id, { text })
+    return MessageModel.findByIdAndUpdate(message.id, { text })
   }
 
   @Delete('/:messageId')
   @Flow([checkMessage])
   async deleteMessage(@State('message') message: Message) {
-    return MessageModel.findByIdAndDelete(message._id)
+    return MessageModel.findByIdAndDelete(message.id)
   }
 }

@@ -1,5 +1,5 @@
 import { MessageModel } from '@/models/Messages'
-import { notFound } from '@hapi/boom'
+import { badRequest, notFound } from '@hapi/boom'
 import { Context } from 'koa'
 import { Types } from 'mongoose'
 
@@ -12,7 +12,7 @@ export default async function checkMessage(ctx: Context, next: Function) {
   }
 
   if (!Types.ObjectId.isValid(messageId)) {
-    return ctx.throw(notFound())
+    return ctx.throw(badRequest())
   }
 
   const message = await MessageModel.findOne({ _id: messageId, user })
