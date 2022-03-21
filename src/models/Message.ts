@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
@@ -9,8 +10,7 @@ export class Message {
 export const MessageModel = getModelForClass(Message)
 
 export async function сreateMessage(itemOptions: { text: string }) {
-  const option = { upsert: true, new: true }
-  return MessageModel.findOneAndUpdate(itemOptions, {}, option)
+  return MessageModel.create(itemOptions)
 }
 
 export async function findMessage(id: string) {

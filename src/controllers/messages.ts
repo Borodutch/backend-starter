@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { Body, Controller, Delete, Get, Params, Post } from 'amala'
 import { IdValid, TextValid } from '@/validators/MessageValidator'
 import {
@@ -15,20 +16,20 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  async getMsg(@Params('id') id: IdValid) {
+  async getMsg(@Params() { id }: IdValid) {
     return findMessage(id)
   }
 
   @Post('/:id')
   async updateMsg(
     @Body({ required: true }) body: TextValid,
-    @Params('id') id: IdValid
+    @Params() { id }: IdValid
   ) {
     return updateMessage(id, body)
   }
 
   @Delete('/:id')
-  async removeMsg(@Params('id') id: IdValid) {
+  async removeMsg(@Params() { id }: IdValid) {
     return removeMessage(id)
   }
 }
