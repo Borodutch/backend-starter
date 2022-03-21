@@ -1,45 +1,50 @@
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import { Ref, getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import { User } from '@/models/User'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message {
-  @prop({ index: true, lowercase: true })
-  messageData!: string
-  @prop({ index: true })
-  user_id?: number
-  @prop({ index: true, lowercase: true })
-  source_url?: string
-  @prop({ index: true, lowercase: true })
-  company_name?: string
+  @prop({ required: true })
+  text!: string
+  @prop({ ref: () => User, required: true })
+  userId!: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message)
 
-export async function findMessage(messageOptions: { _id: string }) {
-  const message = await MessageModel.findById(messageOptions._id)
+export async function findMessage(_id: string) {
+  const message = await MessageModel.findById(_id)
   if (!message) {
     throw new Error('Message not found')
   }
   return message
 }
 
+// export async function findAllMessagesByUserId(userId: User) {
+//   const messages = await MessageModel.find({ userId }).exec()
+//   if (!messages) {
+//     throw new Error('Message not found')
+//   }
+//   return messages
+// }
+
 export function createNewMessage(messageOptions: {
-  messageData: string
-  user_id: number
+  text: string
+  userId: User
 }) {
   return MessageModel.create(messageOptions)
 }
 
 export async function findAndUpdateMessage(messageOptions: {
-  messageData: string
+  text: string
   _id: string
-  user_id?: number
+  userId?: User
 }) {
   const message = await MessageModel.findOneAndUpdate(
     {
-      user_id: messageOptions.user_id,
+      userId: messageOptions.userId,
       _id: messageOptions._id,
     },
-    { messageData: messageOptions.messageData },
+    { text: messageOptions.text },
     {}
   )
   if (!message) {
@@ -48,8 +53,8 @@ export async function findAndUpdateMessage(messageOptions: {
   return message
 }
 
-export async function findAndDeleteMessage(messageOptions: { _id: string }) {
-  const message = await MessageModel.deleteOne(messageOptions)
+export async function findAndDeleteMessage(_id: string) {
+  const message = await MessageModel.deleteOne({ _id })
   if (message.acknowledged) {
     throw new Error('Message not found')
   }

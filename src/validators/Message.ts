@@ -1,8 +1,8 @@
-import { IsNumber, IsOptional, IsString } from 'amala'
+import { IsOptional, IsString } from 'amala'
+import { User } from '@/models/User'
 
 export default class Message {
-  @IsNumber()
-  user_id!: number
+  userId!: User
   @IsString()
   data!: string
   @IsOptional()
@@ -10,11 +10,11 @@ export default class Message {
   username?: string
   @IsOptional()
   @IsString()
-  company_name?: string
+  companyName?: string
   @IsOptional()
   @IsString()
   author?: string
   @IsOptional()
   @IsString()
-  source_url?: string
+  sourceUrl?: string
 }

@@ -1,45 +1,53 @@
 import { Body, Controller, Delete, Get, Params, Patch, Post } from 'amala'
 import {
   createNewMessage,
+  // findAllMessagesByUserId,
   findAndDeleteMessage,
   findAndUpdateMessage,
   findMessage,
 } from '@/models/Message'
-import Message from '@/validators/Message'
+import ValidId from '@/validators/MessageId'
+import ValidMessage from '@/validators/Message'
 
 @Controller('/message')
 export default class MessageController {
   @Get('/:id')
-  async getMessage(@Params('id') _id: string) {
-    const message = await findMessage({ _id })
-    return message
+  getMessage(@Params('id') _id: ValidId['_id']) {
+    return findMessage(_id)
   }
 
+  // @Get('/allMsgByUser/:userId')
+  // getAllMessages(@Params('UserId') userId: ValidMessage['userId']) {
+  //   return findAllMessagesByUserId(userId)
+  // }
+
   @Post('/')
-  async createMessage(@Body({ required: true }) { data, user_id }: Message) {
+  async createMessage(
+    @Body({ required: true }) { data, userId }: ValidMessage
+  ) {
     const message = await createNewMessage({
-      messageData: data,
-      user_id: user_id,
+      text: data,
+      userId: userId,
     })
     return message
   }
 
   @Patch('/:id')
   async updateMessage(
-    @Params('id') _id: string,
-    @Body({ required: true }) { data, user_id }: Message
+    @Params('id') _id: ValidId['_id'],
+    @Body({ required: true }) { data, userId }: ValidMessage
   ) {
     const msg = await findAndUpdateMessage({
-      messageData: data,
+      text: data,
       _id: _id,
-      user_id: user_id ? user_id : undefined,
+      userId: userId ? userId : undefined,
     })
-    const new_msg = await findMessage({ _id: msg._id })
+    const new_msg = await findMessage(msg._id)
     return new_msg
   }
 
   @Delete('/:id')
-  deleteMessage(@Params('id') _id: string) {
-    return findAndDeleteMessage({ _id })
+  deleteMessage(@Params('id') _id: ValidId['_id']) {
+    return findAndDeleteMessage(_id)
   }
 }
