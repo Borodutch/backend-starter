@@ -1,40 +1,26 @@
+import * as boom from '@hapi/boom'
 import * as msg from '@/models/message'
 import { Context } from 'koa'
-import { Controller, Delete, Get, Params, Patch, Post, Put, Query } from 'amala'
+import { Controller, Ctx, Delete, Get, Params, Patch, Post, Query } from 'amala'
 import { ObjectId } from 'mongoose'
-import { sign } from '@/helpers/jwt'
 
-@Controller('/')
+@Controller('/messages')
 export default class {
-  @Get('/read')
-  async findMessage(@Query('author') author: string) {
-    console.log('inside GET READ')
-    const messages = await msg.MessageModel.find({ author })
-    if (!messages) {
-      console.log('No messages found')
-    }
-    console.log(`${author}'s messages: ${messages}`)
-    return messages
-  }
-
-  @Get('/readall')
-  async findAllMessages() {
-    // @Query('email') email?: string // @Query('author') author: string
-    console.log('inside GET READ all')
+  @Get('/')
+  async findAllMessages(@Ctx() ctx: Context) {
     const messages = await msg.MessageModel.find()
     if (!messages) {
-      console.log('No messages found')
+      ctx.throw(boom.notFound('No messages found'))
     }
     console.log(`Messages: ${messages}`)
     return messages
   }
 
-  @Get('/read/:id')
-  async findMessageById(@Params('id') id: ObjectId) {
-    console.log('inside GET READ by ID')
+  @Get('/:id')
+  async findMessageById(@Params('id') id: ObjectId, @Ctx() ctx: Context) {
     const message = await msg.MessageModel.findById(id)
     if (!message) {
-      console.log(`Message with ${id} not found`)
+      ctx.throw(boom.notFound(`Message with ${id} not found`))
     } else {
       console.log(`Message with ${id}: ${message}`)
     }
@@ -44,21 +30,15 @@ export default class {
   @Post('/create')
   async createMessage(
     @Query('author') author: string,
-    @Query('text') messageText: string
+    @Query('text') text: string,
+    @Ctx() ctx: Context
   ) {
-    console.log('inside POST CREATE')
     const newMessage = await msg.MessageModel.create({
       author,
-      messageText,
+      text,
     })
     if (!newMessage) {
-      console.log('Something went wrong')
-    }
-    if (!newMessage.token) {
-      console.log('Adding token...')
-      newMessage.token = await sign({ id: newMessage.id })
-      console.log(newMessage.token)
-      await newMessage.save()
+      ctx.throw(boom.internal('Something went wrong'))
     }
     console.log(`Message created: ${newMessage}`)
     return newMessage
@@ -70,7 +50,6 @@ export default class {
     @Query('author') author?: string,
     @Query('text') messageText?: string
   ) {
-    console.log('inside PATCH UPDATE')
     const updMessage = await msg.MessageModel.findByIdAndUpdate(
       id,
       { author: author, messageText: messageText },
@@ -82,7 +61,6 @@ export default class {
 
   @Delete('/delete/:id')
   async deleteMsgById(@Params('id') id: ObjectId) {
-    console.log('inside DELETE')
     const delMessage = await msg.MessageModel.findByIdAndDelete(id)
     if (!delMessage) {
       console.log(`Message ${id} not found`)
