@@ -1,5 +1,5 @@
-import { Context } from 'koa'
 import {
+  Body,
   Controller,
   Ctx,
   CurrentUser,
@@ -11,40 +11,24 @@ import {
   Post,
   Query,
 } from 'amala'
+import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
 import { ObjectId } from 'mongoose'
 import { User } from '@/models/User'
-import { UserModel } from '@/models/user'
 import { badRequest, notFound } from '@hapi/boom'
+import MessageValidator from '@/validators/MessageValidator'
 import emailMiddleware from '@/middlewares/email'
 
 @Controller('/messages')
-export default class {
+export default class MessageController {
   @Get('/')
-  async findAllMessages(@Ctx() ctx: Context) {
-    const messages = await MessageModel.find()
+  @Flow(emailMiddleware)
+  async findAllMessages(@Ctx() ctx: Context, @CurrentUser() currentUser: User) {
+    const messages = await MessageModel.find({ author: currentUser.name })
     if (!messages) {
       return ctx.throw(notFound())
     }
     return messages
-  }
-
-  @Get('/users')
-  async findAllUsers(@Ctx() ctx: Context) {
-    const users = await UserModel.find()
-    if (!users) {
-      return ctx.throw(notFound())
-    }
-    return users
-  }
-
-  @Get('/user/:token')
-  async findUserByToken(@Ctx() ctx: Context, @Params('token') token: string) {
-    const user = await UserModel.findOne({ token })
-    if (!user) {
-      return ctx.throw(notFound())
-    }
-    return user
   }
 
   @Get('/:id')
@@ -56,16 +40,15 @@ export default class {
     return message
   }
 
-  @Post('/create')
+  @Post('/')
   @Flow(emailMiddleware)
   async createMessage(
+    @Body({ required: true }) { author, text }: MessageValidator,
     @Ctx() ctx: Context,
-    @Query('author') author: string,
-    @Query('text') text: string,
-    @CurrentUser() currentUser: User //ctx.state.user
+    @CurrentUser() currentUser: User
   ) {
     if (currentUser.name === author) {
-      //if ctx.state.user !== @Query('author') => throw an error
+      //ecли юзер с токеном из headers != author - кинуть ошибку
       return await MessageModel.create({
         author,
         text,
@@ -93,7 +76,7 @@ export default class {
     return updMessage
   }
 
-  @Delete('/delete/:id')
+  @Delete('/:id')
   async deleteMsgById(@Params('id') id: ObjectId, @Ctx() ctx: Context) {
     const delMessage = await MessageModel.findByIdAndDelete(id)
     if (!delMessage) {
