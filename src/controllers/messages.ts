@@ -15,7 +15,7 @@ import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
 import { ObjectId } from 'mongoose'
 import { User } from '@/models/User'
-import { badRequest, notFound } from '@hapi/boom'
+import { notFound } from '@hapi/boom'
 import MessageValidator from '@/validators/MessageValidator'
 import emailMiddleware from '@/middlewares/email'
 
@@ -23,8 +23,8 @@ import emailMiddleware from '@/middlewares/email'
 export default class MessageController {
   @Get('/')
   @Flow(emailMiddleware)
-  async findAllMessages(@Ctx() ctx: Context, @CurrentUser() currentUser: User) {
-    const messages = await MessageModel.find({ author: currentUser.name })
+  async findAllMessages(@CurrentUser() currentUser: User, @Ctx() ctx: Context) {
+    const messages = await MessageModel.find({ author: currentUser })
     if (!messages) {
       return ctx.throw(notFound())
     }
@@ -43,19 +43,10 @@ export default class MessageController {
   @Post('/')
   @Flow(emailMiddleware)
   async createMessage(
-    @Body({ required: true }) { author, text }: MessageValidator,
-    @Ctx() ctx: Context,
+    @Body({ required: true }) { text }: MessageValidator,
     @CurrentUser() currentUser: User
   ) {
-    if (currentUser.name === author) {
-      //ecли юзер с токеном из headers != author - кинуть ошибку
-      return await MessageModel.create({
-        author,
-        text,
-      })
-    } else {
-      return ctx.throw(badRequest())
-    }
+    return await MessageModel.create({ author: currentUser, text })
   }
 
   @Patch('/update/:id')
