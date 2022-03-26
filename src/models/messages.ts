@@ -1,6 +1,5 @@
 import { Ref, getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
-// eslint-disable-next-line no-relative-import-paths/no-relative-import-paths
-import { User } from './User'
+import { User } from '@/models/User'
 
 @modelOptions({
   schemaOptions: {
@@ -8,14 +7,11 @@ import { User } from './User'
   },
 })
 export class Messages {
-  @prop({ ref: () => User })
-  public name: Ref<User>
+  @prop({ ref: () => User, required: true })
+  author: Ref<User>
 
   @prop({ required: true })
-  public text: string
-
-  @prop({ required: true, unique: true })
-  id: string
+  text!: string
 }
 
 const MessagesModel = getModelForClass(Messages)
