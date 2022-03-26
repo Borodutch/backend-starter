@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Params, Post } from 'amala'
-import MessagesModel from '@/models/messages.model'
-import createMessagesInput from '@/validators/messages.validator'
+import CreateMessagesInput from '@/validators/CreateMessagesInput'
+import MessagesModel from '@/models/messages'
 
 @Controller('/messages')
 class MessagesContrroller {
@@ -10,7 +10,7 @@ class MessagesContrroller {
   }
 
   @Post('/')
-  createMessages(@Body({ required: true }) body: createMessagesInput) {
+  createMessages(@Body({ required: true }) body: CreateMessagesInput) {
     return MessagesModel.create(body)
   }
 

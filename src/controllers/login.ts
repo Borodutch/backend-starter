@@ -1,13 +1,16 @@
-import { Body, Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, CurrentUser, Flow, Post } from 'amala'
 import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
+import { sign } from '@/helpers/jwt'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
+import Login from '@/validators/Login'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
+import verifyToken from '@/helpers/messages.middleware'
 
 @Controller('/login')
 export default class LoginController {
@@ -46,5 +49,26 @@ export default class LoginController {
       email: userData.email,
     })
     return user.strippedAndFilled({ withExtra: true })
+  }
+
+  @Post('/')
+  @Flow([verifyToken])
+  async login(
+    @Body({ required: true }) { name, email, id }: Login,
+    @CurrentUser() headers: string
+  ) {
+    const payload = { id }
+
+    const token = sign(payload)
+
+    verifyToken(token)
+
+    const user = await findOrCreateUser({
+      name: name,
+      email: email,
+    })
+
+    user.token = headers.toString()
+    return user
   }
 }
