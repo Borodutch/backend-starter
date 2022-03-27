@@ -1,9 +1,9 @@
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/message'
 import { badRequest, notFound } from '@hapi/boom'
 import { isValidObjectId } from 'mongoose'
 
-export default async function messageMiddleware(ctx: Context, next: Function) {
+export default async function messageMiddleware(ctx: Context, next: Next) {
   const id = ctx.params.id
   const userId = ctx.state.user._id
 

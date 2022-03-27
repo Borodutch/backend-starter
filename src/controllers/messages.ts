@@ -39,7 +39,7 @@ export default class MessageController {
 
   @Patch('/:id')
   @Flow(messageMiddleware)
-  async updateMsgById(
+  updateMsgById(
     @State('message') message: MessageValidator,
     @Body({ required: true }) { text }: MessageValidator
   ) {
@@ -48,7 +48,7 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow(messageMiddleware)
-  async deleteMsgById(@State('message') message: MessageValidator) {
+  deleteMsgById(@State('message') message: MessageValidator) {
     return MessageModel.findByIdAndDelete(message)
   }
 }

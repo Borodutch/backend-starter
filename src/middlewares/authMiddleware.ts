@@ -1,9 +1,9 @@
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
 import { badRequest, notFound } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
-export default async function emailMiddleware(ctx: Context, next: Function) {
+export default async function authMiddleware(ctx: Context, next: Next) {
   const token = ctx.headers.token
 
   if (!token) {
