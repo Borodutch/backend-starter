@@ -15,7 +15,7 @@ export default async function messageMiddleware(ctx: Context, next: Function) {
     return ctx.throw(badRequest())
   }
 
-  const message = await MessageModel.findById({ _id: id })
+  const message = await MessageModel.findById({ id })
   if (!message) {
     return ctx.throw(notFound())
   }

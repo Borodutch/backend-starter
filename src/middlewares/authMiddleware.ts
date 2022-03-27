@@ -6,11 +6,11 @@ import { verify } from '@/helpers/jwt'
 export default async function emailMiddleware(ctx: Context, next: Function) {
   const token = ctx.headers.token
 
-  if (typeof token !== 'string') {
+  if (!token) {
     return ctx.throw(badRequest())
   }
 
-  if (!token) {
+  if (typeof token !== 'string') {
     return ctx.throw(badRequest())
   }
 
