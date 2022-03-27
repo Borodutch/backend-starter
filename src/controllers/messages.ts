@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  State,
 } from 'amala'
 import { Context } from 'koa'
 import { MessageModel } from '@/models/message'
@@ -17,26 +18,20 @@ import { ObjectId } from 'mongoose'
 import { User } from '@/models/User'
 import { notFound } from '@hapi/boom'
 import MessageValidator from '@/validators/MessageValidator'
-import emailMiddleware from '@/middlewares/email'
+import emailMiddleware from '@/middlewares/emailMiddleware'
+import messageMiddleware from '@/middlewares/messageMiddleware'
 
 @Controller('/messages')
 export default class MessageController {
   @Get('/')
   @Flow(emailMiddleware)
-  async findAllMessages(@CurrentUser() currentUser: User, @Ctx() ctx: Context) {
-    const messages = await MessageModel.find({ author: currentUser })
-    if (!messages) {
-      return ctx.throw(notFound())
-    }
-    return messages
+  async findAllMessages(@CurrentUser() currentUser: User) {
+    return MessageModel.find({ author: currentUser })
   }
 
   @Get('/:id')
-  async findMessageById(@Params('id') id: ObjectId, @Ctx() ctx: Context) {
-    const message = await MessageModel.findById(id)
-    if (!message) {
-      return ctx.throw(notFound())
-    }
+  @Flow([emailMiddleware, messageMiddleware])
+  findMessageById(@State('message') message: MessageValidator) {
     return message
   }
 
@@ -46,19 +41,19 @@ export default class MessageController {
     @Body({ required: true }) { text }: MessageValidator,
     @CurrentUser() currentUser: User
   ) {
-    return await MessageModel.create({ author: currentUser, text })
+    return MessageModel.create({ author: currentUser, text })
   }
 
   @Patch('/update/:id')
+  @Flow([emailMiddleware, messageMiddleware])
   async updateMsgById(
     @Ctx() ctx: Context,
-    @Params('id') id: ObjectId,
-    @Query('author') author?: string,
-    @Query('text') messageText?: string
+    @State('message') message: MessageValidator,
+    @Body({ required: true }) { text }: MessageValidator
   ) {
     const updMessage = await MessageModel.findByIdAndUpdate(
-      id,
-      { author: author, messageText: messageText },
+      message,
+      { text },
       { new: true }
     )
     if (!updMessage) {
@@ -68,8 +63,12 @@ export default class MessageController {
   }
 
   @Delete('/:id')
-  async deleteMsgById(@Params('id') id: ObjectId, @Ctx() ctx: Context) {
-    const delMessage = await MessageModel.findByIdAndDelete(id)
+  @Flow([emailMiddleware, messageMiddleware])
+  async deleteMsgById(
+    @State('message') message: MessageValidator,
+    @Ctx() ctx: Context
+  ) {
+    const delMessage = await MessageModel.findByIdAndDelete(message)
     if (!delMessage) {
       return ctx.throw(notFound())
     }
