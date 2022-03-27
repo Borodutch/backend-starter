@@ -6,64 +6,60 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Patch,
   Post,
-  Query,
   State,
 } from 'amala'
 import { Context } from 'koa'
-import { MessageModel } from '@/models/message'
-import { ObjectId } from 'mongoose'
+import { Message, MessageModel } from '@/models/message'
 import { User } from '@/models/User'
 import { notFound } from '@hapi/boom'
 import MessageValidator from '@/validators/MessageValidator'
-import emailMiddleware from '@/middlewares/emailMiddleware'
+import authMiddleware from '@/middlewares/authMiddleware'
 import messageMiddleware from '@/middlewares/messageMiddleware'
 
 @Controller('/messages')
+@Flow(authMiddleware)
 export default class MessageController {
   @Get('/')
-  @Flow(emailMiddleware)
-  async findAllMessages(@CurrentUser() currentUser: User) {
+  findAllMessages(@CurrentUser() currentUser: User) {
     return MessageModel.find({ author: currentUser })
   }
 
   @Get('/:id')
-  @Flow([emailMiddleware, messageMiddleware])
-  findMessageById(@State('message') message: MessageValidator) {
+  @Flow(messageMiddleware)
+  findMessageById(@State('message') message: Message) {
     return message
   }
 
   @Post('/')
-  @Flow(emailMiddleware)
-  async createMessage(
+  createMessage(
     @Body({ required: true }) { text }: MessageValidator,
     @CurrentUser() currentUser: User
   ) {
     return MessageModel.create({ author: currentUser, text })
   }
 
-  @Patch('/update/:id')
-  @Flow([emailMiddleware, messageMiddleware])
+  @Patch('/:id')
+  @Flow(messageMiddleware)
   async updateMsgById(
     @Ctx() ctx: Context,
     @State('message') message: MessageValidator,
     @Body({ required: true }) { text }: MessageValidator
   ) {
-    const updMessage = await MessageModel.findByIdAndUpdate(
+    const updatedMessage = await MessageModel.findByIdAndUpdate(
       message,
       { text },
       { new: true }
     )
-    if (!updMessage) {
+    if (!updatedMessage) {
       return ctx.throw(notFound())
     }
-    return updMessage
+    return updatedMessage
   }
 
   @Delete('/:id')
-  @Flow([emailMiddleware, messageMiddleware])
+  @Flow(messageMiddleware)
   async deleteMsgById(
     @State('message') message: MessageValidator,
     @Ctx() ctx: Context

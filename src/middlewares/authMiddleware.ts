@@ -10,14 +10,14 @@ export default async function emailMiddleware(ctx: Context, next: Function) {
     return ctx.throw(badRequest())
   }
 
-  if (token === undefined) {
+  if (!token) {
     return ctx.throw(badRequest())
-  } else {
-    try {
-      const verifiedToken = verify(token)
-    } catch (err) {
-      return ctx.throw(badRequest())
-    }
+  }
+
+  try {
+    verify(token)
+  } catch (err) {
+    return ctx.throw(badRequest())
   }
 
   const user = await UserModel.findOne({ token })
