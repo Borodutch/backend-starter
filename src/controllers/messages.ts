@@ -1,5 +1,4 @@
-/* eslint-disable require-await */
-import { Body, Controller, Delete, Get, Params, Post } from 'amala'
+import { Body, Controller, Delete, Flow, Get, Params, Post } from 'amala'
 import { IdValid, TextValid } from '@/validators/MessageValidator'
 import {
   findMessage,
@@ -7,8 +6,10 @@ import {
   updateMessage,
   сreateMessage,
 } from '@/models/Message'
+import verifToken from '@/helpers/tokenMiddleware'
 
 @Controller('/messages')
+@Flow(verifToken)
 export default class MessageController {
   @Post('/')
   async createMsg(@Body({ required: true }) body: TextValid) {
