@@ -39,8 +39,8 @@ export default class MessageController {
     @Body({ required: true }) { text }: TextValid,
     @Params() { id }: IdValid
   ) {
-    const msg = await MessageModel.findById(id)
-    if (ctx.state.user.id == msg?.author) {
+    const message = await MessageModel.findById(id)
+    if (ctx.state.user.id == message?.author) {
       return MessageModel.findByIdAndUpdate(id, { text })
     }
     return ctx.throw(forbidden('Invalid user'))
@@ -48,8 +48,8 @@ export default class MessageController {
 
   @Delete('/:id')
   async removeMessage(@Ctx() ctx: Context, @Params() { id }: IdValid) {
-    const msg = await MessageModel.findById(id)
-    if (ctx.state.user.id == msg?.author) {
+    const message = await MessageModel.findById(id)
+    if (ctx.state.user.id == message?.author) {
       await MessageModel.findByIdAndDelete(id)
       return 'Message deleted'
     }
