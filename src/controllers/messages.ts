@@ -1,36 +1,58 @@
-import { Body, Controller, Delete, Flow, Get, Params, Post } from 'amala'
-import { IdValid, TextValid } from '@/validators/MessageValidator'
 import {
-  findMessage,
-  removeMessage,
-  updateMessage,
-  сreateMessage,
-} from '@/models/Message'
-import verifToken from '@/helpers/tokenMiddleware'
+  Body,
+  Controller,
+  Ctx,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Params,
+  Patch,
+  Post,
+} from 'amala'
+import { Context } from 'vm'
+import { IdValid, TextValid } from '@/validators/MessageValidator'
+import { MessageModel } from '@/models/Message'
+import { User } from '@/models/User'
+import { forbidden } from '@hapi/boom'
+import tokenMiddleware from '@/helpers/tokenMiddleware'
 
 @Controller('/messages')
-@Flow(verifToken)
+@Flow(tokenMiddleware)
 export default class MessageController {
   @Post('/')
-  async createMsg(@Body({ required: true }) body: TextValid) {
-    return сreateMessage(body)
+  async createMessage(
+    @Body({ required: true }) { text }: TextValid,
+    @CurrentUser() author: User
+  ) {
+    return MessageModel.create({ text, author })
   }
 
-  @Get('/:id')
-  async getMsg(@Params() { id }: IdValid) {
-    return findMessage(id)
+  @Get('/')
+  async getMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author: author })
   }
 
-  @Post('/:id')
-  async updateMsg(
-    @Body({ required: true }) body: TextValid,
+  @Patch('/:id')
+  async updateMessage(
+    @Ctx() ctx: Context,
+    @Body({ required: true }) { text }: TextValid,
     @Params() { id }: IdValid
   ) {
-    return updateMessage(id, body)
+    const msg = await MessageModel.findById(id)
+    if (ctx.state.user.id == msg?.author) {
+      return MessageModel.findByIdAndUpdate(id, { text })
+    }
+    return ctx.throw(forbidden('Invalid user'))
   }
 
   @Delete('/:id')
-  async removeMsg(@Params() { id }: IdValid) {
-    return removeMessage(id)
+  async removeMessage(@Ctx() ctx: Context, @Params() { id }: IdValid) {
+    const msg = await MessageModel.findById(id)
+    if (ctx.state.user.id == msg?.author) {
+      await MessageModel.findByIdAndDelete(id)
+      return 'Message deleted'
+    }
+    return ctx.throw(forbidden('Invalid user'))
   }
 }
