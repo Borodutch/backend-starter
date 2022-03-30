@@ -2,7 +2,7 @@ import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
 import { verify } from '@/helpers/jwt'
 
-export default async function currentUser(ctx: Context, next: Next) {
+export default async function verifyToken(ctx: Context, next: Next) {
   const token = (await ctx.header.token) as string
 
   const user = await UserModel.findOne({ token })
