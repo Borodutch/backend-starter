@@ -1,16 +1,15 @@
-import { Body, Controller, Ctx, CurrentUser, Flow, Post } from 'amala'
+import { Body, Controller, Ctx, Flow, Post } from 'amala'
 import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
-import { sign } from '@/helpers/jwt'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import EmailLogin from '@/validators/EmailLogin'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
-import Login from '@/validators/Login'
 import TelegramLogin from '@/validators/TelegramLogin'
+import currentUser from '@/middleware/login'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
-import verifyToken from '@/helpers/messages.middleware'
 
 @Controller('/login')
 export default class LoginController {
@@ -51,24 +50,16 @@ export default class LoginController {
     return user.strippedAndFilled({ withExtra: true })
   }
 
-  @Post('/')
-  @Flow([verifyToken])
-  async login(
-    @Body({ required: true }) { name, email, id }: Login,
-    @CurrentUser() headers: string
+  @Post('/email')
+  @Flow(currentUser)
+  async emaiLogin(
+    @Body({ required: true }) body: EmailLogin,
+    @Ctx() ctx: Context
   ) {
-    const payload = { id }
+    const user = await findOrCreateUser(body)
 
-    const token = sign(payload)
+    ctx.header.token = await user.token
 
-    verifyToken(token)
-
-    const user = await findOrCreateUser({
-      name: name,
-      email: email,
-    })
-
-    user.token = headers.toString()
-    return user
+    return user.strippedAndFilled({ withExtra: true })
   }
 }

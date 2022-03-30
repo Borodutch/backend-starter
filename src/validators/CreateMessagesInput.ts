@@ -1,9 +1,7 @@
 import { IsObject } from 'amala'
 
-class CreateMessagesInput {
+export default class CreateMessagesInput {
   @IsObject()
   name!: string
   text!: string
 }
-
-export default CreateMessagesInput

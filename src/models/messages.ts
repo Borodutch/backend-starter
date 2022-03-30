@@ -7,7 +7,7 @@ import { User } from '@/models/User'
   },
 })
 export class Messages {
-  @prop({ ref: () => User, required: true })
+  @prop({ ref: () => User, required: true, index: true })
   author: Ref<User>
 
   @prop({ required: true })
