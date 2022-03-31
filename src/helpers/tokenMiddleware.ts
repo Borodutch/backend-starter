@@ -1,19 +1,22 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
-import { forbidden } from '@hapi/boom'
+import { forbidden, notFound } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async function tokenMiddleware(ctx: Context, next: Next) {
   const token = ctx.header.token as string
   if (!token) {
-    return ctx.throw(forbidden('Token not found'))
+    return ctx.throw(forbidden())
   }
-  const decoded = verify(token)
-  const user = await UserModel.findById(decoded.id)
+  try {
+    verify(token)
+  } catch (err) {
+    return ctx.throw(forbidden())
+  }
+  const user = await UserModel.findOne({ token })
   if (!user) {
-    return ctx.throw(forbidden('User does not exist'))
+    return ctx.throw(notFound())
   }
   ctx.state.user = user
-  ctx.state.user.id = user.id
-  await next()
+  return next()
 }

@@ -6,22 +6,21 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Patch,
   Post,
 } from 'amala'
 import { Context } from 'vm'
-import { IdValid, TextValid } from '@/validators/MessageValidator'
 import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-import { forbidden } from '@hapi/boom'
+import TextValid from '@/validators/MessageValidator'
+import authorMiddleware from '@/helpers/authorMiddleware'
 import tokenMiddleware from '@/helpers/tokenMiddleware'
 
 @Controller('/messages')
 @Flow(tokenMiddleware)
 export default class MessageController {
   @Post('/')
-  async createMessage(
+  createMessage(
     @Body({ required: true }) { text }: TextValid,
     @CurrentUser() author: User
   ) {
@@ -29,30 +28,23 @@ export default class MessageController {
   }
 
   @Get('/')
-  async getMessages(@CurrentUser() author: User) {
+  getMessages(@CurrentUser() author: User) {
     return MessageModel.find({ author: author })
   }
 
   @Patch('/:id')
-  async updateMessage(
+  @Flow(authorMiddleware)
+  updateMessage(
     @Ctx() ctx: Context,
-    @Body({ required: true }) { text }: TextValid,
-    @Params() { id }: IdValid
+    @Body({ required: true }) { text }: TextValid
   ) {
-    const message = await MessageModel.findById(id)
-    if (ctx.state.user.id == message?.author) {
-      return MessageModel.findByIdAndUpdate(id, { text })
-    }
-    return ctx.throw(forbidden('Invalid user'))
+    ctx.state.message.text = text
+    return ctx.state.message.save()
   }
 
   @Delete('/:id')
-  async removeMessage(@Ctx() ctx: Context, @Params() { id }: IdValid) {
-    const message = await MessageModel.findById(id)
-    if (ctx.state.user.id == message?.author) {
-      await MessageModel.findByIdAndDelete(id)
-      return 'Message deleted'
-    }
-    return ctx.throw(forbidden('Invalid user'))
+  @Flow(authorMiddleware)
+  removeMessage(@Ctx() ctx: Context) {
+    return ctx.state.message.remove()
   }
 }

@@ -5,7 +5,7 @@ import { User } from '@/models/User'
 export class Message {
   @prop({ required: true })
   text!: string
-  @prop({ index: true, ref: () => User })
+  @prop({ required: true, index: true, ref: () => User })
   author!: Ref<User>
 }
 
