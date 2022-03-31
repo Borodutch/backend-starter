@@ -5,17 +5,17 @@ import MessagesModel from '@/models/messages'
 @Controller('/messages')
 class MessagesContrroller {
   @Get('/:id')
-  getMessagesById(@Params('id') id: string) {
+  getMessagesById(@Params('id') id: CreateMessagesInput) {
     return MessagesModel.findById(id)
   }
 
   @Post('/')
-  createMessages(@Body({ required: true }) body: CreateMessagesInput) {
-    return MessagesModel.create(body)
+  createMessages(@Body({ required: true }) { text }: CreateMessagesInput) {
+    return MessagesModel.create({ text })
   }
 
   @Delete('/:id')
-  async deleteMessages(@Params('id') id: string) {
+  async deleteMessages(@Params('id') id: CreateMessagesInput) {
     await MessagesModel.remove(id)
   }
 }
