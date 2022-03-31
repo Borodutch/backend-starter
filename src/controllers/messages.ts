@@ -12,7 +12,7 @@ import {
 import { Context } from 'vm'
 import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-import TextValid from '@/validators/MessageValidator'
+import MessageValidator from '@/validators/MessageValidator'
 import authorMiddleware from '@/helpers/authorMiddleware'
 import tokenMiddleware from '@/helpers/tokenMiddleware'
 
@@ -21,7 +21,7 @@ import tokenMiddleware from '@/helpers/tokenMiddleware'
 export default class MessageController {
   @Post('/')
   createMessage(
-    @Body({ required: true }) { text }: TextValid,
+    @Body({ required: true }) { text }: MessageValidator,
     @CurrentUser() author: User
   ) {
     return MessageModel.create({ text, author })
@@ -36,7 +36,7 @@ export default class MessageController {
   @Flow(authorMiddleware)
   updateMessage(
     @Ctx() ctx: Context,
-    @Body({ required: true }) { text }: TextValid
+    @Body({ required: true }) { text }: MessageValidator
   ) {
     ctx.state.message.text = text
     return ctx.state.message.save()
