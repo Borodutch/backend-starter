@@ -1,16 +1,16 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
   Get,
   Patch,
   Post,
+  State,
 } from 'amala'
-import { Context } from 'vm'
-import { MessageModel } from '@/models/Message'
+import { DocumentType } from '@typegoose/typegoose'
+import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageValidator from '@/validators/MessageValidator'
 import authorMiddleware from '@/helpers/authorMiddleware'
@@ -35,16 +35,16 @@ export default class MessageController {
   @Patch('/:id')
   @Flow(authorMiddleware)
   updateMessage(
-    @Ctx() ctx: Context,
+    @State('message') message: DocumentType<Message>,
     @Body({ required: true }) { text }: MessageValidator
   ) {
-    ctx.state.message.text = text
-    return ctx.state.message.save()
+    message.text = text
+    return message.save()
   }
 
   @Delete('/:id')
   @Flow(authorMiddleware)
-  removeMessage(@Ctx() ctx: Context) {
-    return ctx.state.message.remove()
+  removeMessage(@State('message') message: DocumentType<Message>) {
+    return message.remove()
   }
 }
