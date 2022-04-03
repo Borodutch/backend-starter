@@ -2,12 +2,10 @@ import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 class Message {
-  @prop()
-  id?: string
-  @prop()
-  title?: string
-  @prop()
-  description?: string
+  @prop({ required: true })
+  author!: string
+  @prop({ required: true })
+  text!: string
 }
-const msgModel = getModelForClass(Message)
-export default msgModel
+const messageModel = getModelForClass(Message)
+export default messageModel
