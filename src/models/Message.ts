@@ -13,17 +13,17 @@ export class Message {
 
 export const MessageModel = getModelForClass(Message)
 
-export async function findMessage(_id: string) {
-  const message = await MessageModel.findById(_id)
-  if (!message) {
-    return notFound('Message not found')
-  }
-  return message
-}
+// export async function findMessage(_id: string) {
+//   const message = await MessageModel.findById(_id)
+//   if (!message) {
+//     return notFound('Message not found')
+//   }
+//   return message
+// }
 
-export async function findAllMessagesByUser(user: User) {
+export async function findAllMessagesByUser(user: ValidUser) {
   console.log(user)
-  const messages = await MessageModel.find(user)
+  const messages = await MessageModel.find({ user: user._id })
   console.log(messages)
   if (!messages) {
     return notFound('Messages not found')
@@ -31,22 +31,23 @@ export async function findAllMessagesByUser(user: User) {
   return messages
 }
 
-export function createNewMessage(messageOptions: { text: string; user: User }) {
+export function createNewMessage(messageOptions: {
+  text: string
+  user: ValidUser
+}) {
   return MessageModel.create(messageOptions)
 }
 
-export async function findAndUpdateMessage(messageOptions: {
-  text: string
-  _id: string
-  name?: ValidUser
-}) {
+export async function findAndUpdateMessage(
+  messageOptions: {
+    _id: string
+    user: ValidUser
+  },
+  changeOptions: { text: string }
+) {
   const message = await MessageModel.findOneAndUpdate(
-    {
-      name: messageOptions.name,
-      _id: messageOptions._id,
-    },
-    { text: messageOptions.text },
-    {}
+    messageOptions,
+    changeOptions
   )
   if (!message) {
     return notFound('Message not found')
