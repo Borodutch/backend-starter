@@ -29,7 +29,6 @@ export default class MessageController {
       text: data,
       user: currUser,
     })
-    // return message
   }
 
   @Patch('/:id')

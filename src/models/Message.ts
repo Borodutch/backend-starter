@@ -13,14 +13,6 @@ export class Message {
 
 export const MessageModel = getModelForClass(Message)
 
-// export async function findMessage(_id: string) {
-//   const message = await MessageModel.findById(_id)
-//   if (!message) {
-//     return notFound('Message not found')
-//   }
-//   return message
-// }
-
 export async function findAllMessagesByUser(user: ValidUser) {
   console.log(user)
   const messages = await MessageModel.find({ user: user._id })
