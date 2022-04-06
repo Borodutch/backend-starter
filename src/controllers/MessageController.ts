@@ -1,13 +1,11 @@
 import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
 import MessageModel from '@/models/MessageModel'
 import MessageValidator from '@/validators/MessageValidator'
-import checkMongoId from '@/helpers/checkMongoId'
 
 @Controller('/message')
 export default class MessageController {
   @Post('/')
   postMessage(@Body({ required: true }) message: MessageValidator) {
-    checkMongoId(message.author, 'Invalid author ID')
     return MessageModel.create(message)
   }
 
@@ -34,7 +32,7 @@ export default class MessageController {
   @Put('/:id')
   updateMessage(
     @Params('id') id: string,
-    @Body({ required: true }) { text }: MessageValidator
+    @Body({ required: true }) text: string
   ) {
     return MessageModel.findOneAndUpdate({ _id: id }, { text }, { new: true })
   }
