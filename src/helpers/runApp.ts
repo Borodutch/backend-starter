@@ -7,7 +7,6 @@ import { bootstrapControllers } from 'amala'
 import { resolve } from 'path'
 import env from '@/helpers/env'
 import errorHandler from '@/helpers/errorHandler'
-import userVerificator from '@/helpers/userVerificator'
 
 const app = new Koa()
 
@@ -22,7 +21,6 @@ export default async function () {
   })
   app.use(cors({ origin: '*' }))
   app.use(bodyParser())
-  app.use(userVerificator)
   app.use(errorHandler)
   app.use(router.routes())
   app.use(router.allowedMethods())

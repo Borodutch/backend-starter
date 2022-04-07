@@ -1,8 +1,9 @@
-import { IsString } from 'amala'
+import { IsOptional, IsString } from 'amala'
 
 export default class MessageValidator {
   @IsString()
   text!: string
+  @IsOptional()
   @IsString()
-  author!: string
+  author?: string
 }

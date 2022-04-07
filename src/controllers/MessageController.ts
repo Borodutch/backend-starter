@@ -1,12 +1,26 @@
-import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
+import {
+  Body,
+  Controller,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Params,
+  Post,
+  Put,
+} from 'amala'
 import MessageModel from '@/models/MessageModel'
 import MessageValidator from '@/validators/MessageValidator'
+import UserVerificator from '@/helpers/UserVerificator'
 
 @Controller('/message')
+@Flow([UserVerificator])
 export default class MessageController {
   @Post('/')
   postMessage(@Body({ required: true }) message: MessageValidator) {
-    return MessageModel.create(message)
+    if (message.author) {
+      return MessageModel.create(message)
+    }
   }
 
   @Delete('/deleteAll/')
@@ -24,6 +38,11 @@ export default class MessageController {
     return MessageModel.find()
   }
 
+  @Get('/checkStateUser')
+  checkStateUser(@CurrentUser() currentUser: typeof CurrentUser) {
+    return currentUser
+  }
+
   @Get('/:id')
   getMessage(@Params('id') id: string) {
     return MessageModel.findOne({ _id: id })
@@ -32,7 +51,7 @@ export default class MessageController {
   @Put('/:id')
   updateMessage(
     @Params('id') id: string,
-    @Body({ required: true }) text: string
+    @Body({ required: true }) { text }: MessageValidator
   ) {
     return MessageModel.findOneAndUpdate({ _id: id }, { text }, { new: true })
   }
