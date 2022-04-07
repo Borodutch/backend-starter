@@ -11,10 +11,10 @@ import {
 } from 'amala'
 import MessageModel from '@/models/MessageModel'
 import MessageValidator from '@/validators/MessageValidator'
-import UserVerificator from '@/helpers/UserVerificator'
+import userVerificator from '@/helpers/userVerificator'
 
 @Controller('/message')
-@Flow([UserVerificator])
+@Flow([userVerificator])
 export default class MessageController {
   @Post('/')
   postMessage(@Body({ required: true }) message: MessageValidator) {
