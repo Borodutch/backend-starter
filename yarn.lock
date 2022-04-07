@@ -1442,13 +1442,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/validator@npm:^13.7.2":
-  version: 13.7.2
-  resolution: "@types/validator@npm:13.7.2"
-  checksum: e679261dd5392adfeb9b20ba2eaf7d668049ad03b24409a6921bb6a3ee4c3135d46cc536a0eafbbda7f642b196696a6e3e1e615b2d1194330d49b22f1f0acb59
-  languageName: node
-  linkType: hard
-
 "@types/webidl-conversions@npm:*":
   version: 6.1.1
   resolution: "@types/webidl-conversions@npm:6.1.1"
@@ -1990,7 +1983,6 @@ __metadata:
     "@types/lodash": ^4.14.180
     "@types/node": ^17.0.23
     "@types/supertest": ^2.0.12
-    "@types/validator": ^13.7.2
     "@typescript-eslint/eslint-plugin": ^5.16.0
     "@typescript-eslint/parser": ^5.16.0
     amala: ^8.0.2
