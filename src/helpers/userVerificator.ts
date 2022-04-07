@@ -1,8 +1,8 @@
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
 import { verify } from '@/helpers/jwt'
 
-export default async function userVerificator(ctx: Context, next: any) {
+export default async function userVerificator(ctx: Context, next: Next) {
   const token = ctx.header.token
   if (token) {
     const result = verify(token.toString())

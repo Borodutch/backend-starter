@@ -17,10 +17,10 @@ import userVerificator from '@/helpers/userVerificator'
 @Flow([userVerificator])
 export default class MessageController {
   @Post('/')
-  postMessage(@Body({ required: true }) message: MessageValidator) {
-    if (message.author) {
-      return MessageModel.create(message)
-    }
+  postMessage(
+    @Body({ required: true }) body: { text: string; author: string }
+  ) {
+    return MessageModel.create(body)
   }
 
   @Delete('/deleteAll/')

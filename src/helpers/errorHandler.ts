@@ -1,24 +1,12 @@
-import { Context } from 'koa'
-import {
-  badData,
-  boomify,
-  isBoom,
-  methodNotAllowed,
-  notFound,
-} from '@hapi/boom'
+import { Context, Next } from 'koa'
+import { boomify, methodNotAllowed, notFound } from '@hapi/boom'
 
-export default async function (ctx: Context, next: any) {
+export default async function (ctx: Context, next: Next) {
   try {
     await next()
-  } catch (error: any) {
-    if (error.path) {
-      return ctx.throw(
-        badData(`${error.path}: invalid value, have to be ${error.kind}`)
-      )
-    } else if (isBoom(error)) {
-      return ctx.throw(error)
-    } else {
-      return ctx.throw(boomify(error))
+  } catch (error) {
+    if (error instanceof Error) {
+      throw boomify(error)
     }
   }
   const response = await ctx.body
