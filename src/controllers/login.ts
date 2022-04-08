@@ -1,6 +1,6 @@
 import { Body, Controller, Ctx, Post } from 'amala'
 import { Context } from 'koa'
-import { UserModel, findOrCreateUser } from '@/models/User'
+import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import EmailLogin from '@/validators/EmailLogin'
@@ -48,8 +48,9 @@ export default class LoginController {
     })
     return user.strippedAndFilled({ withExtra: true })
   }
+
   @Post('/email')
-  email(@Body({ required: true }) body: EmailLogin) {
-    return UserModel.findOne(body)
+  email(@Body({ required: true }) { email, name }: EmailLogin) {
+    return findOrCreateUser({ email, name })
   }
 }

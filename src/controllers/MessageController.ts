@@ -11,6 +11,8 @@ import {
 } from 'amala'
 import MessageModel from '@/models/MessageModel'
 import MessageValidator from '@/validators/MessageValidator'
+import UserValidator from '@/validators/UserValidator'
+import findMessage from '@/helpers/findMessage'
 import userVerificator from '@/helpers/userVerificator'
 
 @Controller('/message')
@@ -18,41 +20,39 @@ import userVerificator from '@/helpers/userVerificator'
 export default class MessageController {
   @Post('/')
   postMessage(
-    @Body({ required: true }) body: { text: string; author: string }
+    @Body({ required: true }) { text }: MessageValidator,
+    @CurrentUser() author: UserValidator
   ) {
-    return MessageModel.create(body)
-  }
-
-  @Delete('/deleteAll/')
-  deleteAllMessages() {
-    return MessageModel.deleteMany()
+    return MessageModel.create({ author, text })
   }
 
   @Delete('/:id')
-  deleteMessage(@Params('id') id: string) {
-    return MessageModel.findOneAndDelete({ _id: id })
+  async deleteMessage(
+    @Params('id') id: string,
+    @CurrentUser() { _id }: UserValidator
+  ) {
+    const message = await findMessage(id, _id)
+    return message.delete()
   }
 
   @Get('/')
-  getMessages() {
-    return MessageModel.find()
-  }
-
-  @Get('/checkStateUser')
-  checkStateUser(@CurrentUser() currentUser: typeof CurrentUser) {
-    return currentUser
+  getMessages(@CurrentUser() { _id }: UserValidator) {
+    return MessageModel.find({ author: _id })
   }
 
   @Get('/:id')
-  getMessage(@Params('id') id: string) {
-    return MessageModel.findOne({ _id: id })
+  getMessage(@Params('id') id: string, @CurrentUser() { _id }: UserValidator) {
+    return findMessage(id, _id)
   }
 
   @Put('/:id')
-  updateMessage(
+  async updateMessage(
     @Params('id') id: string,
-    @Body({ required: true }) { text }: MessageValidator
+    @Body({ required: true }) { text }: MessageValidator,
+    @CurrentUser() { _id }: UserValidator
   ) {
-    return MessageModel.findOneAndUpdate({ _id: id }, { text }, { new: true })
+    const message = await findMessage(id, _id)
+    message.text = text
+    return message.save()
   }
 }
