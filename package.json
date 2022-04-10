@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@hapi/boom": "^9.1.4",
-    "@koa/cors": "^3.2.0",
+    "@koa/cors": "^3.3.0",
     "amala": "^8.0.2",
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
@@ -27,7 +27,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
     "lodash": "^4.17.21",
-    "mongoose": "^6.2.8"
+    "mongoose": "^6.2.10"
   },
   "devDependencies": {
     "@typegoose/typegoose": "^9.7.1",
@@ -37,15 +37,15 @@
     "@types/koa-bodyparser": "^4.3.7",
     "@types/koa-router": "^7.4.4",
     "@types/koa__cors": "^3.1.1",
-    "@types/lodash": "^4.14.180",
+    "@types/lodash": "^4.14.181",
     "@types/node": "^17.0.23",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
     "axios-mock-adapter": "^1.20.0",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-no-relative-import-paths": "^1.2.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -53,12 +53,12 @@
     "http-graceful-shutdown": "^3.1.7",
     "jest": "^27.5.1",
     "module-alias": "^2.2.2",
-    "mongodb-memory-server": "^8.4.1",
-    "prettier": "^2.6.1",
+    "mongodb-memory-server": "^8.4.2",
+    "prettier": "^2.6.2",
     "source-map-support": "^0.5.21",
     "supertest": "^6.2.2",
     "ts-jest": "^27.1.4",
-    "tsc-watch": "^4.6.2",
+    "tsc-watch": "^5.0.3",
     "typescript": "^4.6.3"
   },
   "_moduleAliases": {
