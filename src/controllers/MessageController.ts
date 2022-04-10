@@ -1,57 +1,54 @@
 import {
   Body,
   Controller,
+  Ctx,
   CurrentUser,
   Delete,
   Flow,
   Get,
-  Params,
   Post,
   Put,
 } from 'amala'
+import { Context } from 'koa'
+import { DocumentType } from '@typegoose/typegoose'
+import { User } from '@/models/User'
+import MessageBody from '@/validators/MessageBody'
 import MessageModel from '@/models/MessageModel'
-import MessageValidator from '@/validators/MessageValidator'
-import UserValidator from '@/validators/UserValidator'
-import findMessage from '@/helpers/findMessage'
-import userVerificator from '@/helpers/userVerificator'
+import authenticate from '@/helpers/authenticate'
+import confirmAuthorship from '@/helpers/confirmAuthorship'
 
 @Controller('/message')
-@Flow([userVerificator])
+@Flow([authenticate, confirmAuthorship])
 export default class MessageController {
   @Post('/')
   postMessage(
-    @Body({ required: true }) { text }: MessageValidator,
-    @CurrentUser() author: UserValidator
+    @Body({ required: true }) { text }: MessageBody,
+    @CurrentUser() author: DocumentType<User>
   ) {
     return MessageModel.create({ author, text })
   }
 
   @Delete('/:id')
-  async deleteMessage(
-    @Params('id') id: string,
-    @CurrentUser() { _id }: UserValidator
-  ) {
-    const message = await findMessage(id, _id)
-    return message.delete()
+  deleteMessage(@Ctx() ctx: Context) {
+    return ctx.state.message.delete()
   }
 
   @Get('/')
-  getMessages(@CurrentUser() { _id }: UserValidator) {
+  getMessages(@CurrentUser() { _id }: DocumentType<User>) {
     return MessageModel.find({ author: _id })
   }
 
   @Get('/:id')
-  getMessage(@Params('id') id: string, @CurrentUser() { _id }: UserValidator) {
-    return findMessage(id, _id)
+  getMessage(@Ctx() ctx: Context) {
+    return ctx.state.message
   }
 
   @Put('/:id')
-  async updateMessage(
-    @Params('id') id: string,
-    @Body({ required: true }) { text }: MessageValidator,
-    @CurrentUser() { _id }: UserValidator
+  updateMessage(
+    @Body({ required: true }) { text }: MessageBody,
+    @Ctx() ctx: Context
   ) {
-    const message = await findMessage(id, _id)
+    const message = ctx.state.message
     message.text = text
     return message.save()
   }
