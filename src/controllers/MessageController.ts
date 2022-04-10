@@ -1,15 +1,14 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
   Get,
   Post,
   Put,
+  State,
 } from 'amala'
-import { Context } from 'koa'
 import { DocumentType } from '@typegoose/typegoose'
 import { User } from '@/models/User'
 import MessageBody from '@/validators/MessageBody'
@@ -23,14 +22,15 @@ export default class MessageController {
   @Post('/')
   postMessage(
     @Body({ required: true }) { text }: MessageBody,
-    @CurrentUser() author: DocumentType<User>
+    @CurrentUser() user: DocumentType<User>
   ) {
+    const author = user.strippedAndFilled()
     return MessageModel.create({ author, text })
   }
 
   @Delete('/:id')
-  deleteMessage(@Ctx() ctx: Context) {
-    return ctx.state.message.delete()
+  deleteMessage(@State('message') message: DocumentType<MessageBody>) {
+    return message.delete()
   }
 
   @Get('/')
@@ -39,16 +39,15 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  getMessage(@Ctx() ctx: Context) {
-    return ctx.state.message
+  getMessage(@State('message') message: DocumentType<MessageBody>) {
+    return message
   }
 
   @Put('/:id')
   updateMessage(
     @Body({ required: true }) { text }: MessageBody,
-    @Ctx() ctx: Context
+    @State('message') message: DocumentType<MessageBody>
   ) {
-    const message = ctx.state.message
     message.text = text
     return message.save()
   }
