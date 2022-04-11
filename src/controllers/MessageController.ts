@@ -18,7 +18,7 @@ import authenticate from '@/helpers/authenticate'
 import confirmAuthorship from '@/helpers/confirmAuthorship'
 
 @Controller('/message')
-@Flow([authenticate, confirmAuthorship])
+@Flow([authenticate])
 export default class MessageController {
   @Post('/')
   postMessage(
@@ -29,6 +29,7 @@ export default class MessageController {
   }
 
   @Delete('/:id')
+  @Flow([confirmAuthorship])
   deleteMessage(@State('message') message: DocumentType<Message>) {
     return message.delete()
   }
@@ -39,11 +40,13 @@ export default class MessageController {
   }
 
   @Get('/:id')
+  @Flow([confirmAuthorship])
   getMessage(@State('message') message: DocumentType<Message>) {
     return message
   }
 
   @Put('/:id')
+  @Flow([confirmAuthorship])
   updateMessage(
     @Body({ required: true }) { text }: MessageBody,
     @State('message') message: DocumentType<Message>
