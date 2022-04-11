@@ -25,7 +25,7 @@ export default class MessageController {
     @Body({ required: true }) { text }: MessageBody,
     @CurrentUser() author: DocumentType<User>
   ) {
-    return MessageModel.create({ author: author._id, text })
+    return MessageModel.create({ author, text })
   }
 
   @Delete('/:id')
