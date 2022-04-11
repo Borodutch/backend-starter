@@ -10,10 +10,10 @@ import {
   State,
 } from 'amala'
 import { DocumentType } from '@typegoose/typegoose'
-import { Message } from '@/models/MessageModel'
+import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
+import Message from '@/models/Message'
 import MessageBody from '@/validators/MessageBody'
-import MessageModel from '@/models/MessageModel'
 import authenticate from '@/helpers/authenticate'
 import confirmAuthorship from '@/helpers/confirmAuthorship'
 
@@ -25,7 +25,7 @@ export default class MessageController {
     @Body({ required: true }) { text }: MessageBody,
     @CurrentUser() author: DocumentType<User>
   ) {
-    return MessageModel.create({ author, text })
+    return MessageModel.create({ author: author._id, text })
   }
 
   @Delete('/:id')
@@ -34,8 +34,8 @@ export default class MessageController {
   }
 
   @Get('/')
-  getMessages(@CurrentUser() { _id }: DocumentType<User>) {
-    return MessageModel.find({ author: _id })
+  getMessages(@CurrentUser() author: DocumentType<User>) {
+    return MessageModel.find({ author })
   }
 
   @Get('/:id')

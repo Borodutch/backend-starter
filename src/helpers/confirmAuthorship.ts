@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa'
+import { MessageModel } from '@/models/Message'
 import { notFound } from '@hapi/boom'
-import MessageModel from '@/models/MessageModel'
 
 export default async function (ctx: Context, next: Next) {
   const messageId = ctx.params.id
