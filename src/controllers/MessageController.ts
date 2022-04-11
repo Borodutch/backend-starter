@@ -10,6 +10,7 @@ import {
   State,
 } from 'amala'
 import { DocumentType } from '@typegoose/typegoose'
+import { Message } from '@/models/MessageModel'
 import { User } from '@/models/User'
 import MessageBody from '@/validators/MessageBody'
 import MessageModel from '@/models/MessageModel'
@@ -22,14 +23,13 @@ export default class MessageController {
   @Post('/')
   postMessage(
     @Body({ required: true }) { text }: MessageBody,
-    @CurrentUser() user: DocumentType<User>
+    @CurrentUser() author: DocumentType<User>
   ) {
-    const author = user.strippedAndFilled()
     return MessageModel.create({ author, text })
   }
 
   @Delete('/:id')
-  deleteMessage(@State('message') message: DocumentType<MessageBody>) {
+  deleteMessage(@State('message') message: DocumentType<Message>) {
     return message.delete()
   }
 
@@ -39,14 +39,14 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  getMessage(@State('message') message: DocumentType<MessageBody>) {
+  getMessage(@State('message') message: DocumentType<Message>) {
     return message
   }
 
   @Put('/:id')
   updateMessage(
     @Body({ required: true }) { text }: MessageBody,
-    @State('message') message: DocumentType<MessageBody>
+    @State('message') message: DocumentType<Message>
   ) {
     message.text = text
     return message.save()

@@ -2,7 +2,7 @@ import { Ref, getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 import { User } from '@/models/User'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
-class Message {
+export class Message {
   @prop({
     ref: () => User,
     required: true,
