@@ -48,5 +48,4 @@
       }
     ],
     "import/prefer-default-export": "error"
-  }
-}
+  }}
