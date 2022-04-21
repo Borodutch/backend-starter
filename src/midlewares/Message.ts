@@ -2,7 +2,7 @@ import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/Message'
 import { badRequest, notFound } from '@hapi/boom'
 
-export default async function messageMidleware(ctx: Context, nxt: Next) {
+export default async function checkMessage(ctx: Context, next: Next) {
   const messageId = ctx.params.id
 
   if (!messageId) {
@@ -16,5 +16,5 @@ export default async function messageMidleware(ctx: Context, nxt: Next) {
   }
 
   ctx.state.message = message
-  return nxt()
+  return next()
 }

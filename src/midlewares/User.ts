@@ -3,7 +3,7 @@ import { UserModel } from '@/models/User'
 import { badRequest, notFound } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
-export default async function authorizationMidleware(ctx: Context, nxt: Next) {
+export default async function authorize(ctx: Context, next: Next) {
   const userToken = ctx.headers.token
   if (!userToken) {
     return ctx.throw(badRequest())
@@ -24,5 +24,5 @@ export default async function authorizationMidleware(ctx: Context, nxt: Next) {
     return ctx.throw(notFound())
   }
   ctx.state.user = user
-  return nxt()
+  return next()
 }

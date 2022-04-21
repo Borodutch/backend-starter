@@ -12,14 +12,14 @@ import {
 import { MessageModel } from '@/models/Message'
 import { MessagesTextValid } from '@/validators/Message'
 import { User } from '@/models/User'
-import authorizationMidleware from '@/midlewares/userMidleWare'
-import messageMidleware from '@/midlewares/messageMidleWare'
+import authorize from '@/midlewares/User'
+import checkMessage from '@/midlewares/Message'
 
 @Controller('/messages')
-@Flow([authorizationMidleware])
+@Flow([authorize])
 export default class Message {
   @Get('/:id')
-  @Flow([messageMidleware])
+  @Flow([checkMessage])
   findMessage(@State('message') message: Message) {
     return message
   }
@@ -33,7 +33,7 @@ export default class Message {
   }
 
   @Patch('/:id')
-  @Flow([messageMidleware])
+  @Flow([checkMessage])
   updateMessage(
     @State('message') message: Message,
     @Body() { text }: MessagesTextValid
@@ -42,7 +42,7 @@ export default class Message {
   }
 
   @Delete('/:id')
-  @Flow([messageMidleware])
+  @Flow([checkMessage])
   deleteMessage(@State('message') message: Message) {
     return MessageModel.deleteOne(message)
   }

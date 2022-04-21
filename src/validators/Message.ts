@@ -7,5 +7,5 @@ export class MessagesTextValid {
 
 export class MessagesIdValid {
   @IsMongoId()
-  mongoId!: string
+  id!: string
 }
