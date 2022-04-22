@@ -11,7 +11,7 @@ const app = new Koa()
 
 export default async function () {
   const router = new Router()
-  const Message = require('../models/messagemodel')
+ /* const Message = require('../models/messagemodel')
 
 // get a list of messages 
   router.get('/messages', async function(ctx, next){
@@ -36,7 +36,7 @@ export default async function () {
     await Message.findByIdAndRemove({_id: ctx.params.id})
     next()
   })
-
+ */
   await bootstrapControllers({
     app,
     router,

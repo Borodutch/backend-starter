@@ -1,7 +1,23 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+//const mongoose = require('mongoose')
+import { getModelForClass, prop } from '@typegoose/typegoose'
+
+class messages {
+    @prop()
+    public posting_date?: string
+  
+    @prop()
+    public author_name?: string
+
+    @prop()
+    public message_body?: string
+  }
+
+export const Message = getModelForClass(messages)
+
+/*const Schema = mongoose.Schema
 
 // create message schema and model
+
 const MessageSchema = new Schema({
     posting_date: {
         type: Date
@@ -17,3 +33,4 @@ const MessageSchema = new Schema({
 
 const Message = mongoose.model('message', MessageSchema)
 module.exports = Message
+*/
