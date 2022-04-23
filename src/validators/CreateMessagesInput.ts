@@ -1,9 +1,11 @@
-import { MinLength, IsString } from 'amala'
+import { IsOptional, IsString } from 'amala'
 
 export default class CreateMessagesInput {
   @IsString()
-  @MinLength(1, {
-    message: 'Message should have at least 1 character'
-  })
   text!: string
+  @IsOptional()
+  @IsString()
+  author?: string
+  @IsString()
+  _id!: string
 }

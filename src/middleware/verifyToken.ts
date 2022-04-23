@@ -1,24 +1,19 @@
-import { Context, Next } from 'koa'
+import { Context } from 'koa'
 import { UserModel } from '@/models/User'
+import { badRequest, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
-export default  function verifyToken(ctx: Context, next: Next) {
+export default function verifyToken(ctx: Context) {
   const token = ctx.header.token as string
-
-  if(token === null){
-    throw new Error("There is no token...");
-  }
-
-  if (token) {
-    verify(token)
-  }
-
   const user = UserModel.findOne({ token })
 
-  if(user === null){
-    throw new Error("There is no user...");
-  } else {
-    ctx.state.user = user
-    return next()
+  if (user === null) {
+    unauthorized('There is no user...')
   }
+
+  if (!user.token) {
+    badRequest('There is no token...')
+  }
+
+  verify(user.token)
 }

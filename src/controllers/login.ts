@@ -50,11 +50,9 @@ export default class LoginController {
   }
 
   @Post('/email')
-  async emaiLogin(
-    @Body({ required: true }) { name, email }: EmailLogin
-  ) {
+  async emaiLogin(@Body({ required: true }) { name, email }: EmailLogin) {
     const user = await findOrCreateUser({ name, email })
-    
+
     return user.strippedAndFilled({ withExtra: true })
   }
 }
