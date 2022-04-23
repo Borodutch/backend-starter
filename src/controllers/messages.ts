@@ -11,13 +11,14 @@ import {
 } from 'amala'
 import { User, findOrCreateUser } from '@/models/User'
 import CreateMessagesInput from '@/validators/CreateMessagesInput'
+import MessagesId from '@/validators/MessagesId'
 import MessagesModel from '@/models/messages'
 import verifyToken from '@/middleware/verifyToken'
 
 @Controller('/messages')
-class MessagesContrroller {
+export default class MessagesContrroller {
   @Get('/:id')
-  getMessagesById(@Params('id') id: CreateMessagesInput['_id']) {
+  getMessagesById(@Params() id: MessagesId) {
     return MessagesModel.findById(id)
   }
 
@@ -34,7 +35,7 @@ class MessagesContrroller {
   @Patch('/:id')
   @Flow([verifyToken])
   updateMessage(
-    @Params('id') id: CreateMessagesInput['_id'],
+    @Params() id: MessagesId,
     @Body({ required: true }) { text }: CreateMessagesInput,
     @CurrentUser() { name }: User
   ) {
@@ -44,13 +45,8 @@ class MessagesContrroller {
 
   @Delete('/:id')
   @Flow([verifyToken])
-  deleteMessages(
-    @Params('id') id: CreateMessagesInput['_id'],
-    @CurrentUser() { name }: User
-  ) {
+  deleteMessages(@Params() id: MessagesId, @CurrentUser() { name }: User) {
     const currentUser = findOrCreateUser({ name })
     return MessagesModel.findByIdAndDelete(id, { author: currentUser })
   }
 }
-
-export default MessagesContrroller
