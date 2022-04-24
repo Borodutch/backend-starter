@@ -1,36 +1,14 @@
-//const mongoose = require('mongoose')
 import { getModelForClass, prop } from '@typegoose/typegoose'
 
-class messages {
-    @prop()
-    public posting_date?: string
+class Messages {
+    @prop({ required: true })
+    public postingDate?: string
   
-    @prop()
-    public author_name?: string
+    @prop({ required: true })
+    public authorName?: string
 
-    @prop()
-    public message_body?: string
+    @prop({ required: true })
+    public messageBody?: string
   }
 
-export const Message = getModelForClass(messages)
-
-/*const Schema = mongoose.Schema
-
-// create message schema and model
-
-const MessageSchema = new Schema({
-    posting_date: {
-        type: Date
-    },
-    author_name: {
-        type: String,
-        required: [true, 'Name field is require']
-    },
-    message_body: {
-        type: String
-    }
-})
-
-const Message = mongoose.model('message', MessageSchema)
-module.exports = Message
-*/
+export const Message = getModelForClass(Messages)
