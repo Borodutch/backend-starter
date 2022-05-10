@@ -1,10 +1,14 @@
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
 import { badRequest, forbidden, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
-export default async function verifyToken(ctx: Context) {
+export default async function verifyToken(ctx: Context, next: Next) {
   const token = (await ctx.header.token) as string
+
+  if (!token) {
+    ctx.throw(forbidden())
+  }
 
   try {
     verify(token)
@@ -23,4 +27,6 @@ export default async function verifyToken(ctx: Context) {
   }
 
   ctx.state.user = user
+
+  return next()
 }
