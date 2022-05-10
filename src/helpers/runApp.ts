@@ -17,7 +17,7 @@ export default async function () {
   const router = new Router<DefaultState, Context>();
   const { MessageModel }  = require('../models/Message');
   render(app, {
-    root: path.join(__dirname, '../views'),
+    root: path.join(__dirname, '../../views'),
     layout: false,
     viewExt: 'ejs',
     cache: false,
@@ -35,7 +35,7 @@ export default async function () {
   app.use(bodyParser())
   app.use(router.routes())
   app.use(router.allowedMethods())
-  app.use(koaStatic(path.join(__dirname, '../views/partials')));
+  app.use(koaStatic(path.join(__dirname, '../../views/partials')));
 
   //edit message
   router.get('/messages/edit/:id?', async (ctx, next) => {

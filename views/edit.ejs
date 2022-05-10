@@ -1,0 +1,22 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+  
+
+  <div class="create-message content">
+    <form action="/messages/edit/<%= message.id %>?_method=PUT" method="POST">
+      <label for="title">Message title:</label>
+      <input required value="<%= message.title %>" type="text" id="title" name="title" required>
+      <label for="snippet">Message snippet:</label>
+      <input required value="<%= message.snippet %>" type="text" id="snippet" name="snippet" required>
+      <label for="body">Message body:</label>
+      <input required value="<%= message.body %>" type="text" id="body" name="body" required>
+      <button>Update</button>
+    </form>
+  </div>
+
+  <%- include("./partials/footer.ejs") %>
+</body>
+</html>
