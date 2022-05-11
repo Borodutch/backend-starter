@@ -6,7 +6,7 @@ import { User } from '@/models/User'
     timestamps: true,
   },
 })
-export class Messages {
+export class Message {
   @prop({ ref: () => User, required: true, index: true })
   author!: Ref<User>
 
@@ -14,6 +14,4 @@ export class Messages {
   text!: string
 }
 
-const MessagesModel = getModelForClass(Messages)
-
-export default MessagesModel
+export const MessageModel = getModelForClass(Message)

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
@@ -9,42 +8,48 @@ import {
   Params,
   Patch,
   Post,
+  State,
 } from 'amala'
-import { Context } from 'koa'
-import { User, findOrCreateUser } from '@/models/User'
-import CreateMessagesInput from '@/validators/CreateMessagesInput'
-import MessagesId from '@/validators/MessagesId'
-import MessagesModel from '@/models/messages'
+import { DocumentType } from '@typegoose/typegoose'
+import { Message, MessageModel } from '@/models/Message'
+import { User } from '@/models/User'
+import CreateMessageInput from '@/validators/CreateMessageInput'
+import MessageId from '@/validators/MessageId'
+import verifyMessage from '@/middleware/verifyMessage'
 import verifyToken from '@/middleware/verifyToken'
 
 @Controller('/messages')
 @Flow(verifyToken)
-export default class MessagesController {
+export default class MessageController {
+  @Get('/')
+  getMessagesByAuthor(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
+  }
   @Get('/:id')
-  getMessagesById(@Params() { id }: MessagesId) {
-    return MessagesModel.findOne({ id })
+  @Flow(verifyMessage)
+  getMessageById(@Params('id') _id: string) {
+    return MessageModel.findById({ _id })
   }
 
   @Post('/')
-  createMessages(
-    @Body({ required: true }) { text }: CreateMessagesInput,
+  createMessage(
+    @Body({ required: true }) { text }: CreateMessageInput,
     @CurrentUser() author: User
   ) {
-    return MessagesModel.create({ text, author })
+    return MessageModel.create({ text, author })
   }
 
   @Patch('/:id')
+  @Flow(verifyMessage)
   updateMessage(
-    @Params() id: MessagesId,
-    @Body({ required: true }) { text }: CreateMessagesInput,
-    @CurrentUser() { name }: User
+    @State('message') message: CreateMessageInput,
+    @Body({ required: true }) { text }: CreateMessageInput
   ) {
-    const currentUser = findOrCreateUser({ name })
-    return MessagesModel.findByIdAndUpdate(id, { text, author: currentUser })
+    return MessageModel.findByIdAndUpdate(message, { text }, { new: true })
   }
 
   @Delete('/:id')
-  deleteMessages(@Ctx() ctx: Context, @CurrentUser() { name }: User) {
-    return ctx.state.message.delete()
+  deleteMessage(@Params('id') _id: string) {
+    return MessageModel.remove({ _id })
   }
 }
