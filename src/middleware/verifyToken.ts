@@ -4,7 +4,7 @@ import { badRequest, forbidden, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async function verifyToken(ctx: Context, next: Next) {
-  const token = (await ctx.header.token) as string
+  const token = ctx.header.token as string
 
   if (!token) {
     return ctx.throw(forbidden())

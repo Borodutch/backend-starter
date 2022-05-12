@@ -26,7 +26,7 @@ export default class MessageController {
 
   @Get('/:id')
   @Flow(verifyMessage)
-  getMessageById(@State('message') message: string) {
+  getMessageById(@State('message') message: Message) {
     return message
   }
 
@@ -49,7 +49,7 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow(verifyMessage)
-  deleteMessage(@Params('id') _id: string) {
-    return MessageModel.remove({ _id })
+  deleteMessage(@State('message') message: CreateMessageInput) {
+    return MessageModel.deleteOne({ message })
   }
 }
