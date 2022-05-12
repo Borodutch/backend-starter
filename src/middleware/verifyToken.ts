@@ -7,23 +7,23 @@ export default async function verifyToken(ctx: Context, next: Next) {
   const token = (await ctx.header.token) as string
 
   if (!token) {
-    ctx.throw(forbidden())
+    return ctx.throw(forbidden())
   }
 
   try {
     verify(token)
   } catch (error) {
-    ctx.throw(forbidden())
+    return ctx.throw(forbidden())
   }
 
   const user = await UserModel.findOne({ token })
 
   if (!user) {
-    ctx.throw(unauthorized())
+    return ctx.throw(unauthorized())
   }
 
   if (!user.token) {
-    ctx.throw(badRequest())
+    return ctx.throw(badRequest())
   }
 
   ctx.state.user = user

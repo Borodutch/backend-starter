@@ -10,11 +10,9 @@ import {
   Post,
   State,
 } from 'amala'
-import { DocumentType } from '@typegoose/typegoose'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import CreateMessageInput from '@/validators/CreateMessageInput'
-import MessageId from '@/validators/MessageId'
 import verifyMessage from '@/middleware/verifyMessage'
 import verifyToken from '@/middleware/verifyToken'
 
@@ -25,10 +23,11 @@ export default class MessageController {
   getMessagesByAuthor(@CurrentUser() author: User) {
     return MessageModel.find({ author })
   }
+
   @Get('/:id')
   @Flow(verifyMessage)
-  getMessageById(@Params('id') _id: string) {
-    return MessageModel.findById({ _id })
+  getMessageById(@State('message') message: string) {
+    return message
   }
 
   @Post('/')
@@ -42,13 +41,14 @@ export default class MessageController {
   @Patch('/:id')
   @Flow(verifyMessage)
   updateMessage(
-    @State('message') message: CreateMessageInput,
+    @State('message') message: Message,
     @Body({ required: true }) { text }: CreateMessageInput
   ) {
     return MessageModel.findByIdAndUpdate(message, { text }, { new: true })
   }
 
   @Delete('/:id')
+  @Flow(verifyMessage)
   deleteMessage(@Params('id') _id: string) {
     return MessageModel.remove({ _id })
   }
