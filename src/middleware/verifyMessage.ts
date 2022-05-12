@@ -17,6 +17,7 @@ export default async function verifyMessage(ctx: Context, next: Next) {
   if (!message) {
     return ctx.throw(notFound())
   }
+
   if (!message.author) {
     return ctx.throw(badRequest())
   }
