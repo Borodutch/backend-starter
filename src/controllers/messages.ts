@@ -5,7 +5,6 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Patch,
   Post,
   State,
@@ -49,7 +48,7 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow(verifyMessage)
-  deleteMessage(@State('message') message: CreateMessageInput) {
+  deleteMessage(@State('message') message: Message) {
     return MessageModel.deleteOne({ message })
   }
 }
