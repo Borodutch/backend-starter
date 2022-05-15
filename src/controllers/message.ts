@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Params, Patch, Post } from 'amala'
+import {
+  Body,
+  Controller,
+  Delete,
+  Flow,
+  Get,
+  Params,
+  Patch,
+  Post,
+  State,
+} from 'amala'
 import {
   MessageModel,
   createNewMessage,
@@ -7,49 +17,47 @@ import {
   findAndUpdateMessage,
 } from '@/models/Message'
 import { findOrCreateUser } from '@/models/User'
-import ValidId from '@/validators/MessageId'
+import UserVerify from '@/middleware/UserVerify'
 import ValidMessage from '@/validators/Message'
-import ValidUser from '@/validators/UserId'
+import ValidUser from '@/validators/User'
 
 @Controller('/message')
 export default class MessageController {
+  @Flow(UserVerify)
+  // @Get('/')
   @Get('/:name')
-  async getAllMessages(@Params('name') name: ValidUser['name']) {
-    const currUser = await findOrCreateUser({ name })
-    return findAllMessagesByUser(currUser)
+  // async getAllMessages(@Params('name') name: ValidUser['name']) {
+  //   const currentUser = await findOrCreateUser({ name })
+  getAllMessages(@State('user') user: ValidUser) {
+    return findAllMessagesByUser(user)
   }
 
-  @Post('/')
-  async createMessage(
-    @Body({ required: true }) { data }: ValidMessage,
-    @Body({ required: true }) { name }: ValidUser
+  @Flow(UserVerify)
+  @Post('/:name')
+  createMessage(
+    @Body({ required: true }) { text }: ValidMessage,
+    // @Body({ required: true }) { name }: ValidUser
+    @State('user') user: ValidUser
   ) {
-    const currUser = await findOrCreateUser({ name })
-    return createNewMessage({
-      text: data,
-      user: currUser,
-    })
+    // const currentUser = await findOrCreateUser({ name })
+    return createNewMessage(text, user)
   }
 
+  @Flow(UserVerify)
   @Patch('/:id')
   async updateMessage(
-    @Params('id') _id: ValidId['_id'],
-    @Body({ required: true }) { data }: ValidMessage,
+    @Params('id') messageId: ValidMessage['_id'],
+    @Body({ required: true }) { text }: ValidMessage,
     @Body({ required: true }) { name }: ValidUser
   ) {
-    const currUser = await findOrCreateUser({ name })
-    await findAndUpdateMessage(
-      {
-        _id,
-        user: currUser,
-      },
-      { text: data }
-    )
-    return await MessageModel.findOne({ name: name, _id: _id })
+    const currentUser = await findOrCreateUser({ name })
+    await findAndUpdateMessage(messageId, currentUser, text)
+    return await MessageModel.findOne({ name: name, _id: messageId })
   }
 
+  @Flow(UserVerify)
   @Delete('/:id')
-  deleteMessage(@Params('id') _id: ValidId['_id']) {
-    return findAndDeleteMessage(_id)
+  deleteMessage(@Params('id') messageId: ValidMessage['_id']) {
+    return findAndDeleteMessage(messageId)
   }
 }

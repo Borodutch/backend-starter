@@ -1,18 +1,8 @@
-import { IsOptional, IsString } from 'amala'
+import { IsString } from 'amala'
 
 export default class Message {
   @IsString()
-  data!: string
-  @IsOptional()
+  _id!: string
   @IsString()
-  username?: string
-  @IsOptional()
-  @IsString()
-  companyName?: string
-  @IsOptional()
-  @IsString()
-  author?: string
-  @IsOptional()
-  @IsString()
-  sourceUrl?: string
+  text!: string
 }

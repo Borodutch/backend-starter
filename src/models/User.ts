@@ -12,6 +12,8 @@ export class User {
   telegramId?: number
   @prop({ required: true, index: true })
   name!: string
+  @prop({ index: true })
+  id?: string
 
   @prop({ index: true, unique: true })
   token?: string
@@ -38,9 +40,11 @@ export const UserModel = getModelForClass(User)
 
 export async function findOrCreateUser(loginOptions: {
   name: string
+  id?: string
   email?: string
   facebookId?: string
   telegramId?: number
+  token?: string
 }) {
   const user = await UserModel.findOneAndUpdate(
     loginOptions,
