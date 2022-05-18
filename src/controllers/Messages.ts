@@ -1,7 +1,7 @@
-import { Body, Controller, Ctx, Delete, Get, Params, Post, Put } from 'amala'
-import { Context } from 'koa'
+import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
 import { MessageModel } from '@/models/Message'
-import ValidMessage from '@/validators/ValidMessage'
+import IdIsAString from '@/validators/ValidId'
+import MessageText from '@/validators/ValidMessage'
 
 @Controller('/messages')
 export default class MessagesController {
@@ -11,34 +11,21 @@ export default class MessagesController {
   }
 
   @Post('/')
-  async createMessage(
-    @Ctx() ctx: Context,
-    @Body({ required: true }) { text }: ValidMessage
-  ) {
-    if (text) {
-      await MessageModel.create(ctx.request.body)
-    }
-    return 'Message has been created'
+  createMessage(@Body({ required: true }) { text }: MessageText) {
+    return MessageModel.create({ text })
   }
 
   @Put('/:id')
   async updateMessage(
-    @Ctx() ctx: Context,
-    @Body() { text }: ValidMessage,
-    @Params() _id: string
+    @Body({ required: true }) { text }: MessageText,
+    @Params('id') id: IdIsAString
   ) {
-    if (text && _id) {
-      await MessageModel.findByIdAndUpdate(
-        { _id: ctx.params.id },
-        ctx.request.body
-      )
-    }
-    return 'Message has been updated'
+    await MessageModel.findByIdAndUpdate({ _id: id }, { text })
+    return MessageModel.findOne({ id, text })
   }
 
   @Delete('/:id')
-  async deleteMessage(@Ctx() ctx: Context) {
-    await MessageModel.findByIdAndRemove({ _id: ctx.params.id })
-    return 'Message has been deleted'
+  deleteMessage(@Params('id') id: IdIsAString) {
+    return MessageModel.findByIdAndRemove({ _id: id })
   }
 }
