@@ -3,14 +3,10 @@ import * as shutdown from 'http-graceful-shutdown'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
-import MockAdapter from 'axios-mock-adapter'
-import axios from 'axios'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
 describe('CRUD endpoint', () => {
-  const axiosMock = new MockAdapter(axios)
-
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
@@ -33,10 +29,6 @@ describe('CRUD endpoint', () => {
     server = await runApp()
   })
 
-  beforeEach(async () => {
-    await mongoose.connection.db.dropDatabase()
-  })
-
   afterAll(async () => {
     await shutdown(server)
     await mongoServer.stop()
@@ -50,19 +42,54 @@ describe('CRUD endpoint', () => {
   it('should return user for /login/email request', async () => {
     const response = await request(server)
       .post('/login/email')
-      .send({name: emailAccountMock.name, email: emailAccountMock.email})
+      .send(emailAccountMock)
     emailAccountMock.token = response.body.token
     emailAccountMock.id = response.body._id
     expect(response.body.name).toBe(emailAccountMock.name)
     expect(response.body.email).toBe(emailAccountMock.email)
   })
 
+  console.log(emailAccountMock.token)
+
   it('should return posted message for /messages request', async () => {
     const response = await request(server)
       .post('/messages')
       .set('token', emailAccountMock.token)
-      .send({text: messageMock.text})
+      .send(messageMock)
     messageMock.id = response.body._id
+    expect(response.statusCode).toBe(200)
     expect(response.body.text).toBe(messageMock.text)
+  })
+
+  it('should return one message for /messages request', async () => {
+    const response = await request(server)
+      .get(`/messages/${messageMock.id}`)
+      .set('token', emailAccountMock.token)
+    expect(response.body.text).toBe(messageMock.text)
+  })
+
+  it('should return all messages of author for /messages request', async () => {
+    const response = await request(server)
+      .get('/messages')
+      .set('token', emailAccountMock.token)
+    expect(response.body[0].text).toBe(messageMock.text)
+  })
+
+  it('should return updated message for /messages request', async () => {
+    const response = await request(server)
+      .patch(`/messages/${messageMock.id}`)
+      .set('token', emailAccountMock.token)
+      .send({ text: 'Aboba' })
+    expect(response.body.text).not.toBe(messageMock.text)
+  })
+
+  it('should delete one message for /messages request', async () => {
+    const response = await request(server)
+      .delete(`/messages/${messageMock.id}`)
+      .set('token', emailAccountMock.token)
+    const getResponse = await request(server)
+      .get(`/messages/${messageMock.id}`)
+      .set('token', emailAccountMock.token)
+    expect(getResponse.statusCode).toBe(404)
   })
 })
