@@ -1,15 +1,12 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Mongoose } from 'mongoose'
 import { Server } from 'http'
 import runApp from '@/helpers/runApp'
-import runMongo from '@/helpers/mongo'
 
 describe('CRUD endpoint', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
-  let mongoose: Mongoose
 
   const emailAccountMock = {
     name: 'Name',
@@ -25,7 +22,6 @@ describe('CRUD endpoint', () => {
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
-    mongoose = await runMongo(await mongoServer.getUri())
     server = await runApp()
   })
 
