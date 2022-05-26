@@ -10,7 +10,7 @@ This repository is to be used as a starter for Koa based Node.js applications wr
 4. Run `yarn` in the root folder
 5. Run `yarn develop`
 
-And you should be good to go! Feel free to fork and submit pull requests.
+And you should be good to go! Feel free to fork and submit pull requests. I made changes
 
 ## Environment variables
 
@@ -22,4 +22,4 @@ And you should be good to go! Feel free to fork and submit pull requests.
 | `TELEGRAM_LOGIN_TOKEN`                   | Telegram login bot                       |
 | `PORT`                                   | Port to run server on (defaults to 1337) |
 
-Also, please, consider looking at `.env.sample`.
+Also, please, consider looking at `.env.sample`. 
