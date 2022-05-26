@@ -6,6 +6,7 @@ import { Server } from 'http'
 import { bootstrapControllers } from 'amala'
 import { resolve } from 'path'
 import env from '@/helpers/env'
+import * as crudService from "@/routers/messageRouterCrud"
 
 const app = new Koa()
 
@@ -22,6 +23,16 @@ export default async function () {
   app.use(bodyParser())
   app.use(router.routes())
   app.use(router.allowedMethods())
+  
+  router.get('/messages', crudService.getMessageList);
+
+  router.post('/create', crudService.createMessage);
+
+  router.put('/update', crudService.updateMessage);
+
+// Koa-bodyparser doesn't parse request in the ctx.request.body with DELETE method, using PUT method helped.
+  router.put('/delete', crudService.deleteMessage);
+
   return new Promise<Server>((resolve, reject) => {
     const connection = app
       .listen(env.PORT)
@@ -32,3 +43,4 @@ export default async function () {
       .on('error', reject)
   })
 }
+
