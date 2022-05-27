@@ -1,15 +1,14 @@
-import * as mongoose from "mongoose";
-import { Schema } from "mongoose";
+import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose"
 
-const messageSchema = new Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    body: {
-        type: String,
-        required: true
-    },
-}, {timestamps: true});
+@modelOptions({schemaOptions: {timestamps: true}})
 
-export const Messages = mongoose.model('message', messageSchema);
+class Message {
+    
+    @prop({required: true})
+    title!: string
+
+    @prop({required: true})
+    body!: string
+}
+
+export const MessageModel = getModelForClass(Message)
