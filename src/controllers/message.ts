@@ -1,15 +1,10 @@
 import { Body, Controller, Post, CurrentUser, Get, Delete, Flow, State, Patch } from 'amala'
-//import { Context } from 'koa'
-//import { findOrCreateUser } from '@/models/User'
-import { flow } from 'lodash'
 import authCheck from '@/helpers/authCheck'
 import { MessageModel, Message } from '@/models/Message'
 import authorCheck from '@/helpers/authorCheck'
 import MessageBody from '@/validators/MessageBody'
-//import EmailLogin from '@/validators/EmailLogin'
 import { User } from '@/models/User'
 import { DocumentType } from '@typegoose/typegoose'
-
 
 @Controller('/message')
 @Flow(authCheck)
@@ -43,4 +38,3 @@ import { DocumentType } from '@typegoose/typegoose'
           return message.save()
         }
    }
-
