@@ -8,6 +8,7 @@ import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
+import EmailLogin from '@/validators/EmailLogin'
 
 @Controller('/login')
 export default class LoginController {
@@ -36,7 +37,7 @@ export default class LoginController {
       telegramId: id,
     })
     return user.strippedAndFilled({ withExtra: true })
-  }
+  };
 
   @Post('/google')
   async google(@Body({ required: true }) { accessToken }: GoogleLogin) {
@@ -46,5 +47,22 @@ export default class LoginController {
       email: userData.email,
     })
     return user.strippedAndFilled({ withExtra: true })
+  };
+
+  @Post('/mail')
+  async mail(@Body({ required: true }) { accessToken }: GoogleLogin) {
+    const userData = await getGoogleUser(accessToken)
+    const user = await findOrCreateUser({
+      name: userData.name,
+      email: userData.email,
+    })
+    return user.strippedAndFilled({ withExtra: true })
   }
+  
+  @Post('/email')
+  async email(@Body({ required: true }) { name, email }: EmailLogin) {
+    const user = await findOrCreateUser({ name, email })
+    return user.strippedAndFilled({ withExtra: true })
+  }
+
 }
