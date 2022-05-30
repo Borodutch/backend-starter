@@ -12,20 +12,20 @@ class MessageController {
     }
 
     @Post('/post')
-    async createMessage(@Body({required: true}) ctx: Message) {
+    async createMessage(@Body({ required: true }) ctx: Message) {
         await crudService.createMessage(ctx)
         return { isCreated: true }
     }
 
     @Put('/update')
-        async updateMessage(@Body() ctx: Message) {
-            await crudService.updateMessage(ctx)
-            return { isUpdated: true }
-        }
+    async updateMessage(@Body() ctx: Message) {
+        await crudService.updateMessage(ctx)
+        return { isUpdated: true }
+    }
 
     @Put('/delete')
-        async deleteMessage(@Body('_id') id: string) {
-            await crudService.deleteMessage(id)
-            return { isDeleted: true }
-        }
-}
+    async deleteMessage(@Body('_id') id: string) {
+        await crudService.deleteMessage(id)
+        return { isDeleted: true }
+    }
+} 

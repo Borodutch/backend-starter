@@ -1,13 +1,13 @@
 import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose"
 
-@modelOptions({schemaOptions: {timestamps: true}})
+@modelOptions({ schemaOptions: { timestamps: true } })
 
 class Message {
-    
-    @prop({required: true})
+
+    @prop({ required: true })
     title!: string
 
-    @prop({required: true})
+    @prop({ required: true })
     body!: string
 }
 

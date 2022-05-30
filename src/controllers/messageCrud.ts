@@ -2,8 +2,8 @@ import { Message } from "@/models/messageInterface"
 import { MessageModel } from "@/models/MessageModel"
 
 export const getAllMessages = async () => {
-    const allMessages =  MessageModel.find()
-        .sort({createdAt: -1})
+    const allMessages = MessageModel.find()
+        .sort({ createdAt: -1 })
         .then()
         .catch(err => console.log(err.message));
     return allMessages;
