@@ -1,5 +1,5 @@
 export interface Message {
-    _id: string,
-    title: string,
-    body: string,
+  _id: string
+  title: string
+  body: string
 }
