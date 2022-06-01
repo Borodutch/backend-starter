@@ -1,46 +1,34 @@
-import { Controller, Body, Get, Post, Put, Delete } from 'amala'
+import { Controller, Body, Get, Post, Put } from 'amala'
 import { Context } from 'koa'
-import { Message } from '@/models/messageInterface'
-import * as crudService from './messageCrud'
+import {
+  getAllMessages,
+  createMessage,
+  updateMessage,
+  deleteMessage,
+} from '@/controllers/messageCrud'
 
 @Controller('/message')
 class MessageController {
   @Get('/all')
-  async getMessageList(@Body() ctx: Context) {
-    try {
-      return await crudService.getAllMessages()
-    } catch (err: any) {
-      console.log(err.message)
-    }
+  async getMessageList() {
+    return await getAllMessages()
   }
 
   @Post('/post')
-  async createMessage(@Body({ required: true }) ctx: Message) {
-    try {
-      const result = await crudService.createMessage(ctx)
-      return result
-    } catch (err: any) {
-      console.log(err.message)
-    }
+  async createMessage(@Body({ required: true }) ctx: Context) {
+    const result = await createMessage(ctx)
+    return result
   }
 
   @Put('/update')
-  async updateMessage(@Body() ctx: Message) {
-    try {
-      const result = await crudService.updateMessage(ctx)
-      return result
-    } catch (err: any) {
-      console.log(err.message)
-    }
+  async updateMessage(@Body() ctx: Context) {
+    const result = await updateMessage(ctx)
+    return result
   }
 
   @Put('/delete')
   async deleteMessage(@Body('_id') id: string) {
-    try {
-      const result = await crudService.deleteMessage(id)
-      return result
-    } catch (err: any) {
-      console.log(err.message)
-    }
+    const result = await deleteMessage(id)
+    return result
   }
 }

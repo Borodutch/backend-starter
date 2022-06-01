@@ -8,8 +8,5 @@
     "javascriptreact",
     "typescript",
     "typescriptreact"
-  ],
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  ]
 }

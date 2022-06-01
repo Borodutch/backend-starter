@@ -22,7 +22,6 @@ export default async function () {
   app.use(bodyParser())
   app.use(router.routes())
   app.use(router.allowedMethods())
-
   return new Promise<Server>((resolve, reject) => {
     const connection = app
       .listen(env.PORT)
@@ -33,4 +32,3 @@ export default async function () {
       .on('error', reject)
   })
 }
-
