@@ -1,13 +1,19 @@
-import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose'
+import {
+  prop,
+  getModelForClass,
+  modelOptions,
+  Ref,
+  Prop,
+} from '@typegoose/typegoose'
 
 @modelOptions({
   schemaOptions: { timestamps: true },
 })
 class Message {
-  @prop({ required: true })
+  @prop({ required: true, index: true })
   text!: string
 
-  @prop({ required: true })
+  @prop({ required: true, index: true })
   author!: string
 }
 
