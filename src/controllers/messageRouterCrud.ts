@@ -1,21 +1,29 @@
 import { Controller, Body, Get, Post, Put, Params, Delete } from 'amala'
-import { MessageModel } from '@/models/Message'
+import { MessageModel, AuthorModel } from '@/models/Message'
 
 @Controller('/message')
 class MessageController {
   @Get('/all')
   async getMessageList() {
-    const allMessages = await MessageModel.find().sort({ createdAt: -1 })
+    const allMessages = await MessageModel.find()
+      .sort({ createdAt: -1 })
+      .populate('author')
     return allMessages
   }
 
-  @Post('/post')
+  @Post('/')
   async createMessage(@Body({ required: true }) message: any) {
     const newMessage = new MessageModel(message)
     await newMessage.save()
   }
 
-  @Put('/post')
+  @Post('/author')
+  async createAuthor(@Body({ required: true }) message: any) {
+    const newAuthor = new AuthorModel(message)
+    await newAuthor.save()
+  }
+
+  @Put('/')
   async updateMessage(@Body({ required: true }) message: any) {
     await MessageModel.findOneAndUpdate(
       { _id: message._id },
@@ -24,7 +32,7 @@ class MessageController {
     )
   }
 
-  @Delete('/post/:id')
+  @Delete('/:id')
   async deleteMessage(@Params('id') id: string) {
     await MessageModel.deleteOne({ _id: id })
   }
