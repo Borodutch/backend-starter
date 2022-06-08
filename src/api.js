@@ -1,6 +1,6 @@
 const express = require ('express');
 const router = express.Router();
-const George = require('./models/george')
+const George = require('./models/schema')
 
 // get a list of messages from db
 router.get('/message', (req, res, next) =>{

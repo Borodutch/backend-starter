@@ -10,7 +10,7 @@ This repository is to be used as a starter for Koa based Node.js applications wr
 4. Run `yarn` in the root folder
 5. Run `yarn develop`
 
-And you should be good to go! Feel free to fork and submit pull requests. I made changes
+And you should be good to go! Feel free to fork and submit pull requests.
 
 ## Environment variables
 
