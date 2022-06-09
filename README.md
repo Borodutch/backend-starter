@@ -8,7 +8,7 @@ This repository is to be used as a starter for Koa based Node.js applications wr
 2. Launch the [mongo database](https://www.mongodb.com/) locally
 3. Create `.env` with the environment variables listed below
 4. Run `yarn` in the root folder
-5. Run `yarn develop`
+5. Run `yarn start`
 
 And you should be good to go! Feel free to fork and submit pull requests.
 

@@ -1462,10 +1462,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^17.0.40":
-  version: 17.0.40
-  resolution: "@types/node@npm:17.0.40"
-  checksum: e3b2fe876672fbe4be84ce17773944eb2f5eaba50e2c6c0536bdf6d4972ed6488581580581f154183fdc8f2d56fa42a42e3d6e83b9b71ee25adea16a84765e92
+"@types/node@npm:^17.0.41":
+  version: 17.0.41
+  resolution: "@types/node@npm:17.0.41"
+  checksum: ddaf9e7decb487850a9bbfeb670b41c9d35c5b1597c4c4f889419b65042d776e9041ed533c7afc1bac30cad1e9dcfd984085b4a35312efe8ea5eaf0bd36a8191
   languageName: node
   linkType: hard
 
@@ -2038,7 +2038,7 @@ __metadata:
     "@types/koa-router": ^7.4.4
     "@types/koa__cors": ^3.3.0
     "@types/lodash": ^4.14.182
-    "@types/node": ^17.0.40
+    "@types/node": ^17.0.41
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^5.27.1
     "@typescript-eslint/parser": ^5.27.1
@@ -2064,7 +2064,7 @@ __metadata:
     lodash: ^4.17.21
     module-alias: ^2.2.2
     mongodb-memory-server: ^8.6.0
-    mongoose: ^6.3.5
+    mongoose: ^6.3.6
     prettier: ^2.6.2
     source-map-support: ^0.5.21
     supertest: ^6.2.3
@@ -5463,9 +5463,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^6.3.5":
-  version: 6.3.5
-  resolution: "mongoose@npm:6.3.5"
+"mongoose@npm:^6.3.6":
+  version: 6.3.6
+  resolution: "mongoose@npm:6.3.6"
   dependencies:
     bson: ^4.6.2
     kareem: 2.3.5
@@ -5474,7 +5474,7 @@ __metadata:
     mquery: 4.0.3
     ms: 2.1.3
     sift: 16.0.0
-  checksum: 1094ffb50311968710a7cad36cc497729be1f9fd1f3d32df44d59190fe8537c400a672e4589c799ea9c7acf113eb465219647aac1884743d1777be3bd89e5448
+  checksum: 79d4477f203806a14fea5cf7af6a1efbc33bae76c2b3313ef7a390101eae3fbdbe0bfe84ec119353ba8ebffc51ebf1ac958c537f24a177ad64ec1781a8a258e1
   languageName: node
   linkType: hard
 
