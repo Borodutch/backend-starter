@@ -1,18 +1,19 @@
-name: Compile and lint code
+name: Build and lint code
 
 on:
   pull_request:
     types: [synchronize, opened]
 
 jobs:
-  compile-code:
+  build-and-lint-code:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+      - uses: c-hive/gha-yarn-cache@v2
       - name: Install modules
         run: yarn
-      - name: Compile code
-        run: yarn tsc --skipLibCheck
+      - name: Build code
+        run: yarn build
       - name: Lint code
         run: yarn lint
