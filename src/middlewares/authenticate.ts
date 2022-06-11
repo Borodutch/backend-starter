@@ -1,24 +1,26 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
+import { badRequest, forbidden, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export async function authenticate(ctx: Context, next: Next) {
   try {
-    const token = ctx.headers.token ? ctx.headers.token : undefined
+    const token = ctx.headers.token
     if (!token) {
-      return ctx.throw(400, 'No token provided')
+      return ctx.throw(badRequest('No token provided'))
     }
-    const user = await getUserFromToken(
-      typeof token === 'object' ? token.join() : token
-    )
+    if (typeof token !== 'string') {
+      return ctx.throw(badRequest('Bad token'))
+    }
+    const user = await getUserFromToken(token)
     if (!user) {
-      return ctx.throw(403, "User doesn't exist")
+      return ctx.throw(forbidden('Auth failed'))
     }
     ctx.state.user = user
   } catch (err) {
-    return ctx.throw(401, 'Auth error')
+    return ctx.throw(unauthorized())
   }
-  await next()
+  return next()
 }
 
 export async function getUserFromToken(token: string) {
@@ -26,7 +28,7 @@ export async function getUserFromToken(token: string) {
   if (payload?.id === 'JsonWebTokenError') {
     throw new Error('Error user payload')
   }
-  const user = await UserModel.findOne({ id: payload.id })
+  const user = await UserModel.findById(payload.id)
 
   return user
 }

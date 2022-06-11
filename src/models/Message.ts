@@ -9,7 +9,7 @@ export class Message {
   @prop({ required: true })
   text!: string
 
-  @prop({ required: true, type: Object, ref: User, index: true })
+  @prop({ required: true, ref: User, index: true })
   author!: Ref<User>
 }
 
