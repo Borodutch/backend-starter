@@ -11,10 +11,10 @@ import {
 } from 'amala'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-import { checkAuthor, getMessage } from '@/middlewares/message'
 import MessageState from '@/validators/MessageState'
 import MessageText from '@/validators/MessageText'
 import authenticate from '@/middlewares/authenticate'
+import getMessage from '@/middlewares/message'
 
 @Controller('/message')
 @Flow(authenticate)
@@ -25,7 +25,7 @@ export default class MessageController {
   }
 
   @Get('/:id')
-  @Flow([getMessage, checkAuthor])
+  @Flow(getMessage)
   getMessageDetails(@State() { message }: MessageState) {
     return message
   }
@@ -39,7 +39,7 @@ export default class MessageController {
   }
 
   @Put('/:id')
-  @Flow([getMessage, checkAuthor])
+  @Flow(getMessage)
   updateMessage(
     @State() message: Message,
     @Body({ required: true }) { text }: MessageText
@@ -48,7 +48,7 @@ export default class MessageController {
   }
 
   @Delete('/:id')
-  @Flow([getMessage, checkAuthor])
+  @Flow(getMessage)
   messageDelete(@State() { message }: MessageState) {
     return MessageModel.findOneAndRemove(message)
   }

@@ -3,7 +3,7 @@ import { MessageModel } from '@/models/Message'
 import { badRequest, notFound } from '@hapi/boom'
 import { isValidObjectId } from 'mongoose'
 
-export async function getMessage(ctx: Context, next: Next) {
+export default async function getMessage(ctx: Context, next: Next) {
   const id = ctx.params.id
 
   if (!id) {
@@ -18,14 +18,12 @@ export async function getMessage(ctx: Context, next: Next) {
   if (!message) {
     return ctx.throw(notFound())
   }
-  ctx.state.message = message
 
-  return next()
-}
-
-export function checkAuthor(ctx: Context, next: Next) {
-  if (ctx.state.message.author.toString() !== ctx.state.user.id) {
+  if (message.author && message.author.toString() !== ctx.state.user.id) {
     return ctx.throw(notFound())
   }
+
+  ctx.state.message = message
+
   return next()
 }
