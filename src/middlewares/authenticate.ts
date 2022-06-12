@@ -1,34 +1,20 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
-import { badRequest, forbidden, unauthorized } from '@hapi/boom'
-import { verify } from '@/helpers/jwt'
+import { badRequest, forbidden } from '@hapi/boom'
 
-export async function authenticate(ctx: Context, next: Next) {
-  try {
-    const token = ctx.headers.token
-    if (!token) {
-      return ctx.throw(badRequest('No token provided'))
-    }
-    if (typeof token !== 'string') {
-      return ctx.throw(badRequest('Bad token'))
-    }
-    const user = await getUserFromToken(token)
-    if (!user) {
-      return ctx.throw(forbidden('Auth failed'))
-    }
-    ctx.state.user = user
-  } catch (err) {
-    return ctx.throw(unauthorized())
+export default async function authenticate(ctx: Context, next: Next) {
+  const token = ctx.headers.token
+  if (!token) {
+    return ctx.throw(badRequest('No token provided'))
   }
+  if (typeof token !== 'string') {
+    return ctx.throw(badRequest('Bad token'))
+  }
+  const user = await UserModel.findOne({ token: token })
+  if (!user) {
+    return ctx.throw(forbidden('Auth failed'))
+  }
+  ctx.state.user = user
+
   return next()
-}
-
-export async function getUserFromToken(token: string) {
-  const payload = await verify(token)
-  if (payload?.id === 'JsonWebTokenError') {
-    throw new Error('Error user payload')
-  }
-  const user = await UserModel.findById(payload.id)
-
-  return user
 }
