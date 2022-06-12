@@ -10,7 +10,7 @@ export default async function authenticate(ctx: Context, next: Next) {
   if (typeof token !== 'string') {
     return ctx.throw(badRequest('Bad token'))
   }
-  const user = await UserModel.findOne({ token: token })
+  const user = await UserModel.findOne({ token })
   if (!user) {
     return ctx.throw(forbidden('Auth failed'))
   }

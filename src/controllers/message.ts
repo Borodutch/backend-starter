@@ -5,7 +5,6 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Post,
   Put,
   State,
@@ -13,24 +12,22 @@ import {
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import { checkAuthor, getMessage } from '@/middlewares/message'
+import MessageState from '@/validators/MessageState'
 import MessageText from '@/validators/MessageText'
-import ObjectIdParam from '@/validators/ObjectIdParam'
 import authenticate from '@/middlewares/authenticate'
 
 @Controller('/message')
 @Flow(authenticate)
 export default class MessageController {
   @Get('/')
-  getMessages(@CurrentUser() user: User) {
-    return MessageModel.find({ author: user })
+  getMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 
   @Get('/:id')
-  getMessageDetails(
-    @Params('id') id: ObjectIdParam,
-    @CurrentUser() user: User
-  ) {
-    return MessageModel.findOne({ _id: id, author: user })
+  @Flow([getMessage, checkAuthor])
+  getMessageDetails(@State() { message }: MessageState) {
+    return message
   }
 
   @Post('/')
@@ -44,7 +41,7 @@ export default class MessageController {
   @Put('/:id')
   @Flow([getMessage, checkAuthor])
   updateMessage(
-    @State('message') message: Message,
+    @State() message: Message,
     @Body({ required: true }) { text }: MessageText
   ) {
     return MessageModel.findOneAndUpdate(message, { text })
@@ -52,7 +49,7 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow([getMessage, checkAuthor])
-  messageDelete(@State('message') message: Message) {
+  messageDelete(@State() { message }: MessageState) {
     return MessageModel.findOneAndRemove(message)
   }
 }

@@ -18,7 +18,6 @@ export async function getMessage(ctx: Context, next: Next) {
   if (!message) {
     return ctx.throw(notFound())
   }
-
   ctx.state.message = message
 
   return next()
