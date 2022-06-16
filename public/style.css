@@ -1,0 +1,40 @@
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+h4 {
+  text-align: center;
+}
+table {
+  table-layout: fixed;
+}
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: start;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+.post {
+  background-color: green;
+  padding: 10px 10px;
+}
+.delete {
+  background-color: red;
+  padding: 10px 10px;
+}
+.update {
+  background-color: orange;
+  padding: 10px 10px;
+}
+input {
+  padding: 10px 10px;
+}
