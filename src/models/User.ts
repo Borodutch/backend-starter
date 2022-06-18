@@ -4,6 +4,7 @@ import {
   modelOptions,
   prop,
 } from '@typegoose/typegoose'
+import { ObjectId } from 'mongoose'
 import { omit } from 'lodash'
 import { sign } from '@/helpers/jwt'
 
@@ -11,6 +12,7 @@ import { sign } from '@/helpers/jwt'
   schemaOptions: { timestamps: true },
 })
 export class User {
+  _id!: ObjectId
   @prop({ index: true, lowercase: true })
   email?: string
   @prop({ index: true, lowercase: true })
@@ -19,7 +21,6 @@ export class User {
   telegramId?: number
   @prop({ required: true, index: true })
   name!: string
-
   @prop({ index: true, unique: true })
   token?: string
 
