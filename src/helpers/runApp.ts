@@ -9,7 +9,7 @@ import env from '@/helpers/env'
 
 const app = new Koa()
 
-export default async function () {
+export default async function() {
   const router = new Router()
   await bootstrapControllers({
     app,
