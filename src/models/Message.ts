@@ -10,7 +10,7 @@ export class Message {
     required: true,
     index: true,
   })
-  author?: Ref<User>
+  author!: Ref<User>
 
   @prop({ required: true })
   text!: string
