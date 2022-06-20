@@ -54,10 +54,4 @@ export default class LoginController {
     const user = await findOrCreateUser({ email, name })
     return user.strippedAndFilled({ withExtra: true })
   }
-
-  // get all users for access tests
-  @Get('/')
-  async getAllUsers() {
-    return await UserModel.find()
-  }
 }
