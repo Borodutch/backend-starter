@@ -6,17 +6,17 @@ import { verify } from '@/helpers/jwt'
 export default async function authenticate(ctx: Context, next: Next) {
   const token = ctx.header.token
   if (!token) {
-    throw unauthorized()
+    return ctx.throw(unauthorized())
   }
   try {
     verify(token.toString())
   } catch {
-    throw forbidden()
+    return ctx.throw(forbidden())
   }
 
   const user = await UserModel.findOne({ token })
   if (!user) {
-    throw notFound()
+    return ctx.throw(notFound())
   }
   ctx.state.user = user
   return next()
