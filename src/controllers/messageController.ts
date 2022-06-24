@@ -20,16 +20,16 @@ import checkAuthor from '@/middlewares/checkAuthor'
 @Flow(authenticate)
 export default class MessageController {
   @Post('/')
-  async sendMessage(
+  sendMessage(
     @Body({ required: true }) { text }: MessageBody,
     @CurrentUser() author: DocumentType<User>
   ) {
-    return await MessageModel.create({ author, text })
+    return MessageModel.create({ author, text })
   }
 
   @Get('/')
-  async getAllMessages(@CurrentUser() author: DocumentType<User>) {
-    return await MessageModel.find({ author })
+  getAllMessages(@CurrentUser() author: DocumentType<User>) {
+    return MessageModel.find({ author })
   }
 
   @Get('/:id')
@@ -40,17 +40,17 @@ export default class MessageController {
 
   @Put('/:id')
   @Flow(checkAuthor)
-  async updateMessage(
+  updateMessage(
     @Body({ required: true }) { text }: MessageBody,
     @State('message') message: DocumentType<Message>
   ) {
     message.text = text
-    return await message.save()
+    return message.save()
   }
 
   @Delete('/:id')
   @Flow(checkAuthor)
-  async deleteMessage(@State('message') message: DocumentType<Message>) {
-    return await message.delete()
+  deleteMessage(@State('message') message: DocumentType<Message>) {
+    return message.delete()
   }
 }
