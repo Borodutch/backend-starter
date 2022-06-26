@@ -1,12 +1,12 @@
 import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/Message'
-import { badRequest, notFound } from '@hapi/boom'
+import { notFound } from '@hapi/boom'
 
 export default async function checkAuthor(ctx: Context, next: Next) {
   const messageId = ctx.params.id
   const message = await MessageModel.findById(messageId)
-  if (!message) {
-    return ctx.throw(badRequest())
+  if (!message || !message.author) {
+    return ctx.throw(notFound())
   }
 
   const userId = ctx.state.user.id
