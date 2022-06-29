@@ -24,7 +24,12 @@
   ],
   "rules": {
     "node/no-process-env": "error",
-    "no-relative-import-paths/no-relative-import-paths": "error",
+    "no-relative-import-paths/no-relative-import-paths": [
+      "error",
+      {
+        "allowSameFolder": false
+      }
+    ],
     "@typescript-eslint/no-floating-promises": "error",
     "require-await": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
