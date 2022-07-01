@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
-import { forbidden, notFound, unauthorized } from '@hapi/boom'
+import { notFound, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async function authenticate(ctx: Context, next: Next) {
@@ -11,7 +11,7 @@ export default async function authenticate(ctx: Context, next: Next) {
   try {
     verify(token.toString())
   } catch {
-    return ctx.throw(forbidden())
+    return ctx.throw(notFound())
   }
 
   const user = await UserModel.findOne({ token })
