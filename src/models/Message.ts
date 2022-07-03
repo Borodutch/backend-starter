@@ -8,7 +8,11 @@ class Message {
   @prop({ required: true })
   text!: string
 
-  @prop({ ref: () => User, index: true, required: true })
+  @prop({
+    ref: () => User,
+    index: true,
+    required: true,
+  })
   author!: Ref<User>
 }
 

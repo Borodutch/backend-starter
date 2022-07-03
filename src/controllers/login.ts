@@ -8,6 +8,7 @@ import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
+import { Login } from '@/validators/Login'
 
 @Controller('/login')
 export default class LoginController {
@@ -20,6 +21,11 @@ export default class LoginController {
       facebookId: id,
     })
     return user.strippedAndFilled({ withExtra: true })
+  }
+
+  @Post('/test')
+  async login(@Body({ required: true }) { name, email }: Login) {
+    const user = await findOrCreateUser({ name, email })
   }
 
   @Post('/telegram')

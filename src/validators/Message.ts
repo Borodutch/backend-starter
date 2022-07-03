@@ -1,11 +1,16 @@
-import { IsString, IsObject } from 'amala'
+import { IsString } from 'amala'
 
-export default class Message {
-  _id!: string
-
+export class CreateMessage {
   @IsString()
   text!: string
+}
 
-  @IsObject()
-  author!: {}
+export class UpdateMessage {
+  @IsString()
+  text!: string
+}
+
+export class IdMessage {
+  @IsString()
+  id!: string
 }
