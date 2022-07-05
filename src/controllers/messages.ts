@@ -11,7 +11,7 @@ import {
 } from 'amala'
 import { User } from '@/models/User'
 import { Message, MessageModel } from '@/models/Messages'
-import { MessageTextValidator } from '@/validators/Messages'
+import { MessageTextValidator } from '@/validators/messages'
 import checkUser from '@/middleware/authMiddleware'
 import checkMessage from '@/middleware/messageMiddleware'
 
