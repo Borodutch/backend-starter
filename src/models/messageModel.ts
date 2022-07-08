@@ -1,11 +1,16 @@
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import { Ref, getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import { User } from '@/models/User'
 @modelOptions({
   schemaOptions: { timestamps: true },
 })
 export default class Message {
-  @prop({ required: true, index: true })
-  user!: string
-  @prop({ required: true, index: true })
-  message?: string
+  @prop({
+    ref: () => User,
+    required: true,
+    index: true,
+  })
+  author?: Ref<User>
+  @prop({ required: true })
+  text!: string
 }
 export const messageModel = getModelForClass(Message)

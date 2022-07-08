@@ -1,15 +1,29 @@
-import { Body, Controller, Delete, Get, Params, Post, Put } from 'amala'
+import {
+  Body,
+  Controller,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Params,
+  Post,
+  Put,
+} from 'amala'
+import { DocumentType } from '@typegoose/typegoose'
+import { User } from '@/models/User'
 import { messageModel } from '@/models/messageModel'
+import MessageBody from '@/validators/MessageBody'
+import authenticate from '@/middlewares/authenticate'
 
 @Controller('/homePage')
+@Flow(authenticate)
 export default class MessageController {
   @Post('/')
-  PostMessage(@Body({ required: true }) body: any) {
-    const user = messageModel.create({
-      user: body.user,
-      message: body.message,
-    })
-    return user
+  async PostMessage(
+    @CurrentUser() author: DocumentType<User>,
+    @Body({ required: true }) { text }: MessageBody
+  ) {
+    return await messageModel.create({ author, text })
   }
   @Get('/')
   getMessages() {
@@ -22,10 +36,10 @@ export default class MessageController {
     return user
   }
   @Put('/:id')
-  updateMessage(@Params('id') id: any, @Body({ required: true }) body: any) {
-    const user = messageModel.findByIdAndUpdate(id, {
-      message: body.message,
-    })
-    return user
+  updateMessage(
+    @Params('id') id: any,
+    @Body({ required: true }) { text }: MessageBody
+  ) {
+    return messageModel.findByIdAndUpdate(id, { text })
   }
 }
