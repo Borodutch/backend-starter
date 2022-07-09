@@ -5,14 +5,13 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Post,
   Put,
   State,
 } from 'amala'
 import { DocumentType } from '@typegoose/typegoose'
-import { User } from '@/models/User'
 import { Message, messageModel } from '@/models/messageModel'
+import { User } from '@/models/User'
 import MessageBody from '@/validators/MessageBody'
 import authenticate from '@/middlewares/authenticate'
 import authorValidation from '@/middlewares/authorValidation'
@@ -35,12 +34,14 @@ export default class MessageController {
   @Delete('/:id')
   @Flow(authorValidation)
   deleteMessage(@State('message') message: DocumentType<Message>) {
-    console.log(message)
     return message.delete()
   }
   @Put('/:id')
   @Flow(authorValidation)
-  updateMessage(@State('message') message: DocumentType<Message>,@Body({ required: true }) { text }: MessageBody) {
+  updateMessage(
+    @State('message') message: DocumentType<Message>,
+    @Body({ required: true }) { text }: MessageBody
+  ) {
     message.text = text
     return message.save()
   }
