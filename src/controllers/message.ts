@@ -5,11 +5,6 @@ import { Message, MessageModel } from '@/models/Message'
 export default class MessageController {
   @Post('/')
   async create(@Body() message: Message) {
-    await MessageModel.create({
-      title: message.title,
-      body: message.body,
-      id: message._id,
-    })
-    return message
+    return await MessageModel.create(message)
   }
 }
