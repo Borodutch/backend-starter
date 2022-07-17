@@ -1,9 +1,15 @@
-import { ObjectId } from 'mongoose'
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import {
+  DocumentType,
+  getModelForClass,
+  modelOptions,
+  prop,
+} from '@typegoose/typegoose'
 import { omit } from 'lodash'
 import { sign } from '@/helpers/jwt'
 
-@modelOptions({ schemaOptions: { timestamps: true } })
+@modelOptions({
+  schemaOptions: { timestamps: true },
+})
 export class User {
   @prop({ index: true, lowercase: true })
   email?: string
@@ -17,10 +23,13 @@ export class User {
   @prop({ index: true, unique: true })
   token?: string
 
-  strippedAndFilled({
-    withExtra = false,
-    withToken = true,
-  }: { withExtra?: boolean; withToken?: boolean } = {}) {
+  strippedAndFilled(
+    this: DocumentType<User>,
+    {
+      withExtra = false,
+      withToken = true,
+    }: { withExtra?: boolean; withToken?: boolean } = {}
+  ) {
     const stripFields = ['createdAt', 'updatedAt', '__v']
     if (!withExtra) {
       stripFields.push('token')
@@ -31,7 +40,7 @@ export class User {
     if (!withToken) {
       stripFields.push('token')
     }
-    return omit(this, stripFields)
+    return omit(this.toObject(), stripFields)
   }
 }
 
@@ -39,11 +48,9 @@ export const UserModel = getModelForClass(User)
 
 export async function findOrCreateUser(loginOptions: {
   name: string
-  _id?: ObjectId
   email?: string
   facebookId?: string
   telegramId?: number
-  token?: string
 }) {
   const user = await UserModel.findOneAndUpdate(
     loginOptions,
