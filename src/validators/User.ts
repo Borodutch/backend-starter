@@ -2,8 +2,6 @@ import { IsNumber, IsOptional, IsString } from 'amala'
 
 export default class UserId {
   @IsString()
-  id!: string
-  @IsString()
   name!: string
   @IsOptional()
   @IsString()

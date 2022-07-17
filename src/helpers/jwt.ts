@@ -2,7 +2,7 @@ import { sign as signBase, verify as verifyBase } from 'jsonwebtoken'
 import env from '@/helpers/env'
 
 interface UserPayload {
-  id: string
+  _id: string
 }
 
 export function sign(payload: UserPayload) {

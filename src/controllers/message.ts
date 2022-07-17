@@ -1,13 +1,13 @@
 import {
   Body,
   Controller,
+  CurrentUser,
   Delete,
   Flow,
   Get,
   Params,
   Patch,
   Post,
-  State,
 } from 'amala'
 import {
   MessageModel,
@@ -16,48 +16,44 @@ import {
   findAndDeleteMessage,
   findAndUpdateMessage,
 } from '@/models/Message'
-import { findOrCreateUser } from '@/models/User'
+import { User } from '@/models/User'
 import UserVerify from '@/middleware/UserVerify'
 import ValidMessage from '@/validators/Message'
-import ValidUser from '@/validators/User'
 
 @Controller('/message')
 export default class MessageController {
   @Flow(UserVerify)
-  // @Get('/')
-  @Get('/:name')
-  // async getAllMessages(@Params('name') name: ValidUser['name']) {
-  //   const currentUser = await findOrCreateUser({ name })
-  getAllMessages(@State('user') user: ValidUser) {
+  @Get('/')
+  getAllMessages(@CurrentUser() user: User) {
     return findAllMessagesByUser(user)
   }
 
   @Flow(UserVerify)
-  @Post('/:name')
+  @Post('/')
   createMessage(
-    @Body({ required: true }) { text }: ValidMessage,
-    // @Body({ required: true }) { name }: ValidUser
-    @State('user') user: ValidUser
+    @Body({ required: true }) text: ValidMessage['text'],
+    @CurrentUser() user: User
   ) {
-    // const currentUser = await findOrCreateUser({ name })
     return createNewMessage(text, user)
   }
 
   @Flow(UserVerify)
   @Patch('/:id')
   async updateMessage(
-    @Params('id') messageId: ValidMessage['_id'],
-    @Body({ required: true }) { text }: ValidMessage,
-    @Body({ required: true }) { name }: ValidUser
+    @Params('id') _id: ValidMessage['_id'],
+    @Body({ required: true }) text: ValidMessage['text'],
+    @CurrentUser() user: User
   ) {
-    const currentUser = await findOrCreateUser({ name })
-    await findAndUpdateMessage(messageId, currentUser, text)
-    return await MessageModel.findOne({ name: name, _id: messageId })
+    await findAndUpdateMessage(_id, user, text)
+    return await MessageModel.findOne({ user, _id })
   }
 
   @Flow(UserVerify)
   @Delete('/:id')
-  deleteMessage(@Params('id') messageId: ValidMessage['_id']) {
-    return findAndDeleteMessage(messageId)
+  deleteMessage(
+    @Params('id') _id: ValidMessage['_id'],
+    @CurrentUser() user: User
+  ) {
+    return findAndDeleteMessage(_id, user)
   }
 }

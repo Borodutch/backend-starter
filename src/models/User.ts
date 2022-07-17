@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose'
 import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 import { omit } from 'lodash'
 import { sign } from '@/helpers/jwt'
@@ -12,8 +13,6 @@ export class User {
   telegramId?: number
   @prop({ required: true, index: true })
   name!: string
-  @prop({ index: true })
-  id?: string
 
   @prop({ index: true, unique: true })
   token?: string
@@ -40,7 +39,7 @@ export const UserModel = getModelForClass(User)
 
 export async function findOrCreateUser(loginOptions: {
   name: string
-  id?: string
+  _id?: ObjectId
   email?: string
   facebookId?: string
   telegramId?: number
@@ -58,7 +57,7 @@ export async function findOrCreateUser(loginOptions: {
     throw new Error('User not found')
   }
   if (!user.token) {
-    user.token = await sign({ id: user.id })
+    user.token = await sign({ _id: user._id as unknown as string })
     await user.save()
   }
   return user
