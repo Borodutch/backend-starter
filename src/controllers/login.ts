@@ -3,6 +3,7 @@ import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
+import EmailLogin from '@/validators/EmailLogin'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
@@ -11,6 +12,12 @@ import getGoogleUser from '@/helpers/getGoogleUser'
 
 @Controller('/login')
 export default class LoginController {
+  @Post('/email')
+  async email(@Body({ required: true }) { email, name }: EmailLogin) {
+    const user = await findOrCreateUser({ email, name })
+    return user.strippedAndFilled({ withExtra: true })
+  }
+
   @Post('/facebook')
   async facebook(@Body({ required: true }) { accessToken }: FacebookLogin) {
     const { name, email, id } = await getFBUser(accessToken)
