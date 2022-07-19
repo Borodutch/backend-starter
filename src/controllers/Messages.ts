@@ -13,11 +13,11 @@ import { DocumentType } from '@typegoose/typegoose'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageText from '@/validators/MessageText'
-import authorization from '@/middlewares/authorization'
+import authenticate from '@/middlewares/authenticate'
 import checkAuthor from '@/middlewares/checkAuthor'
 
 @Controller('/messages')
-@Flow(authorization)
+@Flow(authenticate)
 export default class MessagesController {
   @Get('/:id')
   @Flow(checkAuthor)
