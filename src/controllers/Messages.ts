@@ -14,13 +14,13 @@ import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageText from '@/validators/MessageText'
 import authMiddleware from '@/middlewares/authMiddleware'
-import authorAccess from '@/middlewares/authorAccess'
+import authorMiddleware from '@/middlewares/authorMiddleware'
 
 @Controller('/messages')
 @Flow(authMiddleware)
 export default class MessagesController {
   @Get('/:id')
-  @Flow(authorAccess)
+  @Flow(authorMiddleware)
   getMessage(@State('message') message: DocumentType<Message>) {
     return message
   }
@@ -34,7 +34,7 @@ export default class MessagesController {
   }
 
   @Put('/:id')
-  @Flow(authorAccess)
+  @Flow(authorMiddleware)
   updateMessage(
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: DocumentType<Message>
@@ -44,7 +44,7 @@ export default class MessagesController {
   }
 
   @Delete('/:id')
-  @Flow(authorAccess)
+  @Flow(authorMiddleware)
   deleteMessage(@State('message') message: DocumentType<Message>) {
     return message.delete()
   }

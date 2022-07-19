@@ -1,8 +1,8 @@
 import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/Message'
-import { notAcceptable, notFound } from '@hapi/boom'
+import { notFound } from '@hapi/boom'
 
-export default async function authorAccess(ctx: Context, next: Next) {
+export default async function authorMiddleware(ctx: Context, next: Next) {
   const id = ctx.params.id
   const message = await MessageModel.findById(id)
   if (!message) {
@@ -14,7 +14,7 @@ export default async function authorAccess(ctx: Context, next: Next) {
   const userId = ctx.state.user.id
   const messageAuthor = message.author.toString()
   if (userId !== messageAuthor) {
-    return ctx.throw(notAcceptable())
+    return ctx.throw(notFound())
   }
   ctx.state.message = message
   return next()
