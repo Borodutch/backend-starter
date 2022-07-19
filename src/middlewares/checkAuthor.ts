@@ -2,7 +2,7 @@ import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/Message'
 import { notFound } from '@hapi/boom'
 
-export default async function authorMiddleware(ctx: Context, next: Next) {
+export default async function checkAuthor(ctx: Context, next: Next) {
   const id = ctx.params.id
   const message = await MessageModel.findById(id)
   if (!message) {

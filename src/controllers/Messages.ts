@@ -13,14 +13,14 @@ import { DocumentType } from '@typegoose/typegoose'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageText from '@/validators/MessageText'
-import authMiddleware from '@/middlewares/authMiddleware'
-import authorMiddleware from '@/middlewares/authorMiddleware'
+import authorization from '@/middlewares/authorization'
+import checkAuthor from '@/middlewares/checkAuthor'
 
 @Controller('/messages')
-@Flow(authMiddleware)
+@Flow(authorization)
 export default class MessagesController {
   @Get('/:id')
-  @Flow(authorMiddleware)
+  @Flow(checkAuthor)
   getMessage(@State('message') message: DocumentType<Message>) {
     return message
   }
@@ -34,7 +34,7 @@ export default class MessagesController {
   }
 
   @Put('/:id')
-  @Flow(authorMiddleware)
+  @Flow(checkAuthor)
   updateMessage(
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: DocumentType<Message>
@@ -44,7 +44,7 @@ export default class MessagesController {
   }
 
   @Delete('/:id')
-  @Flow(authorMiddleware)
+  @Flow(checkAuthor)
   deleteMessage(@State('message') message: DocumentType<Message>) {
     return message.delete()
   }
