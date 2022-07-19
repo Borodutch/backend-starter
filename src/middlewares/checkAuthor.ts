@@ -14,7 +14,7 @@ export default async function checkAuthor(ctx: Context, next: Next) {
   const userId = ctx.state.user.id
   const messageAuthor = message.author.toString()
   if (userId !== messageAuthor) {
-    return ctx.throw(notFound())
+    return ctx.throw(notFound('ID not found'))
   }
   ctx.state.message = message
   return next()
