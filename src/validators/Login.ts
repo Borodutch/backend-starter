@@ -7,8 +7,3 @@ export class Login {
   @IsString()
   email!: string
 }
-
-export class Token {
-  @IsString()
-  token!: string
-}

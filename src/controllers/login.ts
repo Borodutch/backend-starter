@@ -1,5 +1,6 @@
-import { Body, Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, Post, Flow } from 'amala'
 import { Context } from 'koa'
+import { Login } from '@/validators/Login'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
@@ -8,7 +9,6 @@ import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
-import { Login } from '@/validators/Login'
 
 @Controller('/login')
 export default class LoginController {
@@ -26,6 +26,7 @@ export default class LoginController {
   @Post('/test')
   async login(@Body({ required: true }) { name, email }: Login) {
     const user = await findOrCreateUser({ name, email })
+    return user.strippedAndFilled()
   }
 
   @Post('/telegram')
