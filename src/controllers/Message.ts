@@ -11,10 +11,11 @@ import {
 } from 'amala'
 import { Message, IdMessage } from '@/validators/Message'
 import MessageModel from '@/models/Message'
-import authMiddleware from '@/middleware/authMiddleware'
+import isAuthor from '@/middleware/isAuthor'
+import auth from '@/middleware/auth'
 
 @Controller('/message')
-@Flow(authMiddleware)
+@Flow(auth)
 export default class MessageController {
   @Get('/')
   async getMessages(@CurrentUser() user: any) {
@@ -30,6 +31,7 @@ export default class MessageController {
   }
 
   @Put('/:id')
+  @Flow(isAuthor)
   async updateMessages(
     @Body({ required: true }) { text }: Message,
     @Params() { id }: IdMessage
@@ -43,6 +45,7 @@ export default class MessageController {
   }
 
   @Delete('/:id')
+  @Flow(isAuthor)
   async deleteMessages(@Params() { id }: IdMessage) {
     const deleteMessage = await MessageModel.findByIdAndDelete({ _id: id })
     return deleteMessage
