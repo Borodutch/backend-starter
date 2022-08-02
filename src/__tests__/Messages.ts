@@ -64,11 +64,48 @@ describe('CRUD endpoint', () => {
       .post('/messages/')
       .send(testMessage)
       .set('token', testToken)
-    const idForPut = response.body._id
+    const idForTest = response.body._id
     const responseForPut = await request(server)
-      .put(`/messages/${idForPut}`)
+      .put(`/messages/${idForTest}`)
       .send(testMessageUpd)
       .set('token', testToken)
     expect(responseForPut.body.text).toBe(testMessageUpd.text)
+  })
+
+  it('GET request should return message', async () => {
+    const responseForLogin = await request(server)
+      .post('/login/email')
+      .send(testUser)
+    const testToken = responseForLogin.body.token
+    const response = await request(server)
+      .post('/messages/')
+      .send(testMessage)
+      .set('token', testToken)
+    const idForTest = response.body._id
+    const responseForGet = await request(server)
+      .get(`/messages/${idForTest}`)
+      .set('token', testToken)
+    expect(responseForGet.body.text).toBe(testMessage.text)
+  })
+
+  it('DELETE request should delete message', async () => {
+    const responseForLogin = await request(server)
+      .post('/login/email')
+      .send(testUser)
+    const testToken = responseForLogin.body.token
+    const response = await request(server)
+      .post('/messages/')
+      .send(testMessage)
+      .set('token', testToken)
+    const idForTest = response.body._id
+    const responseForDelete = await request(server)
+      .delete(`/messages/${idForTest}`)
+      .set('token', testToken)
+    expect(responseForDelete.body.text).toBe(testMessage.text)
+    const responseForDelete404 = await request(server)
+      .delete(`/messages/${idForTest}`)
+      .set('token', testToken)
+    expect(responseForDelete404.body.statusCode).toBe(404)
+    expect(responseForDelete404.body.message).toBe('Message not found')
   })
 })
