@@ -11,6 +11,16 @@ describe('CRUD endpoint', () => {
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
 
+  const testUser = {
+    name: 'testName',
+    email: 'test@email.com',
+  }
+  const testMessage = {
+    text: 'Some text for test message',
+  }
+  const testMessageUpd = {
+    text: 'UPDATED text for test message',
+  }
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
     mongoose = await runMongo(await mongoServer.getUri())
@@ -34,13 +44,31 @@ describe('CRUD endpoint', () => {
   it('POST request should return message', async () => {
     const responseForLogin = await request(server)
       .post('/login/email')
-      .send({ name: 'testName', email: 'test@email.com' })
+      .send(testUser)
     const testToken = responseForLogin.body.token
     const response = await request(server)
       .post('/messages/')
-      .send({ text: 'TEST text' })
+      .send(testMessage)
       .set('token', testToken)
-    expect(response.body.text).toBe('TEST text')
-    expect(response.body.author.name).toBe('testName')
+    expect(response.body.text).toBe(testMessage.text)
+    expect(response.body.author.name).toBe(testUser.name)
+    expect(response.body.author.email).toBe(testUser.email)
+  })
+
+  it('PUT request should update message', async () => {
+    const responseForLogin = await request(server)
+      .post('/login/email')
+      .send(testUser)
+    const testToken = responseForLogin.body.token
+    const response = await request(server)
+      .post('/messages/')
+      .send(testMessage)
+      .set('token', testToken)
+    const idForPut = response.body._id
+    const responseForPut = await request(server)
+      .put(`/messages/${idForPut}`)
+      .send(testMessageUpd)
+      .set('token', testToken)
+    expect(responseForPut.body.text).toBe(testMessageUpd.text)
   })
 })
