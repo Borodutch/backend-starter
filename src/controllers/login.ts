@@ -5,6 +5,7 @@ import { forbidden } from '@hapi/boom'
 import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
+import LoginTest from '@/validators/LoginTest'
 import TelegramLogin from '@/validators/TelegramLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
@@ -44,6 +45,16 @@ export default class LoginController {
     const user = await findOrCreateUser({
       name: userData.name,
       email: userData.email,
+    })
+    return user.strippedAndFilled({ withExtra: true })
+  }
+
+  @Post('/test')
+  async test(@Body({ required: true }) { name, email }: LoginTest) {
+    const loginData = { name, email }
+    const user = await findOrCreateUser({
+      name: loginData.name,
+      email: loginData.email,
     })
     return user.strippedAndFilled({ withExtra: true })
   }
