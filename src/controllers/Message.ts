@@ -1,53 +1,49 @@
 import {
   Body,
   Controller,
+  CurrentUser,
   Delete,
+  Flow,
   Get,
   Params,
   Post,
   Put,
-  Flow,
-  CurrentUser,
 } from 'amala'
-import { Message, IdMessage } from '@/validators/Message'
+import { User } from '@/models/User'
+import Message from '@/validators/Message'
+import ID from '@/validators/ID'
 import MessageModel from '@/models/Message'
-import isAuthor from '@/middleware/isAuthor'
 import auth from '@/middleware/auth'
+import security from '@/middleware/security'
 
 @Controller('/message')
 @Flow(auth)
 export default class MessageController {
   @Get('/')
-  async getMessages(@CurrentUser() user: any) {
-    return MessageModel.find({ author: user })
+  async getMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 
   @Post('/')
   async createMessages(
-    @CurrentUser() author: {},
+    @CurrentUser() author: User,
     @Body({ required: true }) { text }: Message
   ) {
-    await new MessageModel({ text, author }).save()
+    return new MessageModel({ text, author }).save()
   }
 
   @Put('/:id')
-  @Flow(isAuthor)
+  @Flow(security)
   async updateMessages(
     @Body({ required: true }) { text }: Message,
-    @Params() { id }: IdMessage
+    @Params() { id }: ID
   ) {
-    const updateMessage = await MessageModel.findOneAndUpdate(
-      { _id: id },
-      { text: text },
-      { returnDocument: 'after' }
-    )
-    return updateMessage
+    return MessageModel.findOneAndUpdate({ _id: id }, { text })
   }
 
   @Delete('/:id')
-  @Flow(isAuthor)
-  async deleteMessages(@Params() { id }: IdMessage) {
-    const deleteMessage = await MessageModel.findByIdAndDelete({ _id: id })
-    return deleteMessage
+  @Flow(security)
+  async deleteMessages(@Params() { id }: ID) {
+    return MessageModel.findByIdAndDelete(id)
   }
 }

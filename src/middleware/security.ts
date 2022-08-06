@@ -1,14 +1,15 @@
+import { Context } from 'koa'
 import MessageModel from '@/models/Message'
 
-export default async function isAuthor(ctx: any, next: Function) {
+export default async function (ctx: Context, next: () => Promise<any>) {
   const message = await MessageModel.findById(ctx.params.id)
   const authorId = message?.author?.toString()
 
-  const currentUserId = ctx.state.user._id.toString()
+  const currentUserId = ctx.state.user.id
 
   if (currentUserId !== authorId) {
-    ctx.throw(403, 'Forbidden')
+    return ctx.throw(404, 'page not found')
   } else {
-    await next()
+    return next()
   }
 }

@@ -1,8 +1,13 @@
+import { Context } from 'koa'
 import { UserModel } from '@/models/User'
+import { verify } from '@/helpers/jwt'
 
-export default async function auth(ctx: any, next: Function) {
-  ctx.state.user = await UserModel.findOne({
-    token: ctx.request.header.token,
-  })
-  await next()
+export default async function (ctx: Context, next: () => Promise<any>) {
+  const { token } = ctx.request.headers
+  if (typeof token === 'string') {
+    const { id } = verify(token)
+    ctx.state.user = await UserModel.findById(id)
+    return next()
+  }
+  return ctx.throw(400)
 }

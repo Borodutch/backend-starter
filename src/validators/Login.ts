@@ -1,6 +1,6 @@
 import { IsString } from 'amala'
 
-export class Login {
+export default class Login {
   @IsString()
   name!: string
 
