@@ -1,7 +1,7 @@
 import { Context } from 'koa'
 import MessageModel from '@/models/Message'
 
-export default async function (ctx: Context, next: () => Promise<any>) {
+export default async function (ctx: Context, next: () => Promise<void>) {
   const message = await MessageModel.findById(ctx.params.id)
   const authorId = message?.author?.toString()
 

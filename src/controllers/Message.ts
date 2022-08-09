@@ -8,13 +8,15 @@ import {
   Params,
   Post,
   Put,
+  State,
 } from 'amala'
 import { User } from '@/models/User'
-import Message from '@/validators/Message'
 import ID from '@/validators/ID'
+import Message from '@/validators/Message'
 import MessageModel from '@/models/Message'
+import accessMessage from '@/middleware/accessMessage'
 import auth from '@/middleware/auth'
-import security from '@/middleware/security'
+import updateMessage from '@/middleware/updateMessage'
 
 @Controller('/message')
 @Flow(auth)
@@ -33,16 +35,20 @@ export default class MessageController {
   }
 
   @Put('/:id')
-  @Flow(security)
+  @Flow([accessMessage, updateMessage])
   async updateMessages(
     @Body({ required: true }) { text }: Message,
-    @Params() { id }: ID
+    @State('message') message: ID
   ) {
-    return MessageModel.findOneAndUpdate({ _id: id }, { text })
+    return MessageModel.findOneAndUpdate(
+      { _id: message.id },
+      { text },
+      { new: true }
+    )
   }
 
   @Delete('/:id')
-  @Flow(security)
+  @Flow(accessMessage)
   async deleteMessages(@Params() { id }: ID) {
     return MessageModel.findByIdAndDelete(id)
   }

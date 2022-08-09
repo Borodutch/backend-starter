@@ -1,4 +1,4 @@
-import { IsString } from 'amala'
+import { IsString, IsMongoId } from 'amala'
 
 export default class Message {
   @IsString()
