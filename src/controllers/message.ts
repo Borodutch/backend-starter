@@ -10,7 +10,8 @@ import {
   Post,
 } from 'amala'
 import { MessageModel } from '@/models/Message'
-import AuthorValid from '@/validators/AuthorValid'
+import { Ref } from '@typegoose/typegoose'
+import { User } from '@/models/User'
 import authMiddleware from '@/middleware/authMiddleware'
 
 @Controller('/message')
@@ -19,21 +20,8 @@ export default class MessageController {
   @Flow([authMiddleware])
   create(
     @Body({ required: true }) text: string,
-    @CurrentUser({ required: true }) author: AuthorValid
+    @CurrentUser({ required: true }) author: Ref<User>
   ) {
-    console.log(author)
-    // const messageData = { text, author }
-    // return MessageModel.create(messageData)
+    return MessageModel.create({ text, author })
   }
-
-  //   @Get('/:id')
-  //   getMessageById(@Params({ required: true }) id: string) {
-  //     return id
-  //   }
-
-  //   @Delete('/:id')
-  //   deleteMessageById(@Params() params: any) {
-  //     this.deleteMessageById(params.id)
-  //   }
-  // }
 }
