@@ -5,10 +5,10 @@ import { User } from '@/models/User'
   schemaOptions: { timestamps: true },
 })
 export class Message {
-  @prop({ required: true, index: true })
+  @prop()
   text?: string
-  @prop({ ref: () => User })
-  author!: Ref<User>
+  @prop({ index: true, ref: () => User })
+  author?: Ref<User>
 }
 
 export const MessageModel = getModelForClass(Message)
