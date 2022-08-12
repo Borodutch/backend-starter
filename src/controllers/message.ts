@@ -28,6 +28,11 @@ export default class MessageController {
     return MessageModel.create({ text, author })
   }
 
+  @Get('/')
+  getAllMessage() {
+    return MessageModel.find()
+  }
+
   @Get('/:id')
   getMessageById(@Params('id') id: string) {
     return MessageModel.findById(id)
