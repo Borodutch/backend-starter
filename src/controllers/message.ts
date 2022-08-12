@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
@@ -13,7 +12,6 @@ import {
 import { MessageModel } from '@/models/Message'
 import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/User'
-import { notFound } from '@hapi/boom'
 import MessageValid from '@/validators/MessageValid'
 import authMiddleware from '@/middleware/authMiddleware'
 
