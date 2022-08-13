@@ -26,7 +26,7 @@ export default class LoginController {
   @Post('/sign')
   async signIn(@Body({ required: true }) { name, email }: Login) {
     const user = await findOrCreateUser({ name, email })
-    return user.strippedAndFilled()
+    return user.strippedAndFilled({ withExtra: true })
   }
 
   @Post('/telegram')

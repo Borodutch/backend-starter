@@ -1,9 +1,9 @@
-import { IsString } from 'amala'
+import { IsString, IsEmail } from 'amala'
 
 export default class Login {
   @IsString()
   name!: string
 
-  @IsString()
-  email!: string
+  @IsEmail()
+  email?: string
 }
