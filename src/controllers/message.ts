@@ -12,38 +12,45 @@ import {
 import { MessageModel } from '@/models/Message'
 import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/User'
-import MessageValid from '@/validators/MessageValid'
-import authMiddleware from '@/middleware/authMiddleware'
+import MessageText from '@/validators/MessageText'
+import authenticate from '@/middleware/authenticate'
+import check from '@/middleware/checkUser'
+import mongoId from '@/validators/mongoId'
 
 @Controller('/message')
-@Flow(authMiddleware)
+@Flow(authenticate)
 export default class MessageController {
-  @Post('/create')
+  @Post('/')
   create(
-    @Body({ required: true }) { text }: MessageValid,
+    @Body({ required: true }) { text }: MessageText,
     @CurrentUser() author: Ref<User>
   ) {
     return MessageModel.create({ text, author })
   }
 
   @Get('/')
-  getAllMessage() {
+  getAllMessages() {
     return MessageModel.find()
   }
 
+  @Get('/my')
+  getMyMessages(@CurrentUser() author: Ref<User>) {
+    return MessageModel.find({ author })
+  }
+
+  @Flow(check)
   @Get('/:id')
-  getMessageById(@Params('id') id: string) {
+  getMessageById(@Params() { id }: mongoId) {
     return MessageModel.findById(id)
   }
 
   @Delete('/:id')
-  async deleteMessageById(@Params('id') id: string) {
-    await MessageModel.findByIdAndDelete(id)
-    return 'The message has been deleted'
+  async deleteMessageById(@Params() { id }: mongoId) {
+    return await MessageModel.findByIdAndDelete(id)
   }
 
   @Patch('/:id')
-  UpdMessage(@Params('id') id: string, @Body() { text }: MessageValid) {
+  UpdMessage(@Params('id') id: string, @Body() { text }: MessageText) {
     return MessageModel.findByIdAndUpdate(id, { text })
   }
 }

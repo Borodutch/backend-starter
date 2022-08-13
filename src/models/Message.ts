@@ -3,9 +3,9 @@ import { User } from '@/models/User'
 
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Message {
-  @prop()
+  @prop({ required: true })
   text!: string
-  @prop({ index: true, ref: () => User })
+  @prop({ required: true, index: true, ref: () => User })
   author!: Ref<User>
 }
 
