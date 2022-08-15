@@ -1,13 +1,16 @@
 import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/Message'
-import { forbidden } from '@hapi/boom'
+import { forbidden, notFound } from '@hapi/boom'
 import { toString } from 'lodash'
 
-export default async function check(ctx: Context, next: Next) {
-  const Message = await MessageModel.findById(ctx.params.id)
-  if (toString(ctx.state.user._id) === toString(Message?.author)) {
-    return next()
-  } else {
-    return ctx.throw(forbidden())
+export default async function checkUser(ctx: Context, next: Next) {
+  ctx.state.message = await MessageModel.findById(ctx.params.id)
+  if (!ctx.state.message) {
+    return ctx.throw(notFound())
   }
+  console.log(ctx.state.message)
+  if (toString(ctx.state.user._id) === toString(ctx.state.message.author)) {
+    return next()
+  }
+  return ctx.throw(forbidden())
 }
