@@ -7,7 +7,7 @@ import { verify } from '@/helpers/jwt'
 export default async function authenticate(ctx: Context, next: Next) {
   const token = toString(ctx.request.headers.token)
   ctx.state.user = await UserModel.findOne({ token })
-  if (ctx.state.user === null) {
+  if (!ctx.state.user) {
     return ctx.throw(notFound())
   }
   try {

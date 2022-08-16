@@ -5,14 +5,13 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Patch,
   Post,
+  State,
 } from 'amala'
-import { MessageModel } from '@/models/Message'
+import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageText from '@/validators/MessageText'
-import MongoId from '@/validators/MongoId'
 import authenticate from '@/middleware/authenticate'
 import checkUser from '@/middleware/checkUser'
 
@@ -34,19 +33,22 @@ export default class MessageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  getMessageById(@Params() { id }: MongoId) {
-    return MessageModel.findById(id)
+  getMessageById(@State(`message`) message: Message) {
+    return message
   }
 
   @Delete('/:id')
   @Flow(checkUser)
-  deleteMessageById(@Params() { id }: MongoId) {
-    return MessageModel.findByIdAndDelete(id)
+  deleteMessageById(@State(`message`) message: Message) {
+    return MessageModel.findByIdAndDelete(message)
   }
 
   @Patch('/:id')
   @Flow(checkUser)
-  UpdMessage(@Params() id: MongoId, @Body() { text }: MessageText) {
-    return MessageModel.findByIdAndUpdate(id, { text })
+  UpdateMessage(
+    @State(`message`) message: Message,
+    @Body() { text }: MessageText
+  ) {
+    return MessageModel.findByIdAndUpdate(message, { text })
   }
 }
