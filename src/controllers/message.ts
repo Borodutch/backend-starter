@@ -33,20 +33,20 @@ export default class MessageController {
 
   @Get('/:id')
   @Flow(checkUser)
-  getMessageById(@State(`message`) message: Message) {
+  getMessageById(@State('message') message: Message) {
     return message
   }
 
   @Delete('/:id')
   @Flow(checkUser)
-  deleteMessageById(@State(`message`) message: Message) {
+  deleteMessageById(@State('message') message: Message) {
     return MessageModel.findByIdAndDelete(message)
   }
 
   @Patch('/:id')
   @Flow(checkUser)
   UpdateMessage(
-    @State(`message`) message: Message,
+    @State('message') message: Message,
     @Body() { text }: MessageText
   ) {
     return MessageModel.findByIdAndUpdate(message, { text })

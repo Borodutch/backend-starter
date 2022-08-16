@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa'
 import { MessageModel } from '@/models/Message'
-import { forbidden, notFound } from '@hapi/boom'
+import { notFound } from '@hapi/boom'
 
 export default async function checkUser(ctx: Context, next: Next) {
   ctx.state.message = await MessageModel.findById(ctx.params.id)
@@ -8,7 +8,7 @@ export default async function checkUser(ctx: Context, next: Next) {
     return ctx.throw(notFound())
   }
   if (ctx.state.user.id != ctx.state.message.author.toString()) {
-    return ctx.throw(forbidden())
+    return ctx.throw(notFound())
   }
   return next()
 }
