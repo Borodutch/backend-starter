@@ -1,8 +1,8 @@
 import { Boom, notFound } from '@hapi/boom'
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import MessageModel from '@/models/Message'
 
-export default async function (ctx: Context, next: () => Promise<null>) {
+export default async function (ctx: Context, next: () => Next) {
   const message = await MessageModel.findById(ctx.params.id)
   const authorId = message?.author?.toString()
 

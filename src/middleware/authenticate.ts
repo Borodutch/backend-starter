@@ -1,9 +1,9 @@
 import { Boom, badRequest, notFound } from '@hapi/boom'
-import { Context } from 'koa'
+import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
 import { verify } from '@/helpers/jwt'
 
-export default async function (ctx: Context, next: () => Promise<null>) {
+export default async function (ctx: Context, next: () => Next) {
   const { token } = ctx.request.headers
   if (typeof token !== 'string') {
     return ctx.throw(new Boom(badRequest('invalid token')))
