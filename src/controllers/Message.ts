@@ -12,11 +12,10 @@ import {
 } from 'amala'
 import { Context } from 'koa'
 import { User } from '@/models/User'
-import MongoId from '@/validators/MongoId'
-import MessageText from '@/validators/MessageText'
 import MessageModel from '@/models/Message'
+import MessageText from '@/validators/MessageText'
+import MongoId from '@/validators/MongoId'
 import accessMessage from '@/middleware/accessMessage'
-import attachMessage from '@/middleware/attachMessage'
 import authenticate from '@/middleware/authenticate'
 
 @Controller('/message')
@@ -36,7 +35,7 @@ export default class MessageController {
   }
 
   @Put('/:id')
-  @Flow([accessMessage, attachMessage])
+  @Flow(accessMessage)
   async updateMessages(
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: Context

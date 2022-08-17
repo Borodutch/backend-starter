@@ -1,6 +1,6 @@
-import { badRequest, notFound } from '@hapi/boom'
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
+import { badRequest, notFound } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async function (ctx: Context, next: Next) {
