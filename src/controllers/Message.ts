@@ -10,16 +10,17 @@ import {
   Put,
   State,
 } from 'amala'
+import { Context } from 'koa'
 import { User } from '@/models/User'
 import ID from '@/validators/ID'
 import Message from '@/validators/Message'
 import MessageModel from '@/models/Message'
 import accessMessage from '@/middleware/accessMessage'
-import auth from '@/middleware/auth'
-import updateMessage from '@/middleware/updateMessage'
+import attachMessage from '@/middleware/attachMessage'
+import authenticate from '@/middleware/authenticate'
 
 @Controller('/message')
-@Flow(auth)
+@Flow(authenticate)
 export default class MessageController {
   @Get('/')
   async getMessages(@CurrentUser() author: User) {
@@ -35,10 +36,10 @@ export default class MessageController {
   }
 
   @Put('/:id')
-  @Flow([accessMessage, updateMessage])
+  @Flow([accessMessage, attachMessage])
   async updateMessages(
     @Body({ required: true }) { text }: Message,
-    @State('message') message: ID
+    @State('message') message: Context
   ) {
     return MessageModel.findOneAndUpdate(
       { _id: message.id },
