@@ -12,8 +12,8 @@ import {
 } from 'amala'
 import { Context } from 'koa'
 import { User } from '@/models/User'
-import ID from '@/validators/ID'
-import Message from '@/validators/Message'
+import MongoId from '@/validators/MongoId'
+import MessageText from '@/validators/MessageText'
 import MessageModel from '@/models/Message'
 import accessMessage from '@/middleware/accessMessage'
 import attachMessage from '@/middleware/attachMessage'
@@ -30,7 +30,7 @@ export default class MessageController {
   @Post('/')
   async createMessages(
     @CurrentUser() author: User,
-    @Body({ required: true }) { text }: Message
+    @Body({ required: true }) { text }: MessageText
   ) {
     return new MessageModel({ text, author }).save()
   }
@@ -38,7 +38,7 @@ export default class MessageController {
   @Put('/:id')
   @Flow([accessMessage, attachMessage])
   async updateMessages(
-    @Body({ required: true }) { text }: Message,
+    @Body({ required: true }) { text }: MessageText,
     @State('message') message: Context
   ) {
     return MessageModel.findOneAndUpdate(
@@ -50,7 +50,7 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow(accessMessage)
-  async deleteMessages(@Params() { id }: ID) {
+  async deleteMessages(@Params() { id }: MongoId) {
     return MessageModel.findByIdAndDelete(id)
   }
 }

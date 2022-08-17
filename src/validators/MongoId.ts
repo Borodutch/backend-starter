@@ -1,6 +1,6 @@
 import { IsMongoId } from 'amala'
 
-export default class ID {
+export default class MongoId {
   @IsMongoId()
   id!: string
 }

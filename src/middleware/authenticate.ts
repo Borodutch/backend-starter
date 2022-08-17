@@ -1,17 +1,22 @@
-import { Boom, badRequest, notFound } from '@hapi/boom'
+import { badRequest, notFound } from '@hapi/boom'
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
 import { verify } from '@/helpers/jwt'
 
-export default async function (ctx: Context, next: () => Next) {
+export default async function (ctx: Context, next: Next) {
   const { token } = ctx.request.headers
   if (typeof token !== 'string') {
-    return ctx.throw(new Boom(badRequest('invalid token')))
+    return ctx.throw(badRequest('invalid token'))
   }
-  const { id } = verify(token)
-  const user = await UserModel.findById(id)
-  if (!user) ctx.throw(new Boom(notFound('User not found')))
-  ctx.state = { user }
+  try {
+    verify(token)
+  } catch (err) {
+    return ctx.throw(badRequest('invalid token', { data: err }))
+  }
+
+  const user = await UserModel.findOne({ token })
+  if (!user) ctx.throw(notFound('User not found'))
+  ctx.state.user = user
 
   return next()
 }
