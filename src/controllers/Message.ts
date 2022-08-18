@@ -15,19 +15,19 @@ import { User } from '@/models/User'
 import MessageModel from '@/models/Message'
 import MessageText from '@/validators/MessageText'
 import MongoId from '@/validators/MongoId'
-import accessMessage from '@/middleware/accessMessage'
+import attachMessage from '@/middleware/attachMessage'
 import authenticate from '@/middleware/authenticate'
 
 @Controller('/message')
 @Flow(authenticate)
 export default class MessageController {
   @Get('/')
-  async getMessages(@CurrentUser() author: User) {
+  getMessages(@CurrentUser() author: User) {
     return MessageModel.find({ author })
   }
 
   @Post('/')
-  async createMessages(
+  createMessages(
     @CurrentUser() author: User,
     @Body({ required: true }) { text }: MessageText
   ) {
@@ -35,8 +35,8 @@ export default class MessageController {
   }
 
   @Put('/:id')
-  @Flow(accessMessage)
-  async updateMessages(
+  @Flow(attachMessage)
+  updateMessages(
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: Context
   ) {
@@ -48,8 +48,8 @@ export default class MessageController {
   }
 
   @Delete('/:id')
-  @Flow(accessMessage)
-  async deleteMessages(@Params() { id }: MongoId) {
+  @Flow(attachMessage)
+  deleteMessages(@Params() { id }: MongoId) {
     return MessageModel.findByIdAndDelete(id)
   }
 }
