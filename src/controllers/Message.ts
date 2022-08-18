@@ -31,7 +31,7 @@ export default class MessageController {
     @CurrentUser() author: User,
     @Body({ required: true }) { text }: MessageText
   ) {
-    return new MessageModel({ text, author }).save()
+    return MessageModel.create({ text, author })
   }
 
   @Put('/:id')
