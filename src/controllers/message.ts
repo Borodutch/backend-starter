@@ -8,36 +8,39 @@ import {
   Patch,
   Post,
 } from 'amala'
+import {
+  MessageIdValidator,
+  MessageTextValidator,
+} from '@/validators/MessageValidator'
 import { MessageModel } from '@/models/Message'
-import { Ref } from '@typegoose/typegoose'
 import { User } from '@/models/User'
-import MessageValidator from '@/validators/MessageValidator'
 
 @Controller('/messages')
 export default class MessageController {
   @Post('/')
-  async createMessage(
-    @Body({ required: true }) { message }: MessageValidator,
-    @CurrentUser() user: Ref<User>
+  createMessage(
+    @Body({ required: true }) { text }: MessageTextValidator,
+    @CurrentUser() user: User
   ) {
-    return await MessageModel.create({ message, user })
+    return MessageModel.create({ text, user })
   }
 
   @Delete('/:id')
-  async deleteMessage(@Params('id') id: MessageValidator) {
-    return await MessageModel.findByIdAndDelete(id)
+  deleteMessage(@Params() params: MessageIdValidator) {
+    return MessageModel.findByIdAndDelete(params.id)
   }
 
   @Get('/:id')
-  async getMessageById(@Params('id') id: MessageValidator) {
-    return await MessageModel.findById(id)
+  getMessageById(@Params() params: MessageIdValidator) {
+    return MessageModel.findById(params.id)
   }
 
   @Patch('/:id')
   async UpdateMessage(
-    @Body({ required: true }) { message }: MessageValidator,
-    @Params('id') id: MessageValidator
+    @Body({ required: true }) { text }: MessageTextValidator,
+    @Params() params: MessageIdValidator
   ) {
-    return await MessageModel.findByIdAndUpdate(id, { text: message })
+    await MessageModel.findByIdAndUpdate(params.id, { text })
+    return MessageModel.findById(params.id)
   }
 }

@@ -1,9 +1,11 @@
-import { IsString } from 'amala'
-import { ObjectId } from 'mongoose'
+import { IsMongoId, IsString } from 'amala'
 
-export default class MessageValidator {
+export class MessageTextValidator {
   @IsString()
-  message!: string
-  @IsString()
-  id!: ObjectId
+  text!: string
+}
+
+export class MessageIdValidator {
+  @IsMongoId()
+  id!: string
 }
