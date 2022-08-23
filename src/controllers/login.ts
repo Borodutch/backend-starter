@@ -6,8 +6,10 @@ import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
+import EmailLogin from '@/validators/EmailLogin'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
+import { PassThrough } from 'stream'
 
 @Controller('/login')
 export default class LoginController {
@@ -44,6 +46,21 @@ export default class LoginController {
     const user = await findOrCreateUser({
       name: userData.name,
       email: userData.email,
+    })
+    return user.strippedAndFilled({ withExtra: true })
+  }
+
+  @Post('/email')
+  async emailLogin(
+    @Ctx() ctx: Context,
+    @Body({ required: true }) body: EmailLogin
+  ) {
+    if (!body) {
+      return ctx.throw(forbidden())
+    }
+    const user = await findOrCreateUser({
+      email: body.email,
+      name: body.name
     })
     return user.strippedAndFilled({ withExtra: true })
   }
