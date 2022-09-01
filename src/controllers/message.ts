@@ -10,7 +10,7 @@ import {
   State,
 } from 'amala'
 import { Context } from 'koa'
-import { Message, MessageModel } from '@/models/MessageModel'
+import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import checkMessage from '@/middlewares/checkMessage'
 import checkUser from '@/middlewares/checkUser'
@@ -19,16 +19,16 @@ import checkUser from '@/middlewares/checkUser'
 @Flow(checkUser)
 export default class MessageController {
   @Get('/')
-  getMessage(@CurrentUser() messageAuthor: User) {
-    return MessageModel.find({ messageAuthor })
+  getMessage(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 
   @Post('/')
-  postMessage(
-    @CurrentUser() messageAuthor: User,
+  async postMessage(
+    @CurrentUser() author: User,
     @Body({ required: true }) text: string
   ) {
-    return new MessageModel({ text, messageAuthor }).save()
+    return await MessageModel.create({ text, author })
   }
 
   @Put('/:id')

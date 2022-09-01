@@ -15,7 +15,7 @@ export default async function (ctx: Context, next: Next) {
   try {
     verify(token)
   } catch (error) {
-    return ctx.throw(badRequest('user not found'))
+    return ctx.throw(badRequest('user is not logged in'))
   }
 
   return next()
