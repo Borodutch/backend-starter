@@ -9,7 +9,6 @@ import {
   Put,
   State,
 } from 'amala'
-import { Context } from 'koa'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import checkMessage from '@/middlewares/checkMessage'
@@ -24,11 +23,11 @@ export default class MessageController {
   }
 
   @Post('/')
-  async postMessage(
+  postMessage(
     @CurrentUser() author: User,
     @Body({ required: true }) text: string
   ) {
-    return await MessageModel.create({ text, author })
+    return MessageModel.create({ text, author })
   }
 
   @Put('/:id')
@@ -42,7 +41,7 @@ export default class MessageController {
 
   @Delete('/:id')
   @Flow(checkMessage)
-  deleteMessage(@State('message') message: Context) {
-    return MessageModel.findByIdAndDelete({ _id: message.id })
+  deleteMessage(@State('message') message: Message) {
+    return MessageModel.findByIdAndDelete(message)
   }
 }
