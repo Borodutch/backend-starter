@@ -5,14 +5,13 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Patch,
   Post,
+  State,
 } from 'amala'
-import { MessageModel } from '@/models/Message'
+import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageText from '@/validators/Message'
-import MongoId from '@/validators/MongoId'
 import authenticate from '@/middleware/authenticate'
 import verifyUser from '@/middleware/verifyUser'
 
@@ -24,28 +23,28 @@ export default class MessageController {
     @Body({ required: true }) { text }: MessageText,
     @CurrentUser() user: User
   ) {
-    return MessageModel.create({ text: text, user: user })
+    return MessageModel.create({ text, user })
   }
 
   @Flow(verifyUser)
   @Delete('/:id')
-  deleteMessage(@Params() params: MongoId) {
-    return MessageModel.findByIdAndDelete(params.id)
+  deleteMessage(@State('message') message: Message) {
+    return MessageModel.findByIdAndDelete(message)
   }
 
   @Flow(verifyUser)
   @Get('/:id')
-  getMessageById(@Params() params: MongoId) {
-    return MessageModel.findById(params.id)
+  getMessageById(@State('message') message: Message) {
+    return MessageModel.findById(message)
   }
 
   @Flow(verifyUser)
   @Patch('/:id')
   async UpdateMessage(
     @Body({ required: true }) { text }: MessageText,
-    @Params() params: MongoId
+    @State('message') message: Message
   ) {
-    await MessageModel.findByIdAndUpdate(params.id, { text })
-    return MessageModel.findById(params.id)
+    await MessageModel.findByIdAndUpdate(message, { text })
+    return MessageModel.findById(message)
   }
 }
