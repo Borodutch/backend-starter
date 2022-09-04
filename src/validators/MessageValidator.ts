@@ -1,6 +1,6 @@
 import { IsString } from 'amala'
 
-export class MessageValidator {
+export class MessageValidatorDefault {
   @IsString()
   content!: string
   @IsString()
