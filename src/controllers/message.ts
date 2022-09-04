@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from 'amala'
 import {
-  MessageValidator,
+  MessageValidatorDefault,
   MessageValidatorDelete,
   MessageValidatorUpdate,
 } from '@/validators/MessageValidator'
@@ -15,7 +15,7 @@ import {
 @Controller('/message')
 export default class MessageController {
   @Post('/add-message')
-  async addMessage(@Body({ required: true }) body: MessageValidator) {
+  async addMessage(@Body({ required: true }) body: MessageValidatorDefault) {
     const message = await createMessage(body)
     return message
   }
