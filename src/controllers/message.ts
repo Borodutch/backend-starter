@@ -1,35 +1,37 @@
 import { Body, Controller, Post } from 'amala'
 import {
-  MessageValidator,
-  MessageValidatorDelete,
-  MessageValidatorUpdate,
-} from '@/validators/MessageValidator'
-import {
   createMessage,
   deleteMessageById,
   displayAllMessages,
   findById,
   updateOneMessage,
 } from '@/models/Message'
+import MessageValidatorDefault from '@/validators/DefaultMessage'
+import MessageValidatorDelete from '@/validators/DeleteMessage'
+import MessageValidatorUpdate from '@/validators/UpdateMessage'
 
 @Controller('/message')
 export default class MessageController {
-  @Post('/add-message')
-  async addMessage(@Body({ required: true }) body: MessageValidator) {
-    const message = await createMessage(body)
+  @Post('/')
+  async addMessage(
+    @Body({ required: true }) { text, author }: MessageValidatorDefault
+  ) {
+    const message = await createMessage({ text, author })
     return message
   }
 
   @Post('/update-message')
   async updateMessage(
-    @Body({ required: true }) { content, type, _id }: MessageValidatorUpdate
+    @Body({ required: true }) { text, _id }: MessageValidatorUpdate
   ) {
-    await updateOneMessage({ content, type, _id })
-    return await findById({ _id })
+    await updateOneMessage({ text, _id })
+    return await findById(_id)
   }
 
   @Post('/delete-message')
-  async deleteMessage(@Body({ required: true }) _id: MessageValidatorDelete) {
+  async deleteMessage(
+    @Body({ required: true }) { _id }: MessageValidatorDelete
+  ) {
     const message = await deleteMessageById(_id)
     return message
   }
