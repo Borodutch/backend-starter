@@ -4,15 +4,16 @@ import {
   CurrentUser,
   Delete,
   Flow,
+  Get,
   Params,
   Post,
   Put,
 } from 'amala'
 import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
+import MessageId from '@/validators/MessageId'
+import MessageText from '@/validators/MessageText'
 import MessageValidatorDefault from '@/validators/DefaultMessage'
-import MessageValidatorDelete from '@/validators/DeleteMessage'
-import MessageValidatorUpdate from '@/validators/UpdateMessage'
 import auth from '@/middleware/auth'
 
 @Controller('/message')
@@ -26,21 +27,21 @@ export default class MessageController {
     return await (await MessageModel.create({ text, author })).save()
   }
 
-  @Put('/')
+  @Put('/:id')
   async updateMessage(
-    @Body({ required: true }) { text, _id }: MessageValidatorUpdate
+    @Params('id') { id }: MessageId,
+    @Body({ required: true }) { text }: MessageText
   ) {
-    await MessageModel.findByIdAndUpdate(_id, { text })
-    return await MessageModel.findById(_id)
+    return await MessageModel.findByIdAndUpdate(id, { text })
   }
 
   @Delete('/:id')
-  async deleteMessage(@Params('id') _id: MessageValidatorDelete) {
-    return await MessageModel.findByIdAndDelete(_id)
+  async deleteMessage(@Params('id') { id }: MessageId) {
+    return await MessageModel.findByIdAndDelete(id)
   }
 
-  @Post('/display-messages')
-  async displayMessages() {
-    return await MessageModel.find()
+  @Get('/')
+  async displayMessages(@CurrentUser({ required: true }) author: User) {
+    return await MessageModel.find({ author })
   }
 }
