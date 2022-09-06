@@ -13,7 +13,6 @@ import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageId from '@/validators/MessageId'
 import MessageText from '@/validators/MessageText'
-import MessageValidatorDefault from '@/validators/DefaultMessage'
 import auth from '@/middleware/auth'
 
 @Controller('/message')
@@ -22,7 +21,7 @@ export default class MessageController {
   @Post('/')
   async addMessage(
     @CurrentUser({ required: true }) author: User,
-    @Body({ required: true }) { text }: MessageValidatorDefault
+    @Body({ required: true }) { text }: MessageText
   ) {
     return await (await MessageModel.create({ text, author })).save()
   }
