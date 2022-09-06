@@ -11,9 +11,9 @@ import {
 } from 'amala'
 import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
+import { auth } from '@/middleware/auth'
 import MessageId from '@/validators/MessageId'
 import MessageText from '@/validators/MessageText'
-import auth from '@/middleware/auth'
 
 @Controller('/message')
 @Flow(auth)
