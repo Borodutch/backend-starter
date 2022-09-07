@@ -11,44 +11,40 @@ import {
 } from 'amala'
 import { MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-import { auth } from '@/middleware/auth'
 import MessageId from '@/validators/MessageId'
 import MessageText from '@/validators/MessageText'
+import auth from '@/middleware/auth'
 
 @Controller('/message')
 @Flow(auth)
 export default class MessageController {
   @Post('/')
-  async addMessage(
-    @CurrentUser({ required: true }) author: User,
+  addMessage(
+    @CurrentUser() author: User,
     @Body({ required: true }) { text }: MessageText
   ) {
-    const result = await MessageModel.create({ text, author })
-    return result
+    return MessageModel.create({ text, author })
   }
 
   @Put('/:id')
-  async updateMessage(
-    @CurrentUser({ required: true }) author: User,
+  updateMessage(
+    @CurrentUser() author: User,
     @Params({ required: true }) { id }: MessageId,
     @Body({ required: true }) { text }: MessageText
   ) {
-    const result = await MessageModel.findOneAndUpdate({ id, author }, { text })
-    return result
+    return MessageModel.findOneAndUpdate({ id, author }, { text })
   }
 
   @Delete('/:id')
-  async deleteMessage(
-    @CurrentUser({ required: true }) author: User,
+  deleteMessage(
+    @CurrentUser() author: User,
     @Params({ required: true }) { id }: MessageId
   ) {
-    const result = await MessageModel.findOneAndDelete({ id, author })
-    return result
+    return MessageModel.findOneAndDelete({ id, author })
   }
 
   @Get('/')
-  async displayMessages(@CurrentUser({ required: true }) author: User) {
-    const result = await MessageModel.find({ author })
-    return result
+  displayMessages(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
   }
 }
