@@ -23,24 +23,32 @@ export default class MessageController {
     @CurrentUser({ required: true }) author: User,
     @Body({ required: true }) { text }: MessageText
   ) {
-    return await MessageModel.create({ text, author })
+    const result = await MessageModel.create({ text, author })
+    return result
   }
 
   @Put('/:id')
   async updateMessage(
-    @Params('id') { id }: MessageId,
+    @CurrentUser({ required: true }) author: User,
+    @Params({ required: true }) { id }: MessageId,
     @Body({ required: true }) { text }: MessageText
   ) {
-    return await MessageModel.findByIdAndUpdate(id, { text })
+    const result = await MessageModel.findOneAndUpdate({ id, author }, { text })
+    return result
   }
 
   @Delete('/:id')
-  async deleteMessage(@Params('id') { id }: MessageId) {
-    return await MessageModel.findByIdAndDelete(id)
+  async deleteMessage(
+    @CurrentUser({ required: true }) author: User,
+    @Params({ required: true }) { id }: MessageId
+  ) {
+    const result = await MessageModel.findOneAndDelete({ id, author })
+    return result
   }
 
   @Get('/')
   async displayMessages(@CurrentUser({ required: true }) author: User) {
-    return await MessageModel.find({ author })
+    const result = await MessageModel.find({ author })
+    return result
   }
 }
