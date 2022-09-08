@@ -17,7 +17,7 @@ describe('Login endpoint', () => {
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
-    mongoose = await runMongo(await mongoServer.getUri())
+    mongoose = await runMongo(mongoServer.getUri())
     server = await runApp()
   })
 
@@ -26,7 +26,7 @@ describe('Login endpoint', () => {
   })
 
   afterAll(async () => {
-    await shutdown(server)
+    shutdown(server)
     await mongoServer.stop()
     return new Promise<void>((resolve, reject) => {
       server.close((err) => {

@@ -29,7 +29,7 @@ export default class MessageController {
   @Put('/:id')
   updateMessage(
     @CurrentUser() author: User,
-    @Params({ required: true }) { id }: MessageId,
+    @Params({ required: true }) id: MessageId,
     @Body({ required: true }) { text }: MessageText
   ) {
     return MessageModel.findOneAndUpdate({ id, author }, { text })
@@ -38,7 +38,7 @@ export default class MessageController {
   @Delete('/:id')
   deleteMessage(
     @CurrentUser() author: User,
-    @Params({ required: true }) { id }: MessageId
+    @Params({ required: true }) id: MessageId
   ) {
     return MessageModel.findOneAndDelete({ id, author })
   }
