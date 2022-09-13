@@ -14,10 +14,11 @@ describe('CRUD', () => {
   let mongoose: Mongoose
 
   let message: Message
-  let author: User
-  let token: string
-  let id: ObjectId
-  let authorId: ObjectId
+  let token1: string
+  let token2: string
+  let messageId: ObjectId
+  let authorId1: ObjectId
+  let authorId2: ObjectId
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -35,14 +36,26 @@ describe('CRUD', () => {
     })
   })
 
-  it('should create new user', async () => {
+  it('should create first user', async () => {
     const user = {
       name: '1',
-      email: 'email@google.com',
+      email: 'email1@google.com',
     }
     const response = await request(server).post('/login/email').send(user)
-    authorId = response.body._id
-    token = response.body.token
+    authorId1 = response.body._id
+    token1 = response.body.token
+    console.log(response.error)
+    expect(response.body.name).toBe(user.name)
+    expect(response.body.email).toBe(user.email)
+  })
+
+  it('should create second user', async () => {
+    const user = {
+      name: '2',
+      email: 'email2@google.com',
+    }
+    const response = await request(server).post('/login/email').send(user)
+    token2 = response.body.token
     console.log(response.error)
     expect(response.body.name).toBe(user.name)
     expect(response.body.email).toBe(user.email)
@@ -55,45 +68,60 @@ describe('CRUD', () => {
     const response = await request(server)
       .post('/message/')
       .send(textMessage)
-      .set('token', token)
+      .set('token', token1)
     message = response.body
-    id = response.body._id
+    messageId = response.body._id
     console.log(response.error)
-    expect(response.body.text).toBe(message.text)
-    expect(response.body.author._id).toBe(authorId)
+    expect(response.body.text).toBe(textMessage.text)
+    expect(response.body.author._id).toBe(authorId1)
   })
 
   it('should get and return message', async () => {
     const response = await request(server)
-      .get(`/message/${id}`)
-      .set('token', token)
+      .get(`/message/${messageId}`)
+      .set('token', token1)
     console.log(response.error)
     expect(response.body.text).toBe(message.text)
-    expect(response.body.author).toBe(authorId)
+    expect(response.body.author).toBe(authorId1)
   })
 
-  it('should update message', async () => {
+  it('should try get message, but return eror 404', async () => {
+    await request(server).get(`/message/${messageId}`).set('token', token2)
+    expect(404)
+  })
+
+  it('should update message, but return old version', async () => {
     const newMessage = { text: 'now i am Message!' }
     const response = await request(server)
-      .patch(`/message/${id}`)
+      .patch(`/message/${messageId}`)
       .send(newMessage)
-      .set('token', token)
+      .set('token', token1)
     console.log(response.error)
-    expect(response.body.text).toBe(newMessage.text)
-    expect(response.body.author).toBe(authorId)
+    expect(response.body.text).toBe(message.text)
+    expect(response.body.author).toBe(authorId1)
+  })
+
+  it('should get and return new message', async () => {
+    const response = await request(server)
+      .get(`/message/${messageId}`)
+      .set('token', token1)
+    message = response.body
+    console.log(response.error)
+    expect(response.body.text).toBe(message.text)
+    expect(response.body.author).toBe(authorId1)
   })
 
   it('should delete message', async () => {
     const response = await request(server)
-      .delete(`/message/${id}`)
-      .set('token', token)
+      .delete(`/message/${messageId}`)
+      .set('token', token1)
     console.log(response.error)
     expect(response.body.text).toBe(message.text)
-    expect(response.body.author).toBe(authorId)
+    expect(response.body.author).toBe(authorId1)
   })
 
-  it('should try delete message again', async () => {
-    await request(server).delete(`/message/${id}`).set('token', token)
+  it('should try delete message again, but return 404', async () => {
+    await request(server).delete(`/message/${messageId}`).set('token', token1)
     expect(404)
   })
 })
