@@ -1,26 +1,28 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
+import { Message } from '@/models/Message'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Mongoose } from 'mongoose'
+import { Mongoose, ObjectId } from 'mongoose'
 import { Server } from 'http'
 import { User } from '@/models/User'
-import MessageController from '@/controllers/message'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
-describe('should perform CRUD operations on the message', () => {
+describe('CRUD', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
+
+  let message: Message
+  let author: User
+  let token: string
+  let id: ObjectId
+  let authorId: ObjectId
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
     mongoose = await runMongo(await mongoServer.getUri())
     server = await runApp()
-  })
-
-  beforeEach(async () => {
-    await mongoose.connection.db.dropDatabase()
   })
 
   afterAll(async () => {
@@ -33,23 +35,53 @@ describe('should perform CRUD operations on the message', () => {
     })
   })
 
-  const author = {
-    email: 'email@google.com',
-    name: '1',
-  }
-
-  const body = {
-    text: 'hi, i`m test text!',
-  }
+  it('should create new user', async () => {
+    const user = {
+      name: '1',
+      email: 'email@google.com',
+    }
+    const response = await request(server).post('/login/email').send(user)
+    author = response.body
+    authorId = response.body._id
+    token = response.body.token
+    console.log(response.error)
+    expect(response.body.name).toBe(user.name)
+    expect(response.body.email).toBe(user.email)
+  })
 
   it('should post message', async () => {
+    const textMessage = {
+      text: 'hi, i`m test text, or text test... wait...',
+    }
     const response = await request(server)
       .post('/message/')
-      .set('Accept', 'application/json')
-      .send(body)
-      .send(author)
+      .send(textMessage)
+      .set('token', token)
+    message = response.body
+    id = response.body._id
     console.log(response.error)
-    console.log(response.body)
-    expect(response.body.text).toBe(body.text)
+    expect(response.body.text).toBe(message.text)
+    expect(response.body.author.name).toBe(author.name)
+    expect(response.body.author.email).toBe(author.email)
+  })
+
+  it('should get and return message by id', async () => {
+    const response = await request(server)
+      .get(`/message/${id}`)
+      .set('token', token)
+    console.log(response.error)
+    expect(response.body.text).toBe(message.text)
+    expect(response.body.author).toBe(authorId)
+  })
+
+  it('should update message by id', async () => {
+    const newMessage = { text: 'now i am Message!' }
+    const response = await request(server)
+      .patch(`/message/${id}`)
+      .send(newMessage)
+      .set('token', token)
+    console.log(response.error)
+    expect(response.body.text).toBe(newMessage.text)
+    expect(response.body.author).toBe(authorId)
   })
 })
