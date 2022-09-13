@@ -41,7 +41,6 @@ describe('CRUD', () => {
       email: 'email@google.com',
     }
     const response = await request(server).post('/login/email').send(user)
-    author = response.body
     authorId = response.body._id
     token = response.body.token
     console.log(response.error)
@@ -61,11 +60,10 @@ describe('CRUD', () => {
     id = response.body._id
     console.log(response.error)
     expect(response.body.text).toBe(message.text)
-    expect(response.body.author.name).toBe(author.name)
-    expect(response.body.author.email).toBe(author.email)
+    expect(response.body.author._id).toBe(authorId)
   })
 
-  it('should get and return message by id', async () => {
+  it('should get and return message', async () => {
     const response = await request(server)
       .get(`/message/${id}`)
       .set('token', token)
@@ -74,7 +72,7 @@ describe('CRUD', () => {
     expect(response.body.author).toBe(authorId)
   })
 
-  it('should update message by id', async () => {
+  it('should update message', async () => {
     const newMessage = { text: 'now i am Message!' }
     const response = await request(server)
       .patch(`/message/${id}`)
@@ -83,5 +81,19 @@ describe('CRUD', () => {
     console.log(response.error)
     expect(response.body.text).toBe(newMessage.text)
     expect(response.body.author).toBe(authorId)
+  })
+
+  it('should delete message', async () => {
+    const response = await request(server)
+      .delete(`/message/${id}`)
+      .set('token', token)
+    console.log(response.error)
+    expect(response.body.text).toBe(message.text)
+    expect(response.body.author).toBe(authorId)
+  })
+
+  it('should try delete message again', async () => {
+    await request(server).delete(`/message/${id}`).set('token', token)
+    expect(404)
   })
 })
