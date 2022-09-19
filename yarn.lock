@@ -1388,13 +1388,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.0.2":
-  version: 29.0.2
-  resolution: "@types/jest@npm:29.0.2"
+"@types/jest@npm:^29.0.3":
+  version: 29.0.3
+  resolution: "@types/jest@npm:29.0.3"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 27c46b58fad9791adf88167ba2c14ae3513cb1fe5df038faafe7fc4513ebb230dd8029a1dd0acd1abeb82aa014839ac10e0dcf1bfae9fcc0e69bc1eb1e5204f0
+  checksum: 14a8ec1954540ec59f4072c3c4dbc6b5d5ff616556c98671aca26606bdf9d49616a3f269f3e488c80cd481ee19880351575c1f6895827628818e193600c121e0
   languageName: node
   linkType: hard
 
@@ -1517,10 +1517,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.7.17":
-  version: 18.7.17
-  resolution: "@types/node@npm:18.7.17"
-  checksum: bb1b832f4ad42a106d189d87e95aef117f0026a7ea291f34c5d106a25419d6d4c9d39099688ad46746cc3c2307c263be4adec1049a35dc12c9e48f19975b2dc6
+"@types/node@npm:^18.7.18":
+  version: 18.7.18
+  resolution: "@types/node@npm:18.7.18"
+  checksum: 8aec61f0f96e2a69ce51f1f40f949ca578bbb4fe05d7c0b8ce3aeeb848e90f755837f17f6ac132ca404d974fe9b2974150ad3b4984fc9dc7c3ceddb10bae0167
   languageName: node
   linkType: hard
 
@@ -2078,14 +2078,14 @@ __metadata:
     "@hapi/boom": ^10.0.0
     "@koa/cors": ^3.4.1
     "@typegoose/typegoose": ^9.12.0
-    "@types/jest": ^29.0.2
+    "@types/jest": ^29.0.3
     "@types/jsonwebtoken": ^8.5.9
     "@types/koa": ^2.13.5
     "@types/koa-bodyparser": ^4.3.8
     "@types/koa-router": ^7.4.4
     "@types/koa__cors": ^3.3.0
     "@types/lodash": ^4.14.185
-    "@types/node": ^18.7.17
+    "@types/node": ^18.7.18
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^5.37.0
     "@typescript-eslint/parser": ^5.37.0
@@ -2110,12 +2110,12 @@ __metadata:
     koa-router: ^12.0.0
     lodash: ^4.17.21
     module-alias: ^2.2.2
-    mongodb-memory-server: ^8.9.1
-    mongoose: ^6.6.0
+    mongodb-memory-server: ^8.9.2
+    mongoose: ^6.6.1
     prettier: ^2.7.1
     source-map-support: ^0.5.21
     supertest: ^6.2.4
-    ts-jest: ^29.0.0
+    ts-jest: ^29.0.1
     tsc-watch: ^5.0.3
     typescript: ^4.8.3
   languageName: unknown
@@ -5492,9 +5492,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb-memory-server-core@npm:8.9.1":
-  version: 8.9.1
-  resolution: "mongodb-memory-server-core@npm:8.9.1"
+"mongodb-memory-server-core@npm:8.9.2":
+  version: 8.9.2
+  resolution: "mongodb-memory-server-core@npm:8.9.2"
   dependencies:
     "@types/tmp": ^0.2.3
     async-mutex: ^0.3.2
@@ -5512,17 +5512,17 @@ __metadata:
     tslib: ^2.4.0
     uuid: ^8.3.1
     yauzl: ^2.10.0
-  checksum: 2610c90f66803046af993907ecbebbac6cdd1b5b653ecfc56e185f668a1bc46c21d5c64b65caa81fe8488831cb64156fbbab7fea5d43407ef175f08fa928493b
+  checksum: d2bb13024999004df8e4f59b888597e10871556875c8b71c551f0fc0a09825318a7cec1a418c5bf0733af6be5d7f4b38050b94d2adc2377536919febb0f33749
   languageName: node
   linkType: hard
 
-"mongodb-memory-server@npm:^8.9.1":
-  version: 8.9.1
-  resolution: "mongodb-memory-server@npm:8.9.1"
+"mongodb-memory-server@npm:^8.9.2":
+  version: 8.9.2
+  resolution: "mongodb-memory-server@npm:8.9.2"
   dependencies:
-    mongodb-memory-server-core: 8.9.1
+    mongodb-memory-server-core: 8.9.2
     tslib: ^2.4.0
-  checksum: d594ca8c389a643a32d8b3e453ebd837b7a089c4e8401532f9e760a6e049fc5e6253ff8b28616df45d3c39251f65b972d92c0ba15b70d3daf6996ec1f92634fe
+  checksum: 85ec55cabe301228e34a6c2abd5d061caa05f153032a4d84fafa8ecbf6b6cfee37a47386a2c3cc8fc676a8515fc2b7d64f72b3173a7630d91606ec1cf484be87
   languageName: node
   linkType: hard
 
@@ -5558,9 +5558,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^6.6.0":
-  version: 6.6.0
-  resolution: "mongoose@npm:6.6.0"
+"mongoose@npm:^6.6.1":
+  version: 6.6.1
+  resolution: "mongoose@npm:6.6.1"
   dependencies:
     bson: ^4.6.5
     kareem: 2.4.1
@@ -5569,7 +5569,7 @@ __metadata:
     mquery: 4.0.3
     ms: 2.1.3
     sift: 16.0.0
-  checksum: 41f5bc38fd8cf394b3964b61d351de263a50cbfc94b968c186f94c584211471dbeaea65b6a9b70c84d764219a730616e4242f75263e272f5a171bed520313e2e
+  checksum: dd854c9e6bd9898d2b94af5051a4bcb91da25a65fcb0ebe00f29cf269c74c4bfaf20669ee38c451f51c0204eaab5b961bd94378c6e7a7a0d6a2d5412187100c6
   languageName: node
   linkType: hard
 
@@ -6882,9 +6882,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.0.0":
-  version: 29.0.0
-  resolution: "ts-jest@npm:29.0.0"
+"ts-jest@npm:^29.0.1":
+  version: 29.0.1
+  resolution: "ts-jest@npm:29.0.1"
   dependencies:
     bs-logger: 0.x
     fast-json-stable-stringify: 2.x
@@ -6911,7 +6911,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: f4e811aa910b7cd2ef6a9269700dda17ccf253ebdb6ba9e596982d238292d6482973e670e7a6875209e7d246cdf575d79590fc503e12e9368e9105d1d74f09fc
+  checksum: f126675beb0d103d440b0297dc331ce37ba0f1e1a8002f4e97bfeb9043cf21b4de03deebf11ac1f08b7e4978d87f6a1c71e398b1c2f8535df3b684338786408e
   languageName: node
   linkType: hard
 
