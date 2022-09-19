@@ -26,7 +26,7 @@ describe('CRUD', () => {
   }
 
   const textMessage = { text: 'hi, i`m test text, or text test... wait...' }
-  const UpdatedMessage = { text: 'now i am Message!' }
+  const updatedMessage = { text: 'now i am Message!' }
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -100,17 +100,17 @@ describe('CRUD', () => {
   it('should update message', async () => {
     const response = await request(server)
       .patch(`/message/${messageId}`)
-      .send(UpdatedMessage)
+      .send(updatedMessage)
       .set('token', token1)
-    const messages = await MessageModel.findById(messageId)
+    const message = await MessageModel.findById(messageId)
     console.log(response.error)
-    expect(messages?.text).toBe(UpdatedMessage.text)
+    expect(message?.text).toBe(updatedMessage.text)
   })
 
   it(`try update another user's message`, async () => {
     const response = await request(server)
       .patch(`/message/${messageId}`)
-      .send(UpdatedMessage)
+      .send(updatedMessage)
       .set('token', token2)
     expect(response.statusCode).toBe(404)
   })
