@@ -116,11 +116,12 @@ describe('CRUD', () => {
   })
 
   it('should delete message', async () => {
-    await request(server).delete(`/message/${messageId}`).set('token', token1)
-    const responseAgain = await request(server)
+    const response = await request(server)
       .delete(`/message/${messageId}`)
       .set('token', token1)
-    expect(responseAgain.statusCode).toBe(404)
+    console.log(response.error)
+    const message = await MessageModel.findById(messageId)
+    expect(message).toBe(null)
   })
 
   it(`try delete another user's message`, async () => {
