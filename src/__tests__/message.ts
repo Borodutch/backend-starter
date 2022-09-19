@@ -3,7 +3,6 @@ import * as shutdown from 'http-graceful-shutdown'
 import { MessageModel } from '@/models/Message'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose, ObjectId } from 'mongoose'
-import { Ref } from '@typegoose/typegoose'
 import { Server } from 'http'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
@@ -16,7 +15,6 @@ describe('CRUD', () => {
   let token1: string
   let token2: string
   let messageId: ObjectId
-  let authorId1: ObjectId
 
   const user1 = {
     email: 'email1@google.com',
@@ -39,20 +37,18 @@ describe('CRUD', () => {
   beforeEach(async () => {
     const response1 = await request(server).post('/login/email').send(user1)
     token1 = response1.body.token
-    authorId1 = response1.body._id
     const response2 = await request(server).post('/login/email').send(user2)
     token2 = response2.body.token
-    const response = await request(server)
-      .post('/message/')
-      .send(textMessage)
-      .set('token', token1)
-    messageId = response.body._id
+    const message = await MessageModel.create({
+      text: textMessage.text,
+      author: response1.body._id,
+    })
+    messageId = message._id
   })
 
   afterEach(async () => {
     await mongoose.connection.db.dropDatabase()
   })
-
   afterAll(async () => {
     await shutdown(server)
     await mongoServer.stop()
@@ -84,7 +80,6 @@ describe('CRUD', () => {
       .set('token', token1)
     console.log(response.error)
     expect(response.body.text).toBe(textMessage.text)
-    expect(response.body.author._id).toBe(authorId1)
   })
 
   it('should get and return message', async () => {
@@ -93,7 +88,6 @@ describe('CRUD', () => {
       .set('token', token1)
     console.log(response.error)
     expect(response.body.text).toBe(textMessage.text)
-    expect(response.body.author).toBe(authorId1)
   })
 
   it(`try get another user's message`, async () => {
@@ -104,27 +98,21 @@ describe('CRUD', () => {
   })
 
   it('should update message', async () => {
-    await request(server)
+    const response = await request(server)
       .patch(`/message/${messageId}`)
       .send(UpdatedMessage)
       .set('token', token1)
-    const responseAgain = await request(server)
-      .get(`/message/${messageId}`)
-      .set('token', token1)
-    console.log(responseAgain.error)
-    expect(responseAgain.body.text).toBe(UpdatedMessage.text)
-    expect(responseAgain.body.author).toBe(authorId1)
+    const messages = await MessageModel.findById(messageId)
+    console.log(response.error)
+    expect(messages?.text).toBe(UpdatedMessage.text)
   })
 
   it(`try update another user's message`, async () => {
-    await request(server)
+    const response = await request(server)
       .patch(`/message/${messageId}`)
       .send(UpdatedMessage)
       .set('token', token2)
-    const responseAgain = await request(server)
-      .get(`/message/${messageId}`)
-      .set('token', token2)
-    expect(responseAgain.statusCode).toBe(404)
+    expect(response.statusCode).toBe(404)
   })
 
   it('should delete message', async () => {
