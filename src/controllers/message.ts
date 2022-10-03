@@ -25,7 +25,7 @@ export default class MessageController {
   @Post('/')
   postMessage(
     @CurrentUser() author: User,
-    @Body({ required: true }) text: string
+    @Body({ required: true }) { text }: { text: string }
   ) {
     return MessageModel.create({ text, author })
   }
@@ -33,7 +33,7 @@ export default class MessageController {
   @Put('/:id')
   @Flow(checkMessage)
   putMessage(
-    @Body({ required: true }) text: string,
+    @Body({ required: true }) { text }: { text: string },
     @State('message') message: Message
   ) {
     return MessageModel.findByIdAndUpdate(message, { text })

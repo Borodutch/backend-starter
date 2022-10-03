@@ -64,23 +64,23 @@ describe('CRUD test', () => {
   it('testing POST', async () => {
     const response = await request(server)
       .post('/crud')
-      .send(postText)
+      .send({ text: postText })
       .set('token', token)
 
-    expect(response.body.text).toBe('[object Object]')
+    expect(response.body.text).toBe(postText)
     expect(response.body.author._id).toBe(author)
   })
 
   it('testing PUT', async () => {
     const response = await request(server)
       .put(`/crud/${messageId}`)
-      .send(putText)
+      .send({ text: putText })
       .set('token', token)
 
     expect(response.body.text).toBe(text)
 
     const updatedMessage = await MessageModel.findById(messageId)
-    expect(updatedMessage?.text).toBe('[object Object]')
+    expect(updatedMessage?.text).toBe(putText)
   })
 
   it('testing DELETE', async () => {
