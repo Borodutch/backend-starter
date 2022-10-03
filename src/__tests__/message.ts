@@ -12,21 +12,12 @@ describe('CRUD test', () => {
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
 
-  const user = {
-    email: 'testcrud@gmail.com',
-    name: 'crudTest',
-  }
-
   let token: string
   let author: string
   let messageId: string
 
   const text = 'yoba, eto ti?'
   const postText = { text: 'hello yoba' }
-  const putText = { text: 'da, eto ya!' }
-
-  const unregisteredToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGZlMTY2MTIwODExNzg2OGVlNjgxMyIsImlhdCI6MTY2MTk4NTEyNn0.W3E_w2wzrkkcGCmkot_dvlU2v46OjDhQgI6nAHhSvdQ'
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -35,6 +26,11 @@ describe('CRUD test', () => {
   })
 
   beforeEach(async () => {
+    const user = {
+      email: 'testcrud@gmail.com',
+      name: 'crudTest',
+    }
+
     const response = await request(server).post('/login/email').send(user)
     token = response.body.token
     author = response.body._id
@@ -64,7 +60,7 @@ describe('CRUD test', () => {
     expect(response.body[0].author).toBe(author)
   })
 
-  it('checks the appearance of new message in DB', async () => {
+  it('adds the new message to the DB', async () => {
     const response = await request(server)
       .post('/crud')
       .send(postText)
@@ -74,40 +70,45 @@ describe('CRUD test', () => {
     const newMessage = await MessageModel.findById(newMessageId)
 
     expect(newMessage).not.toBeNull()
-    expect(response.body.text).toBe(postText.text)
-    expect(response.body.author._id).toBe(author)
+    expect(typeof newMessage?.text).toBe('string')
+    expect(newMessage?.text).toBe(postText.text)
+    expect(newMessage?.author).toBeInstanceOf(Object)
+    expect(newMessage?.author?.toString()).toBe(author)
   })
 
-  it('checks update of existing message', async () => {
+  it('updates the message correctly', async () => {
+    const putText = { text: 'da, eto ya!' }
     const response = await request(server)
       .put(`/crud/${messageId}`)
       .send(putText)
       .set('token', token)
 
-    expect(response.body.text).toBe(text)
+    expect(response.statusCode).toBe(200)
 
     const updatedMessage = await MessageModel.findById(messageId)
     expect(updatedMessage?.text).toBe(putText.text)
   })
 
-  it('testing DELETE of existing message', async () => {
+  it('deletes existing message', async () => {
     const response = await request(server)
       .delete(`/crud/${messageId}`)
       .set('token', token)
 
-    expect(response.body.text).toBe(text)
+    expect(response.statusCode).toBe(200)
 
     const deletedMessage = await MessageModel.findById(messageId)
     expect(deletedMessage).toBeNull()
   })
 
-  it('testing get request without token', async () => {
+  it('makes get request without token', async () => {
     const response = await request(server).get('/crud')
 
     expect(response.statusCode).toBe(404)
   })
 
-  it('testing post with unregistered token', async () => {
+  it('makes post with unregistered token', async () => {
+    const unregisteredToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGZlMTY2MTIwODExNzg2OGVlNjgxMyIsImlhdCI6MTY2MTk4NTEyNn0.W3E_w2wzrkkcGCmkot_dvlU2v46OjDhQgI6nAHhSvdQ'
     const response = await request(server)
       .post('/crud')
       .send(postText)
