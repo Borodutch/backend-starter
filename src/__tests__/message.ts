@@ -66,6 +66,8 @@ describe('CRUD test', () => {
       .send(postText)
       .set('token', token)
 
+    expect(response.statusCode).toBe(200)
+
     const newMessageId = response.body._id
     const newMessage = await MessageModel.findById(newMessageId)
 
@@ -96,7 +98,7 @@ describe('CRUD test', () => {
 
     expect(response.statusCode).toBe(200)
 
-    const deletedMessage = await MessageModel.findById(messageId)
+    const deletedMessage = await MessageModel.findById(response.body._id)
     expect(deletedMessage).toBeNull()
   })
 
