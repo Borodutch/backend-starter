@@ -11,6 +11,7 @@ import {
 } from 'amala'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
+import MessageText from '@/validators/Message'
 import checkMessage from '@/middlewares/checkMessage'
 import checkUser from '@/middlewares/checkUser'
 
@@ -25,7 +26,7 @@ export default class MessageController {
   @Post('/')
   postMessage(
     @CurrentUser() author: User,
-    @Body({ required: true }) { text }: { text: string }
+    @Body({ required: true }) { text }: MessageText
   ) {
     return MessageModel.create({ text, author })
   }
@@ -33,7 +34,7 @@ export default class MessageController {
   @Put('/:id')
   @Flow(checkMessage)
   putMessage(
-    @Body({ required: true }) { text }: { text: string },
+    @Body({ required: true }) { text }: MessageText,
     @State('message') message: Message
   ) {
     return MessageModel.findByIdAndUpdate(message, { text })
