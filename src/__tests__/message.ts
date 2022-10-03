@@ -4,7 +4,6 @@ import { MessageModel } from '@/models/Message'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
-import { ValidationError } from 'amala'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
@@ -48,7 +47,7 @@ describe('CRUD test', () => {
   })
 
   afterAll(async () => {
-    await shutdown(server)
+    shutdown(server)
     await mongoServer.stop()
     return new Promise<void>((resolve, reject) => {
       server.close((err) => {
