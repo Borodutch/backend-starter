@@ -5,20 +5,42 @@ import { Mongoose } from 'mongoose'
 import { Server } from 'http'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
-import MockAdapter from 'axios-mock-adapter'
-import axios from 'axios'
+import MessageModel from '@/models/Message'
+import { UserModel } from '@/models/User'
+import MongoId from '@/validators/MongoId'
 
 describe('CRUD testing', () => {
-  const axiosMock = new MockAdapter(axios)
-
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
+  let token: string
+  let messageId: MongoId
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
     mongoose = await runMongo(await mongoServer.getUri())
     server = await runApp()
+
+    const author = {
+      name: 'John Doe',
+      email: 'John@Doe.com',
+    }
+
+    const visiter = {
+      name: 'Jane Smith',
+      email: 'Jane@Smith.com',
+    }
+
+    const response = await request(server).post('/login/register').send(author)
+    token = response.body.token
+
+    const messageMock = { text: 'the first message' }
+    const responseMessage = await request(server)
+      .post('/message')
+      .send(messageMock)
+      .set('token', token)
+
+    messageId = responseMessage.body._id
   })
 
   afterAll(async () => {
@@ -32,18 +54,52 @@ describe('CRUD testing', () => {
   })
 
   describe('GET /message', () => {
-    it('should return a 200', async () => {
-      const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYTk5ZThkNmFiYWRlODg5ZjUyYjM3ZCIsImlhdCI6MTY1NTI4MzM0MX0.WPJ7j5GswI_JHQb89B2BBXGBbWio9iU2uxFipqr8bLQ'
-      axiosMock.onGet('/message').reply(200, {}, token)
+    it('should return all messages from database', async () => {
+      const response = await request(server).get('/message').set('token', token)
+      console.log(response.body)
+    })
+  })
+
+  describe('POST /message', () => {
+    it('should create a new message in database', async () => {
+      const messageMock = { text: 'POST testing' }
 
       const response = await request(server)
-        .get(`/message`)
-        .set('token', `${token}`)
+        .post('/message')
+        .send(messageMock)
+        .set('token', token)
 
-      console.log(response.headers.token)
+      const message = await MessageModel.findOne(messageMock)
 
-      expect(response.statusCode).toBe(200)
+      expect(response.body._id).toBe(message?.id)
+      expect(response.body.text).toBe(message?.text)
+    })
+
+    describe('PUT /message', () => {
+      it('should update the message in database', async () => {
+        const updateText = { text: 'PUT testing' }
+        const response = await request(server)
+          .put(`/message/${messageId}`)
+          .send(updateText)
+          .set('token', token)
+
+        const message = await MessageModel.findById(messageId)
+
+        expect(response.body._id).toBe(message?.id)
+        expect(response.body.text).toBe(message?.text)
+      })
+    })
+
+    describe('DELETE /message', () => {
+      it('should delete the message from database', async () => {
+        await request(server)
+          .delete(`/message/${messageId}`)
+          .set('token', token)
+
+        const message = await MessageModel.findById(messageId)
+
+        expect(message).toBeNull()
+      })
     })
   })
 })
