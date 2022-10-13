@@ -6,41 +6,52 @@ import { Server } from 'http'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 import MessageModel from '@/models/Message'
-import { UserModel } from '@/models/User'
+import { findOrCreateUser, User, UserModel } from '@/models/User'
 import MongoId from '@/validators/MongoId'
+import { notFound } from '@hapi/boom'
 
 describe('CRUD testing', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
-  let token: string
-  let messageId: MongoId
+  let authorToken: string
+  let authorId: MongoId
+  let noAuthorToken: string
+  let firstMessageId: MongoId
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
     mongoose = await runMongo(await mongoServer.getUri())
     server = await runApp()
 
-    const author = {
+    const authorMock = {
       name: 'John Doe',
       email: 'John@Doe.com',
     }
 
-    const visiter = {
+    const author = await findOrCreateUser(authorMock)
+    author.strippedAndFilled({ withExtra: true })
+    authorId = author._id
+    if (typeof author.token === 'string') {
+      authorToken = author.token
+    }
+
+    const noAuthorMock = {
       name: 'Jane Smith',
       email: 'Jane@Smith.com',
     }
 
-    const response = await request(server).post('/login/register').send(author)
-    token = response.body.token
+    const noAuthor = await findOrCreateUser(noAuthorMock)
+    author.strippedAndFilled({ withExtra: true })
+    if (typeof noAuthor.token === 'string') {
+      noAuthorToken = noAuthor.token
+    }
 
-    const messageMock = { text: 'the first message' }
-    const responseMessage = await request(server)
-      .post('/message')
-      .send(messageMock)
-      .set('token', token)
-
-    messageId = responseMessage.body._id
+    const message = await MessageModel.create({
+      text: 'the first message',
+      author: authorId,
+    })
+    firstMessageId = message.id
   })
 
   afterAll(async () => {
@@ -55,8 +66,31 @@ describe('CRUD testing', () => {
 
   describe('GET /message', () => {
     it('should return all messages from database', async () => {
-      const response = await request(server).get('/message').set('token', token)
-      console.log(response.body)
+      await MessageModel.create({
+        text: 'author message',
+        author: authorId,
+      })
+      const messages = await MessageModel.find()
+
+      const { statusCode, body } = await request(server)
+        .get('/message')
+        .set('token', authorToken)
+
+      expect(JSON.stringify(body)).toBe(JSON.stringify(messages))
+      expect(statusCode).toBe(200)
+    })
+
+    it('should return no messages for users who isn`t author', async () => {
+      await MessageModel.create({
+        text: 'author message',
+        author: authorId,
+      })
+      const { statusCode, body } = await request(server)
+        .get('/message')
+        .set('token', noAuthorToken)
+
+      expect(body).toHaveLength(0)
+      expect(statusCode).toBe(200)
     })
   })
 
@@ -64,42 +98,66 @@ describe('CRUD testing', () => {
     it('should create a new message in database', async () => {
       const messageMock = { text: 'POST testing' }
 
-      const response = await request(server)
+      const { statusCode, body } = await request(server)
         .post('/message')
         .send(messageMock)
-        .set('token', token)
+        .set('token', authorToken)
 
       const message = await MessageModel.findOne(messageMock)
 
-      expect(response.body._id).toBe(message?.id)
-      expect(response.body.text).toBe(message?.text)
+      expect(body._id).toBe(message?.id)
+      expect(body.text).toBe(message?.text)
+      expect(statusCode).toBe(200)
+    })
+  })
+
+  describe('PUT /message', () => {
+    it('should update the message in database', async () => {
+      const updateText = { text: 'PUT testing' }
+
+      const { statusCode, body } = await request(server)
+        .put(`/message/${firstMessageId}`)
+        .send(updateText)
+        .set('token', authorToken)
+
+      expect(body._id).toBe(firstMessageId)
+      expect(body.text).toBe(updateText.text)
+      expect(statusCode).toBe(200)
     })
 
-    describe('PUT /message', () => {
-      it('should update the message in database', async () => {
-        const updateText = { text: 'PUT testing' }
-        const response = await request(server)
-          .put(`/message/${messageId}`)
-          .send(updateText)
-          .set('token', token)
+    it('should return not found error message if non-author tries to change the message', async () => {
+      const updateText = { text: 'PUT testing' }
 
-        const message = await MessageModel.findById(messageId)
+      const { statusCode, body } = await request(server)
+        .put(`/message/${firstMessageId}`)
+        .send(updateText)
+        .set('token', noAuthorToken)
 
-        expect(response.body._id).toBe(message?.id)
-        expect(response.body.text).toBe(message?.text)
-      })
+      expect(body.message).toBe(notFound('message not found').message)
+      expect(statusCode).toBe(404)
+    })
+  })
+
+  describe('DELETE /message', () => {
+    it('should delete the message from database', async () => {
+      const { statusCode, body } = await request(server)
+        .delete(`/message/${firstMessageId}`)
+        .set('token', authorToken)
+
+      const message = await MessageModel.findById(firstMessageId)
+
+      expect(message).toBeNull()
+      expect(body._id).toBe(firstMessageId)
+      expect(statusCode).toBe(200)
     })
 
-    describe('DELETE /message', () => {
-      it('should delete the message from database', async () => {
-        await request(server)
-          .delete(`/message/${messageId}`)
-          .set('token', token)
+    it('should return not found error message when non-author tries to delete the message', async () => {
+      const { statusCode, body } = await request(server)
+        .delete(`/message/${firstMessageId}`)
+        .set('token', noAuthorToken)
 
-        const message = await MessageModel.findById(messageId)
-
-        expect(message).toBeNull()
-      })
+      expect(body.message).toBe(notFound('message not found').message)
+      expect(statusCode).toBe(404)
     })
   })
 })
