@@ -1,20 +1,17 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Mongoose } from 'mongoose'
 import { Server } from 'http'
-import { findOrCreateUser } from '@/models/User'
 import { badRequest, notFound } from '@hapi/boom'
+import { findOrCreateUser } from '@/models/User'
 import MessageModel from '@/models/Message'
 import MongoId from '@/validators/MongoId'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
-import { sign } from 'jsonwebtoken'
 
 describe('CRUD testing', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
-  let mongoose: Mongoose
   let authorToken: string
   let authorId: MongoId
   let noAuthorToken: string
@@ -22,7 +19,7 @@ describe('CRUD testing', () => {
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
-    mongoose = await runMongo(await mongoServer.getUri())
+    await runMongo(await mongoServer.getUri())
     server = await runApp()
 
     const authorMock = {
