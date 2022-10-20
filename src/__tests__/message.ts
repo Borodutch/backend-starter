@@ -3,12 +3,13 @@ import * as shutdown from 'http-graceful-shutdown'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
+import { findOrCreateUser } from '@/models/User'
+import { badRequest, notFound } from '@hapi/boom'
+import MessageModel from '@/models/Message'
+import MongoId from '@/validators/MongoId'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
-import MessageModel from '@/models/Message'
-import { findOrCreateUser, User, UserModel } from '@/models/User'
-import MongoId from '@/validators/MongoId'
-import { notFound } from '@hapi/boom'
+import { sign } from 'jsonwebtoken'
 
 describe('CRUD testing', () => {
   let server: Server
@@ -64,6 +65,15 @@ describe('CRUD testing', () => {
     })
   })
 
+  describe('Get access without authenticate', () => {
+    it('should return invalid token error if no token provided or it`s wrong', async () => {
+      const { statusCode, body } = await request(server).get('/message')
+
+      expect(statusCode).toBe(400)
+      expect(body.message).toBe(badRequest('invalid token').message)
+    })
+  })
+
   describe('GET /message', () => {
     it('should return all messages from database', async () => {
       await MessageModel.create({
@@ -81,10 +91,6 @@ describe('CRUD testing', () => {
     })
 
     it('should return no messages for users who isn`t author', async () => {
-      await MessageModel.create({
-        text: 'author message',
-        author: authorId,
-      })
       const { statusCode, body } = await request(server)
         .get('/message')
         .set('token', noAuthorToken)
@@ -151,7 +157,7 @@ describe('CRUD testing', () => {
       expect(statusCode).toBe(200)
     })
 
-    it('should return not found error message when non-author tries to delete the message', async () => {
+    it('should return not found error message if non-author tries to delete the message', async () => {
       const { statusCode, body } = await request(server)
         .delete(`/message/${firstMessageId}`)
         .set('token', noAuthorToken)
