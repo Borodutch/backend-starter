@@ -13,7 +13,7 @@ import getGoogleUser from '@/helpers/getGoogleUser'
 @Controller('/login')
 export default class LoginController {
   @Post('/email')
-  async email(@Body({ required:true }) { email, name }: EmailLogin ) {
+  async email(@Body({ required: true }) { email, name }: EmailLogin) {
     const user = await findOrCreateUser({ email, name })
     return user.strippedAndFilled({ withExtra: true })
   }

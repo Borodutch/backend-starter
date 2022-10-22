@@ -8,7 +8,7 @@ export async function authentication(ctx: Context, next: Next) {
   }
   const user = await UserModel.findOne({ token: ctx.header.token })
   if (!user) {
-    return ctx.throw(badRequest("No user with such token"))
+    return ctx.throw(badRequest('No user with such token'))
   }
   ctx.state.user = user
   return next()
