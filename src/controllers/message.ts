@@ -9,22 +9,22 @@ import {
   Put,
   State,
 } from 'amala'
-import { Message, messageModel } from '../models/Message'
-import { User } from '../models/User'
-import { messageText } from '../validators/MessageText'
-import { authentication } from '../middleware/auth'
-import { checkAuthorship } from '../middleware/checkAuthorship'
 import { DocumentType } from '@typegoose/typegoose'
+import { Message, MessageModel } from '@/models/Message'
+import { User } from '@/models/User'
+import authenticate from '@/middleware/authenticate'
+import checkAuthorship from '@/middleware/checkAuthorship'
+import messageText from '@/validators/MessageText'
 
 @Controller('/message')
-@Flow(authentication)
-export class messageController {
+@Flow(authenticate)
+export default class messageController {
   @Post('/')
   createMessage(
     @Body({ required: true }) text: messageText,
     @CurrentUser() author: DocumentType<User>
   ) {
-    return messageModel.create({ text, author })
+    return MessageModel.create({ text, author })
   }
 
   @Get('/:id')

@@ -1,4 +1,4 @@
-import { getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose'
+import { Ref, getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 import { User } from '@/models/User'
 
 @modelOptions({
@@ -11,4 +11,4 @@ export class Message {
   text!: string
 }
 
-export const messageModel = getModelForClass(Message)
+export const MessageModel = getModelForClass(Message)

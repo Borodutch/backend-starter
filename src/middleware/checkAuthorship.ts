@@ -1,12 +1,16 @@
 import { Context, Next } from 'koa'
-import { messageModel } from '../models/Message'
+import { MessageModel } from '@/models/Message'
 
-export async function checkAuthorship(ctx: Context, next: Next) {
+export default async function checkAuthorship(ctx: Context, next: Next) {
   const id = ctx.params.id
   const user = ctx.state.user
-  const message = await messageModel.findById(id)
+  const message = await MessageModel.findById(id)
   ctx.state.message = message
-  if (message!.author != user.id) {
+  if (!message) {
     return ctx.throw(404, 'not found')
-  } else next()
+  }
+  if (message.author != user.id) {
+    return ctx.throw(404, 'not found')
+  }
+  return next()
 }
