@@ -1,6 +1,6 @@
 import { IsString } from 'amala'
 
-export default class messageText {
+export default class MessageText {
   @IsString()
   text!: string
 }

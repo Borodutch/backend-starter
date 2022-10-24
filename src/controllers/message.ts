@@ -14,14 +14,14 @@ import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import authenticate from '@/middleware/authenticate'
 import checkAuthorship from '@/middleware/checkAuthorship'
-import messageText from '@/validators/MessageText'
+import MessageText from '@/validators/MessageText'
 
 @Controller('/message')
 @Flow(authenticate)
 export default class messageController {
   @Post('/')
   createMessage(
-    @Body({ required: true }) text: messageText,
+    @Body({ required: true }) { text }: MessageText,
     @CurrentUser() author: DocumentType<User>
   ) {
     return MessageModel.create({ text, author })
@@ -43,7 +43,7 @@ export default class messageController {
   @Flow(checkAuthorship)
   updateMessage(
     @State('message') message: DocumentType<Message>,
-    @Body({ required: true }) text: string
+    @Body({ required: true }) { text }: MessageText
   ) {
     message.text = text
     return message.save()
