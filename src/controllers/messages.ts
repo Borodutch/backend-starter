@@ -5,15 +5,15 @@ import {
   Delete,
   Flow,
   Get,
-  Params,
   Post,
   Put,
+  State,
 } from 'amala'
-import { MessagesModel } from '@/models/MessagesModel'
+import { Message, MessagesModel } from '@/models/MessagesModel'
 import { User } from '@/models/User'
-import DocumentId from '@/validators/DocumentId'
 import MessageContentPayload from '@/validators/MessageContentPayload'
 import checkToken from '@/middleware/checkToken'
+import checkUser from '@/middleware/checkUser'
 
 @Controller('/messages')
 @Flow(checkToken)
@@ -27,19 +27,19 @@ export default class MessageController {
   }
 
   @Put('/:id')
-  async updateMessage(
-    @Params('id') id: DocumentId,
-    @Body({ required: true }) payload: MessageContentPayload
+  @Flow(checkUser)
+  updateMessage(
+    @Body({ required: true }) { text }: MessageContentPayload,
+    @State('message') message: Message
   ) {
-    const updatedMessage = await MessagesModel.findByIdAndUpdate(id, {
-      text: payload.text,
-    })
-    return await MessagesModel.findById(updatedMessage)
+    const updatedMessage = MessagesModel.findByIdAndUpdate(message, { text })
+    return updatedMessage
   }
 
+  @Flow(checkUser)
   @Delete('/:id')
-  deleteMessage(@Params('id') id: DocumentId) {
-    return MessagesModel.findByIdAndDelete(id)
+  deleteMessage(@State('message') messages: Message) {
+    return MessagesModel.findByIdAndDelete(messages)
   }
 
   @Get('/')
