@@ -18,7 +18,7 @@ import MessageText from '@/validators/MessageText'
 
 @Controller('/message')
 @Flow(authenticate)
-export default class messageController {
+export default class MessageController {
   @Post('/')
   createMessage(
     @Body({ required: true }) { text }: MessageText,
