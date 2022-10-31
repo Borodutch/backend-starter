@@ -1,8 +1,8 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
 import { MessageModel } from '@/models/Message'
-import { Mongoose } from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
+import { Mongoose } from 'mongoose'
 import { Server } from 'http'
 import { UserModel } from '@/models/User'
 import runApp from '@/helpers/runApp'
@@ -140,7 +140,7 @@ describe('Send message', () => {
         .set({ token: token })
         .send(testText)
       const messageId = responseWithMessage.body._id
-      const responseForDelete = await request(server)
+      await request(server)
         .delete(`/message/${messageId}`)
         .set({ token: token })
       const responseForAccessingDeleted = await request(server)
