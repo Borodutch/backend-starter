@@ -21,9 +21,9 @@ export default class MessageController {
   @Post('/')
   createMessage(
     @CurrentUser() author: User,
-    @Body({ required: true }) payload: MessageContentPayload
+    @Body({ required: true }) { text }: MessageContentPayload
   ) {
-    return MessagesModel.create({ text: payload.text, author })
+    return MessagesModel.create({ text, author })
   }
 
   @Put('/:id')
