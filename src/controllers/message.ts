@@ -12,9 +12,9 @@ import {
 import { DocumentType } from '@typegoose/typegoose'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
+import MessageText from '@/validators/MessageText'
 import authenticate from '@/middleware/authenticate'
 import checkAuthorship from '@/middleware/checkAuthorship'
-import MessageText from '@/validators/MessageText'
 
 @Controller('/message')
 @Flow(authenticate)
