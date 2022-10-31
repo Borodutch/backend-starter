@@ -32,8 +32,7 @@ export default class MessageController {
     @Body({ required: true }) { text }: MessageContentPayload,
     @State('message') message: Message
   ) {
-    const updatedMessage = MessagesModel.findByIdAndUpdate(message, { text })
-    return updatedMessage
+    return MessagesModel.findByIdAndUpdate(message, { text }, { new: true })
   }
 
   @Flow(checkUser)
