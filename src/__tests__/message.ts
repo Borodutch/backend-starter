@@ -1,8 +1,10 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
-import { MongoMemoryServer } from 'mongodb-memory-server'
+import { MessageModel } from '@/models/Message'
 import { Mongoose } from 'mongoose'
+import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
+import { UserModel } from '@/models/User'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
 
@@ -10,10 +12,10 @@ describe('Send message', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
-  let testUser = { name: 'Johnny Sins', email: 'sins@johnny.com' }
+  const testUser = { name: 'Johnny Sins', email: 'sins@johnny.com' }
   let token: null
-  let testText = { text: 'London is the capital of GB' }
-  let updatedText = { text: 'This message was updated' }
+  const testText = { text: 'London is the capital of GB' }
+  const updatedText = { text: 'This message was updated' }
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -37,6 +39,7 @@ describe('Send message', () => {
     expect(response.body.name).toBe(testUser.name)
     expect(response.body.email).toBe(testUser.email)
     expect(response.body.token).toBeTruthy()
+    expect(await UserModel.findOne(testUser)).toHaveProperty('token')
   })
 
   describe('REST methods for CRUD messages', () => {
@@ -50,6 +53,7 @@ describe('Send message', () => {
         .set({ token: token })
         .send(testText)
       expect(response.body.text).toBe(testText.text)
+      expect(await MessageModel.findOne(testText)).toBeTruthy()
     })
 
     describe('GET method', () => {
@@ -119,6 +123,7 @@ describe('Send message', () => {
         .set({ token: token })
         .send(updatedText)
       expect(responseForPut.body.text).toBe(updatedText.text)
+      expect(await MessageModel.findOne(updatedText)).toBeTruthy()
     })
 
     it('should delete existing message', async () => {
@@ -138,6 +143,7 @@ describe('Send message', () => {
         .get(`/message/${messageId}`)
         .set({ token: token })
       expect(responseForAccessingDeleted.statusCode).toBe(404)
+      expect(await MessageModel.findOne(testText)).toBeNull
     })
   })
 })
