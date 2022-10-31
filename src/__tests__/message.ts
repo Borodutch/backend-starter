@@ -52,8 +52,9 @@ describe('Send message', () => {
         .post('/message')
         .set({ token: token })
         .send(testText)
+      const testMessage = await MessageModel.findOne(testUser)
       expect(response.body.text).toBe(testText.text)
-      expect(await MessageModel.findOne(testText)).toBeTruthy()
+      expect(testMessage?.text).toBe(testText.text)
     })
 
     describe('GET method', () => {
