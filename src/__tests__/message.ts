@@ -71,7 +71,9 @@ describe('Send message', () => {
         const response = await request(server)
           .get(`/message/${messageId}`)
           .set({ token: token })
+        const testMessage = await MessageModel.findById(messageId)
         expect(response.body.text).toBe(responseWithMessage.body.text)
+        expect(testMessage?.text).toBe(testText.text)
       })
 
       it('should return proper error for inappropriate token', async () => {
@@ -123,8 +125,9 @@ describe('Send message', () => {
         .put(`/message/${messageId}`)
         .set({ token: token })
         .send(updatedText)
+      const updatedMessage = await MessageModel.findById(messageId)
       expect(responseForPut.body.text).toBe(updatedText.text)
-      expect(await MessageModel.findOne(updatedText)).toBeTruthy()
+      expect(updatedMessage?.text).toBe(updatedText.text)
     })
 
     it('should delete existing message', async () => {
@@ -144,7 +147,7 @@ describe('Send message', () => {
         .get(`/message/${messageId}`)
         .set({ token: token })
       expect(responseForAccessingDeleted.statusCode).toBe(404)
-      expect(await MessageModel.findOne(testText)).toBeNull
+      expect(await MessageModel.findById(messageId)).toBeNull()
     })
   })
 })
