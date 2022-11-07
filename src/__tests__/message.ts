@@ -114,7 +114,7 @@ describe('CRUD test', () => {
     expect(updatedMessage?.text).toBe(putText.text)
   })
 
-  it('makes update with wrong token', async () => {
+  it('makes update request with wrong token', async () => {
     await request(server)
       .put(`/messages/${messageId}`)
       .send(putText)
@@ -122,7 +122,7 @@ describe('CRUD test', () => {
       .expect(403)
   })
 
-  it('makes update without token', async () => {
+  it('make update request without token', async () => {
     const responce = await request(server)
       .put(`/messages/${messageId}`)
       .send(putText)
