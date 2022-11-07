@@ -1,17 +1,20 @@
 import { Context, Next } from 'koa'
 import { UserModel } from '@/models/User'
-import { badRequest, notFound } from '@hapi/boom'
+import { forbidden, notFound, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
 export default async function (ctx: Context, next: Next) {
   const { token } = ctx.request.headers
   if (typeof token !== 'string') {
-    return ctx.throw(badRequest('invalid token'))
+    console.log('token isnt string')
+    return ctx.throw(unauthorized('invalid token'))
   }
   try {
     verify(token)
+    console.log('token is verify')
   } catch (err) {
-    return ctx.throw(badRequest('invalid token', { data: err }))
+    console.log('token hasnt')
+    return ctx.throw(forbidden('invalid token', { data: err }))
   }
 
   const user = await UserModel.findOne({ token })
