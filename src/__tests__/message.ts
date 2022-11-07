@@ -61,7 +61,7 @@ describe('CRUD test', () => {
     expect(response.statusCode).toBe(200)
   })
 
-  it('makes get request without token', async () => {
+  it('make get request without token', async () => {
     const responce = await request(server).get('/messages').send()
     expect(responce.statusCode).toBe(401)
   })
@@ -89,7 +89,7 @@ describe('CRUD test', () => {
     expect(newMessage?.author?.toString()).toBe(author)
   })
 
-  it('makes post request with wrong token', async () => {
+  it('make post request with wrong token', async () => {
     const responce = await request(server)
       .post('/messages')
       .send(textForPost)
@@ -97,7 +97,7 @@ describe('CRUD test', () => {
     expect(responce.statusCode).toBe(403)
   })
 
-  it('makes post request without token', async () => {
+  it('make post request without token', async () => {
     const responce = await request(server).post('/messages').send(textForPost)
     expect(responce.statusCode).toBe(401)
   })
@@ -114,7 +114,7 @@ describe('CRUD test', () => {
     expect(updatedMessage?.text).toBe(putText.text)
   })
 
-  it('makes update request with wrong token', async () => {
+  it('make update request with wrong token', async () => {
     await request(server)
       .put(`/messages/${messageId}`)
       .send(putText)
