@@ -10,7 +10,7 @@ export default async function getGoogleUser(
 ): Promise<GoogleResponse> {
   return (
     await axios(
-      `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${accessToken}`
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`
     )
   ).data
 }
