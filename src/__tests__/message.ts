@@ -1,7 +1,6 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
-import { DocumentType } from '@typegoose/typegoose'
-import { Message, MessagesModel } from '@/models/MessagesModel'
+import { MessagesModel } from '@/models/MessagesModel'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
