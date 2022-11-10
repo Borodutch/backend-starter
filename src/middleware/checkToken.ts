@@ -6,14 +6,11 @@ import { verify } from '@/helpers/jwt'
 export default async function (ctx: Context, next: Next) {
   const { token } = ctx.request.headers
   if (typeof token !== 'string') {
-    console.log('token isnt string')
     return ctx.throw(unauthorized('invalid token'))
   }
   try {
     verify(token)
-    console.log('token is verify')
   } catch (err) {
-    console.log('token hasnt')
     return ctx.throw(forbidden('invalid token', { data: err }))
   }
 

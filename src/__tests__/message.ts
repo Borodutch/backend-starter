@@ -1,6 +1,7 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
-import { MessagesModel } from '@/models/MessagesModel'
+import { DocumentType } from '@typegoose/typegoose'
+import { Message, MessagesModel } from '@/models/MessagesModel'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
@@ -22,6 +23,11 @@ describe('CRUD test', () => {
   const wrongToken =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNjc5NTAxMGI4YTQ4YzUxMDU2ZGI0MSIsImlhdCI6MTY2NzczMjczN30.ZBAPzUrBB0EUOrVCR83x-2GPX8tvaCSQz_92fJVXsxs'
 
+  const user = {
+    email: 'qwerty@sada.com',
+    name: 'isName',
+  }
+
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
     mongoose = await runMongo(mongoServer.getUri())
@@ -29,11 +35,6 @@ describe('CRUD test', () => {
   })
 
   beforeEach(async () => {
-    const user = {
-      email: 'qwerty@sada.com',
-      name: 'one',
-    }
-
     const response = await request(server).post('/login/email').send(user)
     token = response.body.token
     author = response.body._id
@@ -58,6 +59,10 @@ describe('CRUD test', () => {
   it('make get request with token', async () => {
     const response = await request(server).get('/messages').set('token', token)
     expect(response.body[0].author).toBe(author)
+
+    const messages = await MessagesModel.find()
+    expect(JSON.stringify(response.body)).toBe(JSON.stringify(messages))
+
     expect(response.statusCode).toBe(200)
   })
 
@@ -80,13 +85,14 @@ describe('CRUD test', () => {
       .set('token', token)
     expect(response.statusCode).toBe(200)
 
-    const newMessageId = response.body._id
-    const newMessage = await MessagesModel.findById(newMessageId)
+    const messageId = response.body._id
+    const newMessage = await MessagesModel.findById(messageId)
 
     expect(newMessage).not.toBeNull()
-    expect(newMessage?.text).toBe(textForPost.text)
-    expect(newMessage?.author).toBeInstanceOf(Object)
-    expect(newMessage?.author?.toString()).toBe(author)
+
+    expect(response.body.text).toBe(textForPost.text)
+    expect(response.body.author.name).toBe(user.name)
+    expect(response.body.author.email).toBe(user.email)
   })
 
   it('make post request with wrong token', async () => {
@@ -110,8 +116,7 @@ describe('CRUD test', () => {
 
     expect(response.statusCode).toBe(200)
 
-    const updatedMessage = await MessagesModel.findById(messageId)
-    expect(updatedMessage?.text).toBe(putText.text)
+    expect(response.body.text).toBe(putText.text)
   })
 
   it('make update request with wrong token', async () => {
