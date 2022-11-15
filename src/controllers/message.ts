@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Ctx,
   CurrentUser,
   Delete,
   Flow,
@@ -10,14 +9,12 @@ import {
   Put,
   State,
 } from 'amala'
-import { Context } from 'koa'
+
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-
 import MessageText from '@/validators/MessageText'
-
 import authenticate from '@/middleware/authenticate'
-import verifyUser from '@/middleware/verify'
+import verifyUser from '@/middleware/verifyUser'
 
 @Controller('/message')
 @Flow(authenticate)
