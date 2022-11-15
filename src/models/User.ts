@@ -69,19 +69,3 @@ export async function findOrCreateUser(loginOptions: {
   }
   return user
 }
-
-export async function authenticationUser(UserOptions: { token?: string }) {
-  const user = await UserModel.findOne(
-    UserOptions,
-    {},
-    {
-      upsert: true,
-      new: true,
-    }
-  )
-  if (!user) {
-    throw new Error('Token not found')
-  }
-
-  return user.id
-}

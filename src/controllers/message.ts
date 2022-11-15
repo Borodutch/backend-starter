@@ -1,53 +1,54 @@
-import { Body, Controller, Ctx, Post } from 'amala'
-import { Context } from 'koa'
-import { authenticationUser } from '@/models/User'
 import {
-  createMessage,
-  deleteMessage,
-  getMessage,
-  updateMessage,
-} from '@/models/Message'
-import MessageCreate from '@/validators/MessageCreate'
-import MessageGetOrDelet from '@/validators/MessageGetOrDelet'
-import MessageUpdate from '@/validators/MessageUpdate'
+  Body,
+  Controller,
+  Ctx,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Post,
+  Put,
+  State,
+} from 'amala'
+import { Context } from 'koa'
+import { Message, MessageModel } from '@/models/Message'
+import { User } from '@/models/User'
+
+import MessageValidators from '@/validators/Message'
+
+import authenticationUser from '@/middleware/authenticationUser'
+import verifyUser from '@/middleware/verifyUser'
 
 @Controller('/message')
+@Flow(authenticationUser)
 export default class MessageController {
-  @Post('/create')
-  async create(@Body({ required: true }) { token, text }: MessageСreate) {
-    const id_user = await authenticationUser({ token })
-    const message = await createMessage({
-      id_user,
-      text,
-    })
-    return message.strippedAndFilled({ withExtra: true })
+  @Post('/')
+  async create(
+    @Body({ required: true }) { text }: Message,
+    @CurrentUser() author: User
+  ) {
+    return await MessageModel.create({ text, author })
   }
 
-  @Post('/get')
-  async get(@Body({ required: true }) { token, id }: MessageGetOrDelet) {
-    const id_user = await authenticationUser({ token })
-    const message = await getMessage({
-      id,
-      id_user,
-    })
-    return message.strippedAndFilled({ withExtra: true })
+  @Flow(verifyUser)
+  @Get('/:id')
+  async get(@State('message') message: Message) {
+    return await MessageModel.findById(message)
   }
 
-  @Post('/update')
-  async update(@Body({ required: true }) { token, id, text }: MessageUpdate) {
-    const id_user = await authenticationUser({ token })
-    const message = await updateMessage({
-      id,
-      id_user,
-      text,
-    })
-    return message.strippedAndFilled({ withExtra: true })
+  @Flow(verifyUser)
+  @Put('/:id')
+  async update(
+    @Body({ required: true }) { text }: MessageValidators,
+    @State('message') message: Message
+  ) {
+    await MessageModel.findByIdAndUpdate(message, { text })
+    return MessageModel.findById(message)
   }
 
-  @Post('/delete')
-  async delete(@Body({ required: true }) { token, id }: MessageGetOrDelet) {
-    const id_user = await authenticationUser({ token })
-    await deleteMessage({ id, id_user })
-    return '{"messege" : "successfully"}'
+  @Flow(verifyUser)
+  @Delete('/:id')
+  async delete(@State('message') message: Message) {
+    return await MessageModel.findByIdAndDelete(message)
   }
 }
