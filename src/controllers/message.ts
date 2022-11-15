@@ -14,32 +14,32 @@ import { Context } from 'koa'
 import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 
-import MessageValidators from '@/validators/Message'
+import MessageText from '@/validators/MessageText'
 
-import authenticationUser from '@/middleware/authenticationUser'
-import verifyUser from '@/middleware/verifyUser'
+import authenticate from '@/middleware/authenticate'
+import verifyUser from '@/middleware/verify'
 
 @Controller('/message')
-@Flow(authenticationUser)
+@Flow(authenticate)
 export default class MessageController {
   @Post('/')
-  async create(
+  create(
     @Body({ required: true }) { text }: Message,
     @CurrentUser() author: User
   ) {
-    return await MessageModel.create({ text, author })
+    return MessageModel.create({ text, author })
   }
 
   @Flow(verifyUser)
   @Get('/:id')
-  async get(@State('message') message: Message) {
-    return await MessageModel.findById(message)
+  get(@State('message') message: Message) {
+    return MessageModel.findById(message)
   }
 
   @Flow(verifyUser)
   @Put('/:id')
   async update(
-    @Body({ required: true }) { text }: MessageValidators,
+    @Body({ required: true }) { text }: MessageText,
     @State('message') message: Message
   ) {
     await MessageModel.findByIdAndUpdate(message, { text })
@@ -48,7 +48,7 @@ export default class MessageController {
 
   @Flow(verifyUser)
   @Delete('/:id')
-  async delete(@State('message') message: Message) {
-    return await MessageModel.findByIdAndDelete(message)
+  delete(@State('message') message: Message) {
+    return MessageModel.findByIdAndDelete(message)
   }
 }
