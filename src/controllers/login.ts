@@ -6,14 +6,14 @@ import { verifyTelegramPayload } from '@/helpers/verifyTelegramPayload'
 import FacebookLogin from '@/validators/FacebookLogin'
 import GoogleLogin from '@/validators/GoogleLogin'
 import TelegramLogin from '@/validators/TelegramLogin'
+import User from '@/validators/UserValidator'
 import getFBUser from '@/helpers/getFBUser'
 import getGoogleUser from '@/helpers/getGoogleUser'
-import newUser from '@/validators/newUser'
 
 @Controller('/login')
 export default class LoginController {
   @Post('/new')
-  async newUser(@Body({ required: true }) { name, email }: newUser) {
+  async User(@Body({ required: true }) { name, email }: User) {
     const user = await findOrCreateUser({
       name,
       email,

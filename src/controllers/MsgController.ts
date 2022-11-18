@@ -16,7 +16,7 @@ import MsgValidator from '@/validators/MsgValidator'
 import authentificate from '@/middlewares/authUser'
 import getMsgById from '@/middlewares/getMsgById'
 
-@Controller('/msg')
+@Controller('/message')
 @Flow(authentificate)
 export default class CRUD {
   @Post('/')
@@ -24,8 +24,6 @@ export default class CRUD {
     @CurrentUser() user: User,
     @Body({ required: true }) { text }: MsgValidator
   ) {
-    // console.log(user, text)
-
     return MsgModel.create({ text, user })
   }
 
@@ -39,8 +37,6 @@ export default class CRUD {
   @Get('/:id')
   @Flow(getMsgById)
   getOneMsg(@State() { message }: MsgState) {
-    // console.log(message._id.toString())
-
     return message
   }
 
