@@ -5,7 +5,6 @@ import { verify } from '@/helpers/jwt'
 
 export default async function authentificate(ctx: Context, next: Next) {
   const token = ctx.header.token
-  // console.log(token)
 
   if (!token) {
     throw unauthorized()
@@ -21,7 +20,6 @@ export default async function authentificate(ctx: Context, next: Next) {
     throw notFound
   }
   ctx.state.user = user
-  // console.log(ctx.state.user)
 
   return next()
 }

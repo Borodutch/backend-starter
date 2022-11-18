@@ -14,15 +14,10 @@ export default async function getMsgById(ctx: Context, next: Next) {
     return ctx.throw(badRequest('not valid id'))
   }
   const message = await MsgModel.findById(id)
-  //   console.log(message)
 
   if (!message) {
     return ctx.throw(notFound())
   }
-  //   if (message.user !== ctx.state.user.id) {
-  //     return ctx.throw(notFound())
-  //   }
-  //   console.log('сравнение', message.user, ctx.state.user.id)
 
   ctx.state.message = message
 
