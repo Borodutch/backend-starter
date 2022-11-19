@@ -1,11 +1,10 @@
 import { Context, Next } from 'koa'
-import { MsgModel } from '@/models/MsgModel'
+import { MessageModel } from '@/models/MessageModel'
 import { badRequest, notFound } from '@hapi/boom'
 import { isValidObjectId } from 'mongoose'
 
-export default async function getMsgById(ctx: Context, next: Next) {
+export default async function MessageChecker(ctx: Context, next: Next) {
   const id = ctx.params.id
-  //   console.log(id)
 
   if (!id) {
     return ctx.throw(notFound())
@@ -13,7 +12,7 @@ export default async function getMsgById(ctx: Context, next: Next) {
   if (!isValidObjectId(id)) {
     return ctx.throw(badRequest('not valid id'))
   }
-  const message = await MsgModel.findById(id)
+  const message = await MessageModel.findById(id)
 
   if (!message) {
     return ctx.throw(notFound())
