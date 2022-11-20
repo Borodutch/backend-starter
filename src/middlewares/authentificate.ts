@@ -3,7 +3,7 @@ import { UserModel } from '@/models/User'
 import { forbidden, notFound, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
-export default async function Authentification(ctx: Context, next: Next) {
+export default async function authenticate(ctx: Context, next: Next) {
   const token = ctx.header.token
 
   if (!token) {
