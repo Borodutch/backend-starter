@@ -14,36 +14,36 @@ import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
 import MessageText from '@/validators/MessageText'
 import authenticate from '@/middleware/authenticate'
-import verifyUser from '@/middleware/verifyUser'
+import verifyAuthor from '@/middleware/verifyAuthor'
 
 @Controller('/message')
 @Flow(authenticate)
 export default class MessageController {
   @Post('/')
   create(
-    @Body({ required: true }) { text }: Message,
+    @Body({ required: true }) { text }: MessageText,
     @CurrentUser() author: User
   ) {
     return MessageModel.create({ text, author })
   }
 
-  @Flow(verifyUser)
+  @Flow(verifyAuthor)
   @Get('/:id')
   get(@State('message') message: Message) {
     return MessageModel.findById(message)
   }
 
-  @Flow(verifyUser)
+  @Flow(verifyAuthor)
   @Put('/:id')
   async update(
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: Message
   ) {
-    await MessageModel.findByIdAndUpdate(message, { text })
+    await MessageModel.updateOne(message, { text })
     return MessageModel.findById(message)
   }
 
-  @Flow(verifyUser)
+  @Flow(verifyAuthor)
   @Delete('/:id')
   delete(@State('message') message: Message) {
     return MessageModel.findByIdAndDelete(message)

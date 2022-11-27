@@ -55,7 +55,7 @@ describe('Testing message controller', () => {
     })
   })
 
-  it('metod message Create', async () => {
+  it('creates message successfully', async () => {
     const messageInfoRes = await request(server)
       .post('/message')
       .set('token', token)
@@ -70,7 +70,7 @@ describe('Testing message controller', () => {
     expect(messageInfo.text).toBe(messageTest.text)
   })
 
-  it('metod message Get', async () => {
+  it('gets message successfully', async () => {
     const messageInfoRes = await request(server)
       .get('/message/' + message_id)
       .set('token', token)
@@ -84,7 +84,7 @@ describe('Testing message controller', () => {
     expect(messageInfo.text).toBe(messageTest.text)
   })
 
-  it('metod message Update', async () => {
+  it('updates message successfully', async () => {
     const messageInfoRes = await request(server)
       .put('/message/' + message_id)
       .set('token', token)
@@ -99,7 +99,7 @@ describe('Testing message controller', () => {
     expect(messageInfo.text).toBe(messageChanged.text)
   })
 
-  it('metod message Delete', async () => {
+  it('delete message successfully', async () => {
     await request(server)
       .delete('/message/' + message_id)
       .set('token', token)
@@ -113,7 +113,7 @@ describe('Testing message controller', () => {
       .expect(404)
   })
 
-  it('metod message 404 Get', async () => {
+  it('gets 404 successfully', async () => {
     await request(server)
       .get('/message/' + messageInvalid.id)
       .set('token', token)
