@@ -9,6 +9,10 @@ export const messageTest = {
   text: 'text for test',
 }
 
+export const messageTestError = {
+  text: 100500,
+}
+
 export const messageChanged = {
   text: 'text for test сhanged',
 }

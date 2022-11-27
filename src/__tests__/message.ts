@@ -10,6 +10,7 @@ import {
   messageChanged,
   messageInvalid,
   messageTest,
+  messageTestError,
 } from '@/__tests__/testUtils'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
@@ -70,6 +71,22 @@ describe('Testing message controller', () => {
     expect(messageInfo.text).toBe(messageTest.text)
   })
 
+  it('validation error successfully', async () => {
+    const messageInfoRes = await request(server)
+      .post('/message')
+      .set('token', token)
+      .set('Accept', 'application/json')
+      .send(messageTestError)
+      .expect(422)
+
+    const messageInfo = JSON.parse(messageInfoRes.text)
+
+    expect(messageInfo.errorDetails[0].field).toBe('text')
+    expect(messageInfo.errorDetails[0].violations.isString).toBe(
+      'text must be a string'
+    )
+  })
+
   it('gets message successfully', async () => {
     const messageInfoRes = await request(server)
       .get('/message/' + message_id)
@@ -82,6 +99,24 @@ describe('Testing message controller', () => {
     expect(Boolean(messageInfo)).toBe(true)
     expect(messageInfo._id).toBe(message_id)
     expect(messageInfo.text).toBe(messageTest.text)
+  })
+
+  it('get all author messages successfully', async () => {
+    await request(server)
+      .post('/message')
+      .set('token', token)
+      .set('Accept', 'application/json')
+      .send(messageTest)
+
+    const messageInfoRes = await request(server)
+      .get('/message/')
+      .set('token', token)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    const messageInfo = JSON.parse(messageInfoRes.text)
+    expect(Boolean(messageInfo)).toBe(true)
+    expect(messageInfo.length).toBe(2)
   })
 
   it('updates message successfully', async () => {
