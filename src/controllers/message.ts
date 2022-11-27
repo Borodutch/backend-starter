@@ -27,6 +27,11 @@ export default class MessageController {
     return MessageModel.create({ text, author })
   }
 
+  @Get('/')
+  getMessage(@CurrentUser() author: User) {
+    return MessageModel.find({ author })
+  }
+
   @Flow(verifyAuthor)
   @Get('/:id')
   get(@State('message') message: Message) {
