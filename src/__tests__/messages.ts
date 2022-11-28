@@ -23,13 +23,13 @@ describe('Message endpoint', () => {
 
     firstUser = await findOrCreateUser({
       name: 'izanami',
-      email: 'izanami@Doe.com',
+      email: 'izanami@mi.com',
     })
     firstUser.strippedAndFilled({ withExtra: true })
 
     secondUser = await findOrCreateUser({
       name: 'izanagi',
-      email: 'izanagi@Smith.com',
+      email: 'izanagi@gi.com',
     })
     secondUser.strippedAndFilled({ withExtra: true })
 
