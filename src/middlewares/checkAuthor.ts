@@ -15,13 +15,12 @@ export default async function checkAuthor(ctx: Context, next: Next) {
   const message = await messageModel.findById(id)
 
   if (!message) {
-    return ctx.throw(notFound('message is not found'))
+    return ctx.throw(notFound('message was not found'))
   }
 
   if (ctx.state.user.id != message.author?.toString()) {
-    return ctx.throw(notFound('not your message'))
-  } else {
-    ctx.state.message = message
+    return ctx.throw(notFound('message was not found'))
   }
+  ctx.state.message = message
   return next()
 }

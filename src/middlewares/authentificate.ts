@@ -7,7 +7,7 @@ export default async function authenticate(ctx: Context, next: Next) {
   const token = ctx.header.token
 
   if (!token) {
-    throw unauthorized()
+    throw unauthorized('invalid token')
   }
 
   try {
