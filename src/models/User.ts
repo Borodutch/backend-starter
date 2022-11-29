@@ -21,7 +21,7 @@ export class User {
   name!: string
 
   @prop({ index: true, unique: true })
-  token!: string
+  token?: string
 
   strippedAndFilled(
     this: DocumentType<User>,
