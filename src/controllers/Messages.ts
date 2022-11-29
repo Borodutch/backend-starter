@@ -28,13 +28,13 @@ export default class Messages {
   }
 
   @Get('/')
-  getMessage(@CurrentUser() author: DocumentType<User>) {
+  getMessages(@CurrentUser() author: DocumentType<User>) {
     return messageModel.find({ author })
   }
 
   @Get('/:id')
   @Flow(checkAuthor)
-  getOneMessage(@State('message') message: DocumentType<Message>) {
+  getMessage(@State('message') message: DocumentType<Message>) {
     return message
   }
 

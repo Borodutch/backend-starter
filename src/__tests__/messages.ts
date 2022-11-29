@@ -68,7 +68,7 @@ describe('Message endpoint', () => {
 
       const { statusCode, body } = await request(server)
         .get('/message')
-        .set('token', firstUser.token)
+        .set('token', firstUser.token!)
 
       expect(JSON.stringify(body)).toBe(JSON.stringify(messages))
       expect(statusCode).toBe(200)
@@ -77,7 +77,7 @@ describe('Message endpoint', () => {
     it('should return no messages for users who isn`t author', async () => {
       const { statusCode, body } = await request(server)
         .get('/message')
-        .set('token', secondUser.token)
+        .set('token', secondUser.token!)
 
       expect(body).toHaveLength(0)
       expect(statusCode).toBe(200)
@@ -90,7 +90,7 @@ describe('Message endpoint', () => {
 
       const { statusCode, body } = await request(server)
         .get(`/message/${message.id}`)
-        .set('token', firstUser.token)
+        .set('token', firstUser.token!)
 
       expect(JSON.stringify(body)).toBe(JSON.stringify(getMessage))
       expect(statusCode).toBe(200)
@@ -99,7 +99,7 @@ describe('Message endpoint', () => {
     it('should return no messages for users who isn`t author', async () => {
       const { statusCode, body } = await request(server)
         .get('/message')
-        .set('token', secondUser.token)
+        .set('token', secondUser.token!)
 
       expect(body).toHaveLength(0)
       expect(statusCode).toBe(200)
@@ -112,12 +112,16 @@ describe('Message endpoint', () => {
       const { statusCode, body } = await request(server)
         .post('/message')
         .send(messageText)
-        .set('token', firstUser.token)
+        .set('token', firstUser.token!)
 
-      const postMessage = await messageModel.findOne(messageText)
+      const postMessage = await messageModel.findById(body._id)
 
-      expect(body._id).toBe(postMessage?.id)
-      expect(body.text).toBe(postMessage?.text)
+      if (!postMessage) {
+        return body.throw(notFound('message is undefined'))
+      }
+      expect(postMessage).toBeTruthy()
+      expect(body._id).toBe(postMessage.id)
+      expect(body.text).toBe(postMessage.text)
       expect(statusCode).toBe(200)
     })
   })
@@ -127,11 +131,16 @@ describe('Message endpoint', () => {
       const updateMessage = { text: 'Put message' }
       const { statusCode, body } = await request(server)
         .put(`/message/${message.id}`)
-        .set('token', firstUser.token)
+        .set('token', firstUser.token!)
         .send(updateMessage)
 
-      expect(body._id).toBe(message.id)
-      expect(body.text).toBe(updateMessage.text)
+      const putMessage = await messageModel.findById(body._id)
+
+      if (!putMessage) {
+        return console.log(notFound('message is undefined'))
+      }
+      expect(body._id).toBe(putMessage.id)
+      expect(body.text).toBe(putMessage.text)
       expect(statusCode).toBe(200)
     })
 
@@ -140,7 +149,7 @@ describe('Message endpoint', () => {
       const { statusCode, body } = await request(server)
         .put(`/message/${message.id}`)
         .send(updateMessage)
-        .set('token', secondUser.token)
+        .set('token', secondUser.token!)
 
       expect(body.message).toBe(notFound('message was not found').message)
       expect(statusCode).toBe(404)
@@ -151,7 +160,7 @@ describe('Message endpoint', () => {
     it('should delete the message from database', async () => {
       const { statusCode, body } = await request(server)
         .delete(`/message/${message.id}`)
-        .set('token', firstUser.token)
+        .set('token', firstUser.token!)
 
       const deletedMessage = await messageModel.findByIdAndDelete(message.id)
 
@@ -163,7 +172,7 @@ describe('Message endpoint', () => {
     it('should return not found error message if second user tries to delete the message', async () => {
       const { statusCode, body } = await request(server)
         .delete(`/message/${message.id}`)
-        .set('token', secondUser.token)
+        .set('token', secondUser.token!)
 
       expect(body.message).toBe(notFound('message was not found').message)
       expect(statusCode).toBe(404)
