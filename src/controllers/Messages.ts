@@ -11,7 +11,7 @@ import {
 } from 'amala'
 import { DocumentType } from '@typegoose/typegoose'
 import { Message, messageModel } from '@/models/Message'
-import { User } from '@/models/User'
+import { User } from 'c:/Users/user/Documents/javascript/backend-starter/src/models/User'
 import MessageText from '@/validators/MessageText'
 import authenticate from '@/middlewares/authentificate'
 import checkAuthor from '@/middlewares/checkAuthor'
@@ -44,12 +44,13 @@ export default class Messages {
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: DocumentType<Message>
   ) {
-    return messageModel.findByIdAndUpdate(message.id, { text })
+    message.text = text
+    return message.save()
   }
 
   @Delete('/:id')
   @Flow(checkAuthor)
   deleteMessage(@State('message') message: DocumentType<Message>) {
-    return messageModel.findByIdAndDelete(message.id)
+    return message.delete()
   }
 }
