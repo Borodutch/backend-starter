@@ -1,6 +1,6 @@
-import { Body, Controller, Get, IsNumber, IsString, Post, Query } from 'amala'
+import { Body, Controller, Delete, Get, Patch, Post, Query } from 'amala'
 import { Movie } from '@/models/Movie'
-import MovieRequest from '@/types/MovieRequest'
+import MovieRequest, { MovieTitleRequest } from '@/validators/MovieRequest'
 
 @Controller('/movies')
 export default class MovieController {
@@ -21,8 +21,56 @@ export default class MovieController {
   }
 
   @Post('/')
-  async postMovie(@Body({ required: true }) body: MovieRequest) {
-    const result = await body
-    return { message: 'Movie just posted', data: result }
+  createMessage(
+    @Body({ required: true })
+    {
+      title,
+      runtime,
+      _id,
+      year,
+      num_mflix_comments,
+      fullplot,
+      imdb,
+      lastupdated,
+      plot,
+      rated,
+      released,
+      text,
+      type,
+      tomatoes,
+      awards,
+    }: MovieRequest
+  ) {
+    return Movie.create({
+      title,
+      runtime,
+      _id,
+      year,
+      num_mflix_comments,
+      fullplot,
+      imdb,
+      lastupdated,
+      plot,
+      rated,
+      released,
+      text,
+      type,
+      tomatoes,
+      awards,
+    })
+  }
+
+  @Delete('/')
+  deleteMovie(@Query('id') id: string) {
+    return Movie.findByIdAndDelete(id)
+  }
+
+  @Patch('/')
+  async UpdateMovie(
+    @Query('id') id: string,
+    @Body() { title }: MovieTitleRequest
+  ) {
+    await Movie.findByIdAndUpdate(id, { title })
+    return Movie.findById(id)
   }
 }
