@@ -13,7 +13,7 @@ export default async function (ctx: Context, next: Next) {
     return ctx.throw(notFound())
   }
 
-  if (ctx.state.user.id !== String(ctx.state.message.author)) {
+  if (ctx.state.user.id !== ctx.state.message.author.toString()) {
     return ctx.throw(notFound())
   }
 

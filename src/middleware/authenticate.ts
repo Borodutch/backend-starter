@@ -4,7 +4,7 @@ import { badRequest, notFound, unauthorized } from '@hapi/boom'
 import { isString } from 'lodash'
 import { verify } from '@/helpers/jwt'
 
-export default async function authenticate(ctx: Context, next: Next) {
+export default async function (ctx: Context, next: Next) {
   const token = ctx.request.headers.token
   if (!isString(token)) {
     return ctx.throw(badRequest())

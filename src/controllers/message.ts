@@ -18,7 +18,7 @@ import verifyAuthor from '@/middleware/verifyAuthor'
 
 @Controller('/message')
 @Flow(authenticate)
-export default class MessageController {
+export default class {
   @Post('/')
   create(
     @Body({ required: true }) { text }: MessageText,
@@ -28,24 +28,23 @@ export default class MessageController {
   }
 
   @Get('/')
-  getMessage(@CurrentUser() author: User) {
+  getMessages(@CurrentUser() author: User) {
     return MessageModel.find({ author })
   }
 
   @Flow(verifyAuthor)
   @Get('/:id')
   get(@State('message') message: Message) {
-    return MessageModel.findById(message)
+    return message
   }
 
   @Flow(verifyAuthor)
   @Put('/:id')
-  async update(
+  update(
     @Body({ required: true }) { text }: MessageText,
     @State('message') message: Message
   ) {
-    await MessageModel.updateOne(message, { text })
-    return MessageModel.findById(message)
+    return MessageModel.findByIdAndUpdate(message, { text }, { new: true })
   }
 
   @Flow(verifyAuthor)
