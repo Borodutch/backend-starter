@@ -4,7 +4,7 @@ import { MessageModel } from '@/models/Message'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
-import { User, UserModel } from '@/models/User'
+import { UserModel } from '@/models/User'
 import {
   baseUserTelegramm,
   messageChanged,
@@ -19,9 +19,10 @@ describe('Testing message controller', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let mongoose: Mongoose
-  let UserCreate: User
   let token: string
   let message_id: string
+  let user_id: string
+  let userCreate
   let message
 
   beforeAll(async () => {
@@ -33,17 +34,18 @@ describe('Testing message controller', () => {
   beforeEach(async () => {
     await mongoose.connection.db.dropDatabase()
 
-    UserCreate = await UserModel.create({
+    userCreate = await UserModel.create({
       ...baseUserTelegramm,
     })
-    token = !UserCreate.token ? '' : UserCreate.token
+    token = !userCreate.token ? '' : userCreate.token
 
     message = await MessageModel.create({
       text: messageTest.text,
-      author: UserCreate,
+      author: userCreate,
     })
 
     message_id = String(message._id)
+    user_id = String(userCreate.id)
   })
 
   afterAll(async () => {
@@ -57,18 +59,20 @@ describe('Testing message controller', () => {
   })
 
   it('creates message successfully', async () => {
-    const messageInfoRes = await request(server)
+    await request(server)
       .post('/message')
       .set('token', token)
-      .set('Accept', 'application/json')
       .send(messageTest)
       .expect(200)
 
-    const messageInfo = JSON.parse(messageInfoRes.text)
+    const messageInfo = await MessageModel.findOne({
+      author: user_id,
+      messageTest,
+    })
 
     expect(Boolean(messageInfo)).toBe(true)
-    expect(messageInfo.author.token).toBe(UserCreate.token)
-    expect(messageInfo.text).toBe(messageTest.text)
+    expect(String(!messageInfo ? null : messageInfo.author)).toBe(user_id)
+    expect(!messageInfo ? null : messageInfo.text).toBe(messageTest.text)
   })
 
   it('validation error successfully', async () => {
@@ -79,7 +83,7 @@ describe('Testing message controller', () => {
       .send(messageTestError)
       .expect(422)
 
-    const messageInfo = JSON.parse(messageInfoRes.text)
+    const messageInfo = messageInfoRes.body
 
     expect(messageInfo.errorDetails[0].field).toBe('text')
     expect(messageInfo.errorDetails[0].violations.isString).toBe(
@@ -94,7 +98,7 @@ describe('Testing message controller', () => {
       .set('Accept', 'application/json')
       .expect(200)
 
-    const messageInfo = JSON.parse(messageInfoRes.text)
+    const messageInfo = messageInfoRes.body
 
     expect(Boolean(messageInfo)).toBe(true)
     expect(messageInfo._id).toBe(message_id)
@@ -114,24 +118,23 @@ describe('Testing message controller', () => {
       .set('Accept', 'application/json')
       .expect(200)
 
-    const messageInfo = JSON.parse(messageInfoRes.text)
+    const messageInfo = messageInfoRes.body
     expect(Boolean(messageInfo)).toBe(true)
     expect(messageInfo.length).toBe(2)
   })
 
   it('updates message successfully', async () => {
-    const messageInfoRes = await request(server)
+    await request(server)
       .put('/message/' + message_id)
       .set('token', token)
-      .set('Accept', 'application/json')
       .send(messageChanged)
       .expect(200)
 
-    const messageInfo = JSON.parse(messageInfoRes.text)
+    const messageInfo = await MessageModel.findById(message_id)
 
     expect(Boolean(messageInfo)).toBe(true)
-    expect(messageInfo._id).toBe(message_id)
-    expect(messageInfo.text).toBe(messageChanged.text)
+    expect(!messageInfo ? null : messageInfo.id).toBe(message_id)
+    expect(!messageInfo ? null : messageInfo.text).toBe(messageChanged.text)
   })
 
   it('delete message successfully', async () => {
@@ -146,6 +149,9 @@ describe('Testing message controller', () => {
       .set('token', token)
       .set('Accept', 'application/json')
       .expect(404)
+
+    const messageInfo = await MessageModel.findById(message_id)
+    expect(messageInfo).toBe(null)
   })
 
   it('gets 404 successfully', async () => {
