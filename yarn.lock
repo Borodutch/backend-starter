@@ -2049,9 +2049,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typegoose/typegoose@npm:^9.13.1":
-  version: 9.13.1
-  resolution: "@typegoose/typegoose@npm:9.13.1"
+"@typegoose/typegoose@npm:^9.13.2":
+  version: 9.13.2
+  resolution: "@typegoose/typegoose@npm:9.13.2"
   dependencies:
     lodash: ^4.17.20
     loglevel: ^1.8.1
@@ -2060,7 +2060,7 @@ __metadata:
     tslib: ^2.4.1
   peerDependencies:
     mongoose: ~6.7.2
-  checksum: 98694157523276db9010ccebbeddec49591482dd75e0fdd8824ec1157f4392da9eef991f87bad55e5164d74499220e37db89e74d2b749f5d894fc5e3e71ed55a
+  checksum: ffb2acaef2bad9a4f9bb28196cef1b31a75b22121bbd278428e5a6e68660cdc1c14b3a18212ba64db922cf4561c011991e73690a20c0b47230b306d76f6352fb
   languageName: node
   linkType: hard
 
@@ -2347,10 +2347,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.190":
-  version: 4.14.190
-  resolution: "@types/lodash@npm:4.14.190"
-  checksum: 353a55a1222a57224ead8bd3379fabb2e3e3f6685f599c48b1b66f099d8e9e015e6c6352c6e2275954004c3bb510377804c63117233c6f187700b6ab78adfa02
+"@types/lodash@npm:^4.14.191":
+  version: 4.14.191
+  resolution: "@types/lodash@npm:4.14.191"
+  checksum: ba0d5434e10690869f32d5ea49095250157cae502f10d57de0a723fd72229ce6c6a4979576f0f13e0aa9fbe3ce2457bfb9fa7d4ec3d6daba56730a51906d1491
   languageName: node
   linkType: hard
 
@@ -2368,10 +2368,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.11.9":
-  version: 18.11.9
-  resolution: "@types/node@npm:18.11.9"
-  checksum: cc0aae109e9b7adefc32eecb838d6fad931663bb06484b5e9cbbbf74865c721b03d16fd8d74ad90e31dbe093d956a7c2c306ba5429ba0c00f3f7505103d7a496
+"@types/node@npm:^18.11.10":
+  version: 18.11.10
+  resolution: "@types/node@npm:18.11.10"
+  checksum: 0f60cb090b2ee91fcd3dc4311bc1ed7889b92f14644c0069f100776f86474c12eebbcc6c75bc0d7d96b975a103b4d5d6b3c22b4e88bea6e7f4e2b1bb0daf5ea8
   languageName: node
   linkType: hard
 
@@ -2938,15 +2938,15 @@ __metadata:
   dependencies:
     "@hapi/boom": ^10.0.0
     "@koa/cors": ^4.0.0
-    "@typegoose/typegoose": ^9.13.1
+    "@typegoose/typegoose": ^9.13.2
     "@types/jest": ^29.2.3
     "@types/jsonwebtoken": ^8.5.9
     "@types/koa": ^2.13.5
     "@types/koa-bodyparser": ^4.3.10
     "@types/koa-router": ^7.4.4
     "@types/koa__cors": ^3.3.0
-    "@types/lodash": ^4.14.190
-    "@types/node": ^18.11.9
+    "@types/lodash": ^4.14.191
+    "@types/node": ^18.11.10
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^5.45.0
     "@typescript-eslint/parser": ^5.45.0
@@ -2955,7 +2955,7 @@ __metadata:
     axios-mock-adapter: ^1.21.2
     dotenv: ^16.0.3
     envalid: ^7.3.1
-    eslint: ^8.28.0
+    eslint: ^8.29.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
     eslint-plugin-no-relative-import-paths: ^1.5.0
@@ -2972,10 +2972,10 @@ __metadata:
     lodash: ^4.17.21
     module-alias: ^2.2.2
     mongodb-memory-server: ^8.10.1
-    mongoose: ^6.7.4
+    mongoose: ^6.7.5
     prettier: ^2.8.0
     source-map-support: ^0.5.21
-    supertest: ^6.3.1
+    supertest: ^6.3.2
     ts-jest: ^29.0.3
     tsc-watch: ^5.0.3
     typescript: ^4.9.3
@@ -4050,9 +4050,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.28.0":
-  version: 8.28.0
-  resolution: "eslint@npm:8.28.0"
+"eslint@npm:^8.29.0":
+  version: 8.29.0
+  resolution: "eslint@npm:8.29.0"
   dependencies:
     "@eslint/eslintrc": ^1.3.3
     "@humanwhocodes/config-array": ^0.11.6
@@ -4095,7 +4095,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 1b793486b2ec80f0602d75fff7116f7c39a3286f523608a999eead9bec4154a06841785d2b4fb87f8292a94cf85778c1dbfaec727772a09c4d604fdb9ff0809a
+  checksum: e05204b05907b82d910983995cb946e0ba62ca514eb2b6791c43f623333b143564a2eee0139909d31c10935c21877d815b1f76dd674a59cb91c471064325c4ab
   languageName: node
   linkType: hard
 
@@ -6515,9 +6515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^6.7.4":
-  version: 6.7.4
-  resolution: "mongoose@npm:6.7.4"
+"mongoose@npm:^6.7.5":
+  version: 6.7.5
+  resolution: "mongoose@npm:6.7.5"
   dependencies:
     bson: ^4.7.0
     kareem: 2.4.1
@@ -6526,7 +6526,7 @@ __metadata:
     mquery: 4.0.3
     ms: 2.1.3
     sift: 16.0.1
-  checksum: 7d86bcf3cb71fc4c598a2b6bd98ef5ddc8233f4d27faafaa40c2ad1ec6d4c6020ab7948ae825ec1dd216358e0eecfc12d968c7705acabf1d1473085b15afb3cb
+  checksum: 6f1aac04e87b20ed2a26110d86e28472d6ebdd78f4eb4d957f938b2672b2b0850693440dce77507e0d6396a3193cd74b1bc8d7bfd8621273f14302b23620dc53
   languageName: node
   linkType: hard
 
@@ -7710,13 +7710,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "supertest@npm:6.3.1"
+"supertest@npm:^6.3.2":
+  version: 6.3.2
+  resolution: "supertest@npm:6.3.2"
   dependencies:
     methods: ^1.1.2
     superagent: ^8.0.3
-  checksum: 024d10e305bbaf926efff3d2dc68d339ae8d8650917a82ad121886c4a3a70707af92fdd1a1fd139054235d65ddab842ec54d48bb7161f6969bf98ef29eea3740
+  checksum: 97f6834df65c2837e08f448742d5956df7bd89f77021a6f11344f226247d67855f6b0d92324f8aa14994b0acf79b3f3fb28ad9ce7854f18e51926609ef8d9083
   languageName: node
   linkType: hard
 
