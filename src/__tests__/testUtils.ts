@@ -1,4 +1,4 @@
-export const baseUserTelegramm = {
+export const baseUserTelegram = {
   telegramId: 121561060,
   token:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNjE0MjkzMTlhOGEyNTMwZGE5YWFlNyIsImlhdCI6MTY2NzMxODQxOX0.MqcyKuav0QNLzoDXJoVT7ECPN_iXk1yb6wUL7Xn7DrY',
