@@ -15,6 +15,8 @@ describe('Message endpoint', () => {
   let userA: DocumentType<User>
   let userB: DocumentType<User>
   let testMessage: DocumentType<Message>
+  let userAToken: string
+  let userBToken: string
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create()
@@ -29,6 +31,10 @@ describe('Message endpoint', () => {
       name: 'Jane Doe',
       email: 'janedoe@mail.com',
     })
+    if (userA.token && userB.token) {
+      userAToken = userA.token
+      userBToken = userB.token
+    }
     testMessage = await MessageModel.create({ author: userA, text: 'TestA' })
     await MessageModel.create({ author: userA, text: 'TestB' })
     await MessageModel.create({ author: userB, text: 'TestC' })
@@ -48,7 +54,6 @@ describe('Message endpoint', () => {
     it('Should return 401', async () => {
       const { statusCode, body } = await request(server).get('/message')
       expect(statusCode).toBe(401)
-      //expect(body.message).toBe(unauthorized('Token is absent').message)
       expect(body.message).toBe(unauthorized('Token is absent').message)
     })
   })
@@ -66,13 +71,14 @@ describe('Message endpoint', () => {
       const { statusCode, body } = await request(server)
         .post('/message/create')
         .send({ text: 'New test message' })
-        .set('token', userA.token!)
+        .set('token', userAToken)
       expect(statusCode).toBe(200)
       const message = await MessageModel.findOne(body)
+      expect(message).resolves
       expect([body._id, body.text, body.author._id]).toEqual([
-        message!._id.toString(),
-        message!.text,
-        message!.author!.toString(),
+        message?.id.toString(),
+        message?.text,
+        message?.author?.toString(),
       ])
     })
   })
@@ -81,7 +87,7 @@ describe('Message endpoint', () => {
       const userMessages = await MessageModel.find({ author: userA })
       const { statusCode, body } = await request(server)
         .get('/message')
-        .set('token', userA.token ?? '')
+        .set('token', userAToken)
       expect(statusCode).toBe(200)
       expect(body).toHaveLength(3)
       expect(body[0].text).toBe(userMessages[0].text)
@@ -93,14 +99,14 @@ describe('Message endpoint', () => {
     it('Should return requested message', async () => {
       const { statusCode, body } = await request(server)
         .get(`/message/${testMessage.id}`)
-        .set('token', userA.token || '')
+        .set('token', userAToken)
       expect(statusCode).toBe(200)
       expect(body.text).toEqual(testMessage.text)
     })
     it('Should return 403 because of different author', async () => {
       const { statusCode } = await request(server)
         .get(`/message/${testMessage.id}`)
-        .set('token', userB.token || '')
+        .set('token', userBToken)
       expect(statusCode).toBe(403)
     })
   })
@@ -108,23 +114,23 @@ describe('Message endpoint', () => {
     it('Should delete message with specific id', async () => {
       const deleteRequest = await request(server)
         .delete(`/message/${testMessage.id}`)
-        .set('token', userA.token || '')
+        .set('token', userAToken)
       expect(deleteRequest.statusCode).toBe(200)
       const getRequest = await request(server)
         .get(`/message/${testMessage.id}`)
-        .set('token', userA.token || '')
-      expect(getRequest.statusCode).toBe(404)
+        .set('token', userAToken)
+      expect(getRequest.statusCode).toBe(403)
     })
   })
   describe('DELETE /message', () => {
     it('Should delete all user messages', async () => {
       const deleteRequest = await request(server)
         .delete(`/message/`)
-        .set('token', userA.token || '')
+        .set('token', userAToken)
       expect(deleteRequest.statusCode).toBe(200)
       const getRequest = await request(server)
         .get(`/message`)
-        .set('token', userA.token || '')
+        .set('token', userAToken)
       expect(getRequest.body.length).toBe(0)
     })
   })

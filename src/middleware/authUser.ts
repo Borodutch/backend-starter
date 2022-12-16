@@ -3,7 +3,7 @@ import { UserModel } from '@/models/User'
 import { forbidden, notFound, unauthorized } from '@hapi/boom'
 import { verify } from '@/helpers/jwt'
 
-export default async function authUser(ctx: Context, next: Next) {
+export default async function (ctx: Context, next: Next) {
   const token = ctx.header.token
   if (!token) {
     ctx.throw(unauthorized('Token is absent'))
