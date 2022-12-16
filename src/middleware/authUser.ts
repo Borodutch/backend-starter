@@ -12,7 +12,7 @@ export default async function (ctx: Context, next: Next) {
   try {
     verify(token.toString())
   } catch (err) {
-    ctx.throw(forbidden('Invalid token'))
+    return ctx.throw(forbidden('Invalid token'))
   }
 
   const user = await UserModel.findOne({ token })

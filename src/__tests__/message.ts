@@ -6,15 +6,16 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
 import { User, findOrCreateUser } from '@/models/User'
 import { forbidden, unauthorized } from '@hapi/boom'
+import mongoose from 'mongoose'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
+import exp = require('constants')
 
 describe('Message endpoint', () => {
   let server: Server
   let mongoServer: MongoMemoryServer
   let userA: DocumentType<User>
   let userB: DocumentType<User>
-  let testMessage: DocumentType<Message>
   let userAToken: string
   let userBToken: string
 
@@ -34,10 +35,13 @@ describe('Message endpoint', () => {
     if (userA.token && userB.token) {
       userAToken = userA.token
       userBToken = userB.token
+    } else {
+      throw new Error('No user token presented')
     }
-    testMessage = await MessageModel.create({ author: userA, text: 'TestA' })
-    await MessageModel.create({ author: userA, text: 'TestB' })
-    await MessageModel.create({ author: userB, text: 'TestC' })
+  })
+
+  beforeEach(async () => {
+    await MessageModel.deleteMany()
   })
 
   afterAll(async () => {
@@ -50,15 +54,13 @@ describe('Message endpoint', () => {
     })
   })
 
-  describe('GET without token', () => {
-    it('Should return 401', async () => {
+  describe('User auth tests:', () => {
+    it('Get handler without a token, should return 401', async () => {
       const { statusCode, body } = await request(server).get('/message')
       expect(statusCode).toBe(401)
       expect(body.message).toBe(unauthorized('Token is absent').message)
     })
-  })
-  describe('GET with wrong token', () => {
-    it('Should return 403', async () => {
+    it('Get handler with invalid token, should return 403', async () => {
       const { statusCode, body } = await request(server)
         .get('/message')
         .set('token', '123')
@@ -66,52 +68,64 @@ describe('Message endpoint', () => {
       expect(body.message).toBe(forbidden('Invalid token').message)
     })
   })
-  describe('POST /message/create', () => {
-    it('Should creat and return message', async () => {
+  describe('POST handler tests:', () => {
+    it('/message/create, should create and return message', async () => {
       const { statusCode, body } = await request(server)
         .post('/message/create')
         .send({ text: 'New test message' })
         .set('token', userAToken)
       expect(statusCode).toBe(200)
       const message = await MessageModel.findOne(body)
-      expect(message).resolves
+      if (!message) {
+        throw new Error('Impossible to find the message')
+      }
       expect([body._id, body.text, body.author._id]).toEqual([
-        message?.id.toString(),
-        message?.text,
-        message?.author?.toString(),
+        message.id.toString(),
+        message.text,
+        message.author?.toString(),
       ])
     })
   })
-  describe('GET /message', () => {
-    it('Should return all messages for current user', async () => {
+  describe('GET handler tests:', () => {
+    let testMessage: DocumentType<Message>
+    beforeEach(async () => {
+      testMessage = await MessageModel.create({ author: userA, text: 'TestA' })
+      await MessageModel.create({ author: userA, text: 'TestB' })
+      await MessageModel.create({ author: userB, text: 'TestC' })
+    })
+    it('/message, should return all messages for current user', async () => {
       const userMessages = await MessageModel.find({ author: userA })
       const { statusCode, body } = await request(server)
         .get('/message')
         .set('token', userAToken)
       expect(statusCode).toBe(200)
-      expect(body).toHaveLength(3)
-      expect(body[0].text).toBe(userMessages[0].text)
-      expect(body[1].text).toBe(userMessages[1].text)
-      expect(body[2].text).toBe(userMessages[2].text)
+      expect(body).toHaveLength(2)
+      for (let i = 0; i < body.length; i++) {
+        expect(body[i].text).toBe(userMessages[i].text)
+      }
     })
-  })
-  describe('GET /message/id', () => {
-    it('Should return requested message', async () => {
+    it('/message/id, should return requested message', async () => {
       const { statusCode, body } = await request(server)
         .get(`/message/${testMessage.id}`)
         .set('token', userAToken)
       expect(statusCode).toBe(200)
       expect(body.text).toEqual(testMessage.text)
     })
-    it('Should return 403 because of different author', async () => {
+    it('/message/id, should return 403 because of different author', async () => {
       const { statusCode } = await request(server)
         .get(`/message/${testMessage.id}`)
         .set('token', userBToken)
       expect(statusCode).toBe(403)
     })
   })
-  describe('DELETE /message/id', () => {
-    it('Should delete message with specific id', async () => {
+  describe('DELETE handler tests:', () => {
+    let testMessage: DocumentType<Message>
+    beforeEach(async () => {
+      testMessage = await MessageModel.create({ author: userA, text: 'TestA' })
+      await MessageModel.create({ author: userA, text: 'TestB' })
+      await MessageModel.create({ author: userA, text: 'TestC' })
+    })
+    it('/message/id, should delete message with specific id', async () => {
       const deleteRequest = await request(server)
         .delete(`/message/${testMessage.id}`)
         .set('token', userAToken)
@@ -119,11 +133,9 @@ describe('Message endpoint', () => {
       const getRequest = await request(server)
         .get(`/message/${testMessage.id}`)
         .set('token', userAToken)
-      expect(getRequest.statusCode).toBe(403)
+      expect(getRequest.statusCode).toBe(404)
     })
-  })
-  describe('DELETE /message', () => {
-    it('Should delete all user messages', async () => {
+    it('/message, should delete all messages for current user', async () => {
       const deleteRequest = await request(server)
         .delete(`/message/`)
         .set('token', userAToken)
@@ -132,6 +144,22 @@ describe('Message endpoint', () => {
         .get(`/message`)
         .set('token', userAToken)
       expect(getRequest.body.length).toBe(0)
+    })
+  })
+  describe('PUT handler tests:', () => {
+    let testMessage: DocumentType<Message>
+    beforeEach(async () => {
+      testMessage = await MessageModel.create({ author: userA, text: 'TestA' })
+      await MessageModel.create({ author: userA, text: 'TestB' })
+    })
+    it('/message/id, should update and return message', async () => {
+      const updatedMessage = 'TestPUT'
+      const { statusCode, body } = await request(server)
+        .put(`/message/${testMessage.id}`)
+        .set('token', userAToken)
+        .send({ text: updatedMessage })
+      expect(statusCode).toBe(200)
+      expect(body.text).toBe(updatedMessage)
     })
   })
 })

@@ -43,19 +43,12 @@ export default class MessageController {
 
   @Put('/:id')
   @Flow(checkAuthorship)
-  async updateMessage(
+  updateMessage(
     @Body({ required: true }) { text }: MessageData,
-    @Ctx() ctx: Context,
     @State('message') message: DocumentType<Message>
   ) {
     message.text = text
-    const result = await message.save()
-    if (!result) {
-      ctx.throw(
-        internal('Message saving failed. Please consider trying again...')
-      )
-    }
-    return result
+    return message.save()
   }
 
   @Delete('/:id')
