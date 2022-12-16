@@ -6,10 +6,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Server } from 'http'
 import { User, findOrCreateUser } from '@/models/User'
 import { forbidden, unauthorized } from '@hapi/boom'
-import mongoose from 'mongoose'
 import runApp from '@/helpers/runApp'
 import runMongo from '@/helpers/mongo'
-import exp = require('constants')
 
 describe('Message endpoint', () => {
   let server: Server
