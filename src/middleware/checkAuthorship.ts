@@ -12,7 +12,7 @@ export default async function checkAuthorship(ctx: Context, next: Next) {
     ctx.throw(notFound('There is no message with this ID'))
   }
   if (ctx.state.user.id != message.author) {
-    ctx.throw(forbidden('User unauthorized to see this message'))
+    ctx.throw(forbidden())
   }
   ctx.state.message = message
   return next()

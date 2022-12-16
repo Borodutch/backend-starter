@@ -48,6 +48,7 @@ describe('Message endpoint', () => {
     it('Should return 401', async () => {
       const { statusCode, body } = await request(server).get('/message')
       expect(statusCode).toBe(401)
+      //expect(body.message).toBe(unauthorized('Token is absent').message)
       expect(body.message).toBe(unauthorized('Token is absent').message)
     })
   })
@@ -65,9 +66,14 @@ describe('Message endpoint', () => {
       const { statusCode, body } = await request(server)
         .post('/message/create')
         .send({ text: 'New test message' })
-        .set('token', userA.token || '')
+        .set('token', userA.token!)
       expect(statusCode).toBe(200)
-      expect(body.text).toBe('New test message')
+      const message = await MessageModel.findOne(body)
+      expect([body._id, body.text, body.author._id]).toEqual([
+        message!._id.toString(),
+        message!.text,
+        message!.author!.toString(),
+      ])
     })
   })
   describe('GET /message', () => {
@@ -75,31 +81,30 @@ describe('Message endpoint', () => {
       const userMessages = await MessageModel.find({ author: userA })
       const { statusCode, body } = await request(server)
         .get('/message')
-        .set('token', userA.token || '')
+        .set('token', userA.token ?? '')
       expect(statusCode).toBe(200)
-      expect(body.length).toBe(3)
-      expect(JSON.stringify(body)).toBe(JSON.stringify(userMessages))
+      expect(body).toHaveLength(3)
+      expect(body[0].text).toBe(userMessages[0].text)
+      expect(body[1].text).toBe(userMessages[1].text)
+      expect(body[2].text).toBe(userMessages[2].text)
     })
   })
-  describe('GET /message/{id}', () => {
+  describe('GET /message/id', () => {
     it('Should return requested message', async () => {
       const { statusCode, body } = await request(server)
         .get(`/message/${testMessage.id}`)
         .set('token', userA.token || '')
       expect(statusCode).toBe(200)
-      expect(body.text).toBe('TestA')
+      expect(body.text).toEqual(testMessage.text)
     })
     it('Should return 403 because of different author', async () => {
-      const { statusCode, body } = await request(server)
+      const { statusCode } = await request(server)
         .get(`/message/${testMessage.id}`)
         .set('token', userB.token || '')
       expect(statusCode).toBe(403)
-      expect(body.message).toBe(
-        forbidden('User unauthorized to see this message').message
-      )
     })
   })
-  describe('DELETE /message/{id}', () => {
+  describe('DELETE /message/id', () => {
     it('Should delete message with specific id', async () => {
       const deleteRequest = await request(server)
         .delete(`/message/${testMessage.id}`)
