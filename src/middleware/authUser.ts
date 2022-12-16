@@ -6,18 +6,18 @@ import { verify } from '@/helpers/jwt'
 export default async function (ctx: Context, next: Next) {
   const token = ctx.header.token
   if (!token) {
-    ctx.throw(unauthorized('Token is absent'))
+    return ctx.throw(unauthorized('Token is absent'))
   }
 
   try {
     verify(token.toString())
   } catch (err) {
-    return ctx.throw(forbidden('Invalid token'))
+    return ctx.throw(forbidden('Access denied'))
   }
 
   const user = await UserModel.findOne({ token })
   if (!user) {
-    ctx.throw(notFound('There is no such user'))
+    return ctx.throw(notFound('There is no such user'))
   }
   ctx.state.user = user
 
