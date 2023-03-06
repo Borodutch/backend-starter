@@ -1,6 +1,6 @@
 import * as request from 'supertest'
 import * as shutdown from 'http-graceful-shutdown'
-import { MessageModel } from '@/models/Messages'
+import { MessageModel } from '@/models/Message'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 import { Server } from 'http'
@@ -56,11 +56,16 @@ describe('Message endpoint', () => {
   })
 
   it('should return Bad request 400', async () => {
-    const messageId = 'bad_id'
+    const badId = 'bad_id'
     const response = await request(server)
-      .get(`/messages/${messageId}`)
-      .set('token', token)
+      .get(`/messages/${badId}`)
+      .set('token', badId)
     expect(response.statusCode).toBe(400)
+
+    const response2 = await request(server)
+      .get(`/messages/${badId}`)
+      .set('token', token)
+    expect(response2.statusCode).toBe(400)
   })
 
   it('should return Not Found 404', async () => {
@@ -107,10 +112,7 @@ describe('Message endpoint', () => {
       .set('token', token)
     expect(response.body.text).toBe(testingMessage2Mock.text)
     const editedMessage = await MessageModel.findById(message.id)
-    if (!editedMessage) {
-      throw new Error('message not found')
-    }
-    expect(editedMessage.text).toBe(testingMessage2Mock.text)
+    expect(editedMessage?.text).toBe(testingMessage2Mock.text)
   })
 
   it('should return deleted message', async () => {

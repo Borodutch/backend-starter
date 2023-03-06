@@ -1,40 +1,47 @@
-import { Body, Controller, Delete, Flow, Get, Post, Put, State } from 'amala'
-import { Message, MessageModel } from '@/models/Messages'
+import {
+  Body,
+  Controller,
+  CurrentUser,
+  Delete,
+  Flow,
+  Get,
+  Post,
+  Put,
+  State,
+} from 'amala'
+import { DocumentType } from '@typegoose/typegoose'
+import { Message, MessageModel } from '@/models/Message'
 import { User } from '@/models/User'
-import MessageTextValidator from '@/validators/Messages'
-import authMiddleware from '@/middleware/authMiddleware'
-import messageMiddleware from '@/middleware/messageMiddleware'
+import MessageTextValidator from '@/validators/MessageText'
+import checkAuth from '@/middleware/checkAuth'
+import checkMessage from '@/middleware/checkMessage'
 
 @Controller('/messages')
-@Flow([authMiddleware])
+@Flow([checkAuth])
 export default class MessageController {
-  // eslint-disable-next-line require-await
   @Get('/')
-  async getMessages(@State('user') author: User) {
+  getMessages(@CurrentUser() author: User) {
     return MessageModel.find({ author })
   }
 
-  // eslint-disable-next-line require-await
   @Post('/')
-  async createMessages(
+  createMessages(
     @Body({ required: true }) { text }: MessageTextValidator,
-    @State('user') author: User
+    @CurrentUser() author: User
   ) {
     return MessageModel.create({ author, text })
   }
 
-  // eslint-disable-next-line require-await
   @Get('/:messageId')
-  @Flow([messageMiddleware])
-  async getMessage(@State('message') message: Message) {
+  @Flow([checkMessage])
+  getMessage(@State('message') message: Message) {
     return message
   }
 
-  // eslint-disable-next-line require-await
   @Put('/:messageId')
-  @Flow([messageMiddleware])
-  async editMessage(
-    @State('message') message: Message,
+  @Flow([checkMessage])
+  editMessage(
+    @State('message') message: DocumentType<Message>,
     @Body({ required: true }) { text }: MessageTextValidator
   ) {
     return MessageModel.findByIdAndUpdate(
@@ -44,10 +51,9 @@ export default class MessageController {
     )
   }
 
-  // eslint-disable-next-line require-await
   @Delete('/:messageId')
-  @Flow([messageMiddleware])
-  async deleteMessage(@State('message') message: Message) {
+  @Flow([checkMessage])
+  deleteMessage(@State('message') message: DocumentType<Message>) {
     return MessageModel.findByIdAndDelete(message.id)
   }
 }

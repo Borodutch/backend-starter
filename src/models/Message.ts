@@ -7,7 +7,6 @@ export class Message {
   text!: string
   @prop({ required: true, index: true, ref: () => User })
   author!: Ref<User>
-  id!: string
 }
 
 export const MessageModel = getModelForClass(Message)
