@@ -17,7 +17,7 @@ export class User {
   facebookId?: string
   @prop({ index: true })
   telegramId?: number
-  @prop({ required: true, index: true })
+  @prop({ index: true, required: true })
   name!: string
 
   @prop({ index: true, unique: true })
@@ -56,8 +56,8 @@ export async function findOrCreateUser(loginOptions: {
     loginOptions,
     {},
     {
-      upsert: true,
       new: true,
+      upsert: true,
     }
   )
   if (!user) {
