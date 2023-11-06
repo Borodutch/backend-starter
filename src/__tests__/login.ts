@@ -37,8 +37,8 @@ describe('Login endpoint', () => {
 
   it('should return user for valid /google request', async () => {
     const testingGoogleMock = {
-      name: 'John Doe',
       email: 'john@doe.com',
+      name: 'John Doe',
     }
     axiosMock
       .onGet('https://www.googleapis.com/oauth2/v3/userinfo?access_token=test')
