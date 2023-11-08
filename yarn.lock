@@ -1446,13 +1446,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.7":
-  version: 29.5.7
-  resolution: "@types/jest@npm:29.5.7"
+"@types/jest@npm:^29.5.8":
+  version: 29.5.8
+  resolution: "@types/jest@npm:29.5.8"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e28624ccb0ef1255a03fbbb4b5bc3e5cbcdc450d39e0739985ff679b124198f808c38c8c3e67859c6efc0e848196deeb8cfed028e12a821c511dfc1112a2d6e9
+  checksum: ca8438a5b4c098c8c023e9d5b279ea306494a1d0b5291cfb498100fa780377145f068b2a021d545b0398bbe0328dcc37044dd3aaf3c6c0fe9b0bef7b46a63453
   languageName: node
   linkType: hard
 
@@ -1470,12 +1470,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:^9.0.4":
-  version: 9.0.4
-  resolution: "@types/jsonwebtoken@npm:9.0.4"
+"@types/jsonwebtoken@npm:^9.0.5":
+  version: 9.0.5
+  resolution: "@types/jsonwebtoken@npm:9.0.5"
   dependencies:
     "@types/node": "*"
-  checksum: 66323ca082008be98d1a1b2782e8c8895b9168bb4444362eaae56e4263728742b61c1b5c4d51276ee80eb592e4b339063425531168b529ca33fd0939cdb9eaa9
+  checksum: 07ab6fee602e5bd3fb5c6dfe4ec400769dc20f1d7fce901feecb4c3af5f5f08323b03ea55de3e49b1aa41e171a59008f6f4318738a735588c5268a63eba25337
   languageName: node
   linkType: hard
 
@@ -1486,12 +1486,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/koa-bodyparser@npm:^4.3.11":
-  version: 4.3.11
-  resolution: "@types/koa-bodyparser@npm:4.3.11"
+"@types/koa-bodyparser@npm:^4.3.12":
+  version: 4.3.12
+  resolution: "@types/koa-bodyparser@npm:4.3.12"
   dependencies:
     "@types/koa": "*"
-  checksum: ce0879b5baed90880f9dd8b25623cd6ddd3fbfe228c49a46e5b6e66ef12ba7287497d516b07f2ce0e544291912df94615fdc804a7406e0f20322d98626c48b4d
+  checksum: 645cc253c6b9b2e98252b1cdc75a4812cd6d3c228e426f9893a755324b7a6936559ec659a0ff288cb2642340b3cc4e2110167f24b84efc8e3b89c04fe67ed883
   languageName: node
   linkType: hard
 
@@ -1504,12 +1504,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/koa-router@npm:^7.4.6":
-  version: 7.4.6
-  resolution: "@types/koa-router@npm:7.4.6"
+"@types/koa-router@npm:^7.4.7":
+  version: 7.4.7
+  resolution: "@types/koa-router@npm:7.4.7"
   dependencies:
     "@types/koa": "*"
-  checksum: 983056773ac5c200417cd4d08a6a3d3c8bdfc509493d4d379a9f49428f8aecaa0609d49ae03707ee806037f68f7e8f16cf7d4f06ad520bd2c0ff62e6ae7c5a7c
+  checksum: 8f0b384aa1509034276811b9899d0c1663b7d893d8eb631bcb4b8b3ddde66259bbd1566f1e179f84358137e4676d8c69377bde90e6e0634366838a13ec988bce
   languageName: node
   linkType: hard
 
@@ -1529,9 +1529,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/koa@npm:^2.13.10":
-  version: 2.13.10
-  resolution: "@types/koa@npm:2.13.10"
+"@types/koa@npm:^2.13.11":
+  version: 2.13.11
+  resolution: "@types/koa@npm:2.13.11"
   dependencies:
     "@types/accepts": "*"
     "@types/content-disposition": "*"
@@ -1541,23 +1541,23 @@ __metadata:
     "@types/keygrip": "*"
     "@types/koa-compose": "*"
     "@types/node": "*"
-  checksum: dd3b3cbe1bb2fc0b5edd44672a64816abdc7bc0281d2913389ef7926681dd602a53842e29d59853926cf2c74ffa1fc0ebc44e83be9c172c5cead417866b3ecac
+  checksum: 8116669411d5a01e1430a3c39bb62195bc41c3a0eaa4565fff0a902fc7851fe22003ae9ca4c4680d46a71a40d0c48e092f8d8a7c7e9776885bada2cfa31a84e2
   languageName: node
   linkType: hard
 
-"@types/koa__cors@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "@types/koa__cors@npm:4.0.2"
+"@types/koa__cors@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@types/koa__cors@npm:4.0.3"
   dependencies:
     "@types/koa": "*"
-  checksum: fb15ae038705fb000049979e5f5ddfcb46137027146649e44c0ed0d8136807c9fbf2636c3150899071b791703b3b49ddb03271e8d1e67f9e736dc0bdf0aaabbd
+  checksum: ca7bfd1ffacf6c425393e2716a88d66dfe1b5e9a32cd92253cc846fa95bd7fd44c1dc848252f13b7febb5bccf23b8e88716b051cfa04d18fa31e0768432dccb7
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.200":
-  version: 4.14.200
-  resolution: "@types/lodash@npm:4.14.200"
-  checksum: 6471f8bb5da692a6ecf03a8da4935bfbc341e67ee9bcb4f5730bfacff0c367232548f0a01e8ac5ea18c6fe78fb085d502494e33ccb47a7ee87cbdee03b47d00d
+"@types/lodash@npm:^4.14.201":
+  version: 4.14.201
+  resolution: "@types/lodash@npm:4.14.201"
+  checksum: 484be655298e9b2dc2d218ea934071b2ea31e4a531c561dd220dbda65237e8d08c20dc2d457ac24f29be7fe167415bf7bb9360ea0d80bdb8b0f0ec8d8db92fae
   languageName: node
   linkType: hard
 
@@ -1575,12 +1575,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.8.10":
-  version: 20.8.10
-  resolution: "@types/node@npm:20.8.10"
+"@types/node@npm:^20.9.0":
+  version: 20.9.0
+  resolution: "@types/node@npm:20.9.0"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 7c61190e43e8074a1b571e52ff14c880bc67a0447f2fe5ed0e1a023eb8a23d5f815658edb98890f7578afe0f090433c4a635c7c87311762544e20dd78723e515
+  checksum: bfd927da6bff8a32051fa44bb47ca32a56d2c8bc8ba0170770f181cc1fa3c0b05863c9b930f0ba8604a48d5eb0d319166601709ca53bf2deae0025d8b6c6b8a3
   languageName: node
   linkType: hard
 
@@ -1639,12 +1639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.15":
-  version: 2.0.15
-  resolution: "@types/supertest@npm:2.0.15"
+"@types/supertest@npm:^2.0.16":
+  version: 2.0.16
+  resolution: "@types/supertest@npm:2.0.16"
   dependencies:
     "@types/superagent": "*"
-  checksum: 89c1983662f0ab20969b3a6c44344397fd222d0f78b282619aabbe817f7c88a64210fd2b8b8f075ea22a27084e30ebc287bc5105619cbbf9af7f008e77f6eb93
+  checksum: 2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
   languageName: node
   linkType: hard
 
@@ -2095,14 +2095,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "axios@npm:1.6.0"
+"axios@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "axios@npm:1.6.1"
   dependencies:
     follow-redirects: ^1.15.0
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: c7c9f2ae9e0b9bad7d6f9a4dff030930b12ee667dedf54c3c776714f91681feb743c509ac0796ae5c01e12c4ab4a2bee74905068dd200fbc1ab86f9814578fb0
+  checksum: 573f03f59b7487d54551b16f5e155d1d130ad4864ed32d1da93d522b78a57123b34e3bde37f822a65ee297e79f1db840f9ad6514addff50d3cbf5caeed39e8dc
   languageName: node
   linkType: hard
 
@@ -2199,17 +2199,17 @@ __metadata:
     "@koa/cors": ^4.0.0
     "@rushstack/eslint-patch": ^1.5.1
     "@typegoose/typegoose": ^11.7.0
-    "@types/jest": ^29.5.7
-    "@types/jsonwebtoken": ^9.0.4
-    "@types/koa": ^2.13.10
-    "@types/koa-bodyparser": ^4.3.11
-    "@types/koa-router": ^7.4.6
-    "@types/koa__cors": ^4.0.2
-    "@types/lodash": ^4.14.200
-    "@types/node": ^20.8.10
-    "@types/supertest": ^2.0.15
+    "@types/jest": ^29.5.8
+    "@types/jsonwebtoken": ^9.0.5
+    "@types/koa": ^2.13.11
+    "@types/koa-bodyparser": ^4.3.12
+    "@types/koa-router": ^7.4.7
+    "@types/koa__cors": ^4.0.3
+    "@types/lodash": ^4.14.201
+    "@types/node": ^20.9.0
+    "@types/supertest": ^2.0.16
     amala: ^10.0.3
-    axios: ^1.6.0
+    axios: ^1.6.1
     axios-mock-adapter: ^1.22.0
     dotenv: ^16.3.1
     envalid: ^8.0.0
