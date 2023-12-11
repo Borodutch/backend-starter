@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
-    "@koa/cors": "^4.0.0",
+    "@koa/cors": "^5.0.0",
     "amala": "^10.0.3",
     "axios": "^1.6.1",
     "dotenv": "^16.3.1",
