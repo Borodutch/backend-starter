@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "lib": ["es2015"],
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": "src",
@@ -12,7 +11,15 @@
     },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strict": true
+    "strict": true,
+    "useUnknownInCatchVariables": false,
+    "noImplicitOverride": true,      
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true, 
+    "esModuleInterop": true,         
+    "allowSyntheticDefaultImports": true, 
+    "skipLibCheck": true 
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Ctx, Post } from 'amala'
+import { Body, Controller, Ctx, Get, Post } from 'amala'
 import { Context } from 'koa'
 import { findOrCreateUser } from '@/models/User'
 import { forbidden } from '@hapi/boom'
@@ -46,5 +46,9 @@ export default class LoginController {
       name: userData.name,
     })
     return user.strippedAndFilled({ withExtra: true })
+  }
+  @Get('/test')
+  async test() {
+    return 'test'
   }
 }
