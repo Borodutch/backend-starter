@@ -1,0 +1,2 @@
+[start]
+cmd = "yarn distribute"
